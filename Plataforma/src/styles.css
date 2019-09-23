@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+body{
+    background-image: url(src/assets/images/tree.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: #464646;
+
+}
