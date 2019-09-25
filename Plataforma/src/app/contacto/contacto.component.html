@@ -1,44 +1,25 @@
 <body>
     <app-navbar></app-navbar>
-    <div id="container"></div>
-      <div class="contact-wrapper">
-          <div class="envelope {{ flipCard ? 'active' : '' }}">
-           
-            <div class="content">
-              <div class="form-wrapper">
-                <form>
-                  <div class="top-wrapper">
-                    <div class="input">
-                      <label>Nombre</label>
-                      <input type="text" name="nombre"/>
-                    </div>
-                    <div class="input">
-                      <label>Teléfono</label>
-                      <input type="text" name="telefono"/>
-                    </div>
-                    <div class="input">
-                      <label>Correo</label>
-                      <input type="text" name="correo"/>
-                    </div>
-                  </div>
-                  <div class="bottom-wrapper">
-                    <div class="input">
-                      <label>Asunto</label>
-                      <input type="text" name="asunto"/>
-                    </div>
-                    <div class="input">
-                      <label>Mensaje</label>
-                      <textarea rows="5" name="mensaje"></textarea>
-                    </div>
-                    <div class="submit">
-                      <div class="submit-card">Enviar Correo</div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-    
+
+    <div class="container">  
+        <form id="contact" action="" method="post">
+          <fieldset>
+            <input placeholder="Nombre" type="text" tabindex="1" required autofocus>
+          </fieldset>
+          <fieldset>
+            <input placeholder="Correo" type="email" tabindex="2" required>
+          </fieldset>
+          <fieldset>
+            <input placeholder="Teléfono" type="tel" tabindex="3" required>
+          </fieldset>
+          <fieldset>
+            <textarea placeholder="Escribe tu mensaje aquí..." tabindex="4" required></textarea>
+          </fieldset>
+          <fieldset>
+            <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Enviar</button>
+          </fieldset>
+          
+        </form>
+      </div>
+
   </body>
