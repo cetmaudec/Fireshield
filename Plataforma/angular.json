@@ -27,7 +27,9 @@
               "src/styles.css"
             ],
             "scripts": [
-              "src/app/navbar/navbar.component.js"
+              "../node_modules/jquery/dist/jquery.js",
+              "../node_modules/bootstrap/dist/js/bootstrap.js",
+              
             ]
           },
           "configurations": {
