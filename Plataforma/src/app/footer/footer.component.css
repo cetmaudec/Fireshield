@@ -2,7 +2,7 @@ body {font-family: helvetica; color: #000000;}
 
 .one_first_joa {width: 100%;}
 .one_eight_joa {width: 5%;}
-.two_eight_joa {width: 5%;}
+.two_eight_joa {width: 10%;}
 .three_eight_joa {width: 10%;}
 .four_eight_joa{width: 10%}
 .five_eight_joa {width: 10%;}
@@ -20,8 +20,15 @@ body {font-family: helvetica; color: #000000;}
 
 .one_first_joa, .one_eight_joa, .two_eight_joa, .three_eight_joa, .four_eight_joa, .five_eight_joa {
   float:left;
-  margin: 0 0.5%;
+  margin: 0 5%;
 }
 
 img.logos {width:100%; height:auto;}
 
+@media only screen and (max-width: 450px) {
+  img.logos {width:150%; }
+
+  .container{
+    margin-top: -10%;
+  }
+}

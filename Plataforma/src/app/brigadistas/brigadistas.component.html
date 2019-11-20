@@ -1,0 +1,40 @@
+<app-navbar></app-navbar>
+
+
+
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link href="https://fonts.googleapis.com/css?family=Lora&display=swap" rel="stylesheet">
+    
+    </head>
+
+    <button class="btn" routerLink="/addBrigadista"><span>Añadir Brigadista</span></button>
+
+    <div class="pricingdiv">
+            <div *ngFor="let brigadista of brigadistas$.data">
+            <ul class="theplan">
+                
+                <li class="title"><img  width="100px" height=" " src="../../assets/images/bombero.png"><br/><b>{{brigadista.nombre}}</b> <br />{{brigadista.apellidoP}} {{brigadista.apellidoM}}</li>
+                
+                <li class="title2">
+                    Rut: {{brigadista.rut}} <br/>
+                    F. nacimiento: {{brigadista.f_nacimiento}}<br/>
+                    {{brigadista.correo}}<br/>
+                    Peso: {{brigadista.peso}}<br/>
+                    Altura: {{brigadista.altura}}<br/>
+                    Cargo: {{brigadista.cargo}}<br/>
+                    ID pulsera: {{brigadista.pulsera}}    
+                    </li>
+                
+                    
+                    <li >
+                        <button class="button" [routerLink]="['/modBrigadista', brigadista.rut]" >Modificar</button>
+                        <button  class="button" (click)="delBrig(brigadista.rut)">Eliminar</button>
+                            
+                    </li>
+                  
+            </ul>
+        </div>
+           
+        </div>
+

@@ -5,28 +5,16 @@
           <a>
             <img width="80px" src="../../assets/images/logoprueba.png">
           </a>
-          <form class="login-form">
-            <input type="text" placeholder="Usuario"/>
-            <input type="password" placeholder="Contraseña"/>
+          <form class="login-form" [formGroup]="LoginForm" (ngSubmit)="onSubmit()">
+            <input type="text" placeholder="Rut" formControlName="username"/>
+            <input type="password" placeholder="Contraseña" formControlName="password"/>
             
               
-            <button (click)=login()>Iniciar sesión</button>
+            <button [disabled]="!LoginForm.valid">Iniciar sesión</button>
             <p class="message">¿No estás registrado?</p> <a routerLink="/registro">Registrate aquí</a>
           </form>
         </div>
       </div>
       <app-footer></app-footer>
-<script type = "text/javascript">
-  function myFunction(){
-    window.location.href = 'https://www.google.cl/';
-  }
-  
 
-
-  $('.message a').click(function(){
-   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
-  });
-
-
-</script>      
   

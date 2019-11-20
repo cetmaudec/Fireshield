@@ -1,0 +1,43 @@
+<app-navbar></app-navbar>
+
+<body>
+        <button class="btn" [routerLink]="['/unirseCombate', id]" ><span>Unirse</span></button>
+        &nbsp;
+        <table>
+                <thead>
+                  <tr>
+                    <th scope="col">N° Brigada</th>
+                    <th scope="col">ID Combate</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Hora</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Acción</th>
+                    
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                  <tr *ngFor="let comb of combatesBrig$.data ">
+                    <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
+                    <td data-label="ID Combate:">{{comb.id}}</td>
+                    <td data-label="Fecha:">{{comb.fecha}}</td>
+                    <td data-label="Hora:">{{comb.hora}}</td>
+                    <td data-label="Estado:">{{comb.estado}}</td>
+                    
+
+                    <div *ngFor=" let brig of brigadas$.data">
+                        <ng-container *ngIf="brig.n_brigada == comb.n_brigada;else second">
+                            <ng-container *ngIf="comb.estado==0">
+                                <button  class="button" (click)="unir(comb.id, comb.n_brigada)">Unirse</button>
+                            </ng-container>
+                            <ng-container *ngIf="comb.estado==1">
+                              <button  class="button" (click)="retirar(comb.n_brigada)">Retirarse</button>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    
+                  </tr>
+                </tbody>
+              </table>
+        
+        </body>

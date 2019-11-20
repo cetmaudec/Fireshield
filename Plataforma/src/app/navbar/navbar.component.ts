@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,15 +15,25 @@ export class NavbarComponent implements OnInit {
     console.log(e.type);
     
   }
-  constructor(private router: Router) { }
+  constructor(private router: Router, private auth: AuthService) { }
 
   ngOnInit() {
-    $(".drop").mouseover(function() {
-        $(".dropdown").show(300);
-    });
-    $(".drop").mouseleave(function() {
-        $(".dropdown").hide(300);     
-    });
+   
+    
+  }
+  myFunction() {
+    console.log("holi")
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+    x.className += " responsive";
+    } else {
+    x.className = "topnav";
+    }
+  }
+  
+  logout() {
+    this.auth.logout();
+    this.router.navigate(['']);
   }
   
 

@@ -1,25 +1,76 @@
-<body>
+
     <app-navbar></app-navbar>
+  <div class="container2">
+        <div class="rectangle">
+            <img src="../../assets/images/cetma.png">
+            <p style="color: white;">Correo: operaciones@cetudec.cl</p>
+            <p style="color: white;">Teléfono: +569123124</p>
+          </div>
+          <div class="rectangle">
+              <img src="../../assets/images/working.png">
+              <p style="color: white;">Correo: working@gmail.com</p>
+              <p style="color: white;">Teléfono: +569123124</p>
+            </div>  
+  </div>
 
-    <div class="container">  
-        <form id="contact" action="" method="post">
-          <fieldset>
-            <input placeholder="Nombre" type="text" tabindex="1" required autofocus>
-          </fieldset>
-          <fieldset>
-            <input placeholder="Correo" type="email" tabindex="2" required>
-          </fieldset>
-          <fieldset>
-            <input placeholder="Teléfono" type="tel" tabindex="3" required>
-          </fieldset>
-          <fieldset>
-            <textarea placeholder="Escribe tu mensaje aquí..." tabindex="4" required></textarea>
-          </fieldset>
-          <fieldset>
-            <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Enviar</button>
-          </fieldset>
-          
-        </form>
-      </div>
 
-  </body>
+    <div id="container">
+        <h1>&bull;Contacto con Soporte &bull;</h1>
+        <div class="underline"> </div>
+        <form [formGroup]="ContactoForm" (ngSubmit)="onSubmit()">
+            <fieldset>
+                <legend>Datos</legend>
+
+                <label for="nombre" ></label>
+                <input type="text" formControlName="nombre" placeholder="Nombre"><br>
+        
+                <label for="telefono"></label>
+                <input type="text" formControlName="phone" placeholder="Telefono"><br>
+                <div *ngIf="ContactoForm.get('phone').hasError('minlength')"><span>Su teléfono debe tener al menos 9 digitos.</span></div>
+                <div *ngIf="ContactoForm.get('phone').hasError('pattern')"><span>El teléfono solo debe contener números.</span></div>
+
+                                                
+                
+                <label for="correo" ></label>
+                <input type="text" formControlName="correo" placeholder="Correo"><br>
+                <div *ngIf="ContactoForm.get('correo').hasError('email')"><span>Formato de correo Incorrecto.</span></div>
+
+                <label for="asunto" ></label>
+                <input type="text" formControlName="asunto" placeholder="Asunto"><br>
+
+                
+                <div class="message">
+                    <label for="message"></label>
+                    <textarea name="message" placeholder="Mensaje" id="message_input" formControlName="mensaje" cols="30" rows="10"></textarea>
+                  </div>
+                
+            </fieldset>
+           
+           
+
+           
+                <div class="submit">
+                    <input [disabled]="!ContactoForm.valid" type="submit" value="Enviar" id="form_button" />
+                  </div>
+                 
+               
+        </form><!-- // End form -->
+
+        
+      </div><!-- // End #container -->
+
+      <div class="container3">
+          <div class="rectangle">
+                <img src="../../assets/images/udec.gif">
+                <p style="color: white;">Correo: udec@prueba.cl</p>
+                <p style="color: white;">Teléfono: +569123124</p>
+            </div>
+            <div class="rectangle">
+                <img src="../../assets/images/corfo.png">
+                <p style="color: white;">Correo: corfo@prueba.cl</p>
+                <p style="color: white;">Teléfono: +569123124</p>
+              </div>  
+        </div>
+
+
+     
