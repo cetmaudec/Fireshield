@@ -1,0 +1,29 @@
+<app-navbar></app-navbar>
+
+
+    
+      <div id="container">
+            <h1>&bull;Añadir Combate &bull;</h1>
+            <div class="underline">
+            </div>
+            <form [formGroup]="CombateForm" (ngSubmit)="onSubmit()">
+                <fieldset  >
+                        <legend >Combate</legend>
+                        <tr *ngFor="let combate of Combat$.data" >
+                        <label for="n_brigada">ID Combate</label>
+                        <input type="number" step="1" min="{{combate.combate}}" max=100 formControlName="id"  required><br>
+                        <div *ngIf="CombateForm.get('id').hasError('required')"><span>N° de brigada requerido</span></div>
+                      </tr>  
+                        <div class="message">
+                                <label for="message"></label>
+                                <textarea name="message" placeholder="Hito" id="message_input" formControlName="hito" cols="30" rows="5" required></textarea>
+                              </div>
+                            <div *ngIf="CombateForm.get('hito').hasError('required')"><span>Hito requerido</span></div>
+                          
+                        
+                </fieldset>  
+                <div class="submit">
+                        <input [disabled]="!CombateForm.valid" type="submit" value="Registrar" id="form_button" />
+                      </div>
+            </form><!-- // End form -->
+          </div><!-- // End #container -->

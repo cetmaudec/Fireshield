@@ -1,0 +1,26 @@
+<app-navbar></app-navbar>
+
+
+    
+      <div id="container">
+            <h1>&bull;Modificar Combate &bull;</h1>
+            <div class="underline">
+            </div>
+            <form [formGroup]="CombateForm" (ngSubmit)="onSubmit()">
+                <fieldset>
+                        <legend>Combate</legend>
+                        
+                        <div class="message">
+                                <label for="message"></label>
+                                <textarea name="message" placeholder="Hito" id="message_input" formControlName="hito" cols="30" rows="5" required></textarea>
+                              </div>
+                            <div *ngIf="CombateForm.get('hito').hasError('required')"><span>Hito requerido</span></div>
+  
+                        
+                </fieldset>  
+                <div class="submit">
+                        <input [disabled]="!CombateForm.valid" type="submit" value="Modificar" id="form_button" />
+                </div>
+                     
+            </form><!-- // End form -->
+          </div><!-- // End #container -->

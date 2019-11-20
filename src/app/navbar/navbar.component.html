@@ -1,0 +1,24 @@
+
+  <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<div class="topnav" id="myTopnav">
+	<a routerLink="/home" class="logo"><img  width="40px" height="" src="../../assets/images/logito2.png"></a>
+	
+	<a routerLink="/estado" *ngIf="auth.loggedIn"><span>Estado Cuadrilla</span></a>
+		<a *ngIf="auth.loggedIn" ><span>Reportería</span></a>
+		<a routerLink="/brigadas"*ngIf="auth.loggedIn"><span>Brigadas</span></a>
+		<a routerLink="/combates"*ngIf="auth.loggedIn"><span>Combates</span></a>
+		<a routerLink="/contacto"*ngIf="auth.loggedIn"><span>Contacto</span></a>
+			
+		<a class="active" routerLink="" (click)="logout()" *ngIf="auth.loggedIn">Cerrar Sesión</a>	
+		<a href="javascript:void(0);" class="icon" (click)="myFunction()">
+			<i class="fa fa-bars"></i>
+		  </a>
+  </div>
+  
+
+
+
+  

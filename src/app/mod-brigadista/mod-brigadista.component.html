@@ -1,0 +1,88 @@
+<app-navbar></app-navbar>
+
+
+
+          <div id="container">
+              <h1>&bull;Modificar Brigadista &bull;</h1>
+              <div class="underline">
+              </div>
+              <form [formGroup]="modBrigForm" (ngSubmit)="onSubmit()">
+                  <fieldset>
+                      <legend>Datos Personales</legend>
+                      <div class="name">
+                      <label for="nombre">Nombre</label>
+                      <input  type="text"  formControlName="nombre" requiered><br>
+                      <div *ngIf="modBrigForm.get('nombre').hasError('required')"><span>Nombre requerido</span></div>
+                        </div>
+                      <div class="email">
+                      <label for="apellidoP">Apellido Paterno</label>
+                      <input type="text" formControlName="apellidoP" required><br>
+                      <div *ngIf="modBrigForm.get('apellidoP').hasError('required')"><span>Apellido Paterno requerido</span></div>
+                      </div>
+                      <div class="name">
+                      <label for="apellidoM">Apellido Materno</label>
+                      <input type="text" formControlName="apellidoM" required><br>
+                      <div *ngIf="modBrigForm.get('apellidoM').hasError('required')"><span>Apellido Materno requerido</span></div>
+                    </div>
+                    <div class="email">
+                      <label for="correo">Correo</label>
+                       <input type="text" formControlName="correo" required><br>
+                       <div *ngIf="modBrigForm.get('correo').hasError('required')"><span>Correo requerido</span></div>
+                       <div *ngIf="modBrigForm.get('correo').hasError('email')"><span>Formato de correo Incorrecto</span></div>
+                      </div>
+                    </fieldset>
+                 
+                 
+      
+                  <fieldset>
+                      <legend>Brigada</legend>
+                      <div class="name">
+                      <tr *ngFor="let brigada of brigadas$.data" >
+                          
+                      <label for="n_brigada">N° de Brigada</label>
+                       <input type="number" step="1" min="1" max={{brigada.numero}} formControlName="n_brigada" required><br>
+                       <div *ngIf="modBrigForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
+                      </tr>
+                    </div>
+                    <div class="email">
+                        <select placeholder="pulsera" name="subject" id="subject_input" formControlName="pulsera" required>
+                          <option *ngFor="let act of act$.data" class="option" value="act.pulsera"> {{act.pulsera}}</option>
+                          <option *ngFor="let pulseras of pulserasNoUsadas$.data" class="option"> {{pulseras.id}}</option>
+                        </select>
+                      <div *ngIf="modBrigForm.get('pulsera').hasError('required')"><span>ID de Pulsera requerido</span></div>
+  
+                  </div>
+                  <div class="name">
+                    <select placeholder="cargo" name="subject" id="subject_input" formControlName="cargo" required>
+                        <option value="" class="option">Cargo</option>
+                        <option value="Jefe" class="option">Jefe</option>
+                        <option value="Brigadista" class="option"> Brigadista</option>
+                    </select>
+                      <div *ngIf="modBrigForm.get('cargo').hasError('required')"><span>Cargo requerido</span></div>
+                    </div>
+                      
+                   
+                  </fieldset>
+                  <fieldset>
+                          <legend>Condición Física</legend>
+                          <div class="name">
+                          <label for="peso">Peso</label>
+                           <input type="number" step="0.01" min="0" max="999.99" formControlName="peso" required><br>
+                           <div *ngIf="modBrigForm.get('peso').hasError('required')"><span>Peso requerido</span></div>
+                          </div>
+                          <div class="email">
+                           <label for="altura">Altura</label>
+                           <input type="number" step="0.1" min="0"  max="9.9" formControlName="altura" required><br>
+                           <div *ngIf="modBrigForm.get('altura').hasError('required')"><span>Altura requerido</span></div>
+                          </div>
+                          
+                       
+                      </fieldset>
+                      
+                      <div class="submit">
+                          <input [disabled]="!modBrigForm.valid" type="submit" value="Modificar" id="form_button" />
+                        </div>
+                       
+                     
+              </form><!-- // End form -->
+            </div><!-- // End #container -->
