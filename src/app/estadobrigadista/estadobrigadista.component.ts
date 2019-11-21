@@ -29,6 +29,8 @@ export class EstadobrigadistaComponent implements OnInit {
   destination = { lat: 0.000, lng: 0.000 };
   iconAct : any;
   icon: any [];
+  infoWindow : any;
+  event: any;
 
  
   waypoints: any;
