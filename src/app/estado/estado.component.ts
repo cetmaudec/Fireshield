@@ -30,12 +30,14 @@ export class EstadoComponent implements OnInit {
   bajos$: any =[];
   medios$: any =[];
   altos$: any=[] ;
-  
-
+  cargo:any;
+  rut_jefe:any;
   @ViewChildren('mycharts') allMyCanvas: any; 
   @ViewChildren(BaseChartDirective) chart: QueryList<BaseChartDirective>;
   constructor(private http: HttpClient,private elementRef: ElementRef) {
     this.charts=[];
+    this.cargo=localStorage.getItem('cargo');
+    this.rut_jefe=localStorage.getItem('user');
   }
   
 
@@ -75,7 +77,7 @@ export class EstadoComponent implements OnInit {
     }
     
     this.brigadas=await this.getDatosEstado();
-    console.log("holaaaaaa "+this.brigadas[0].n_brigada+" "+this.brigadas[0].id)
+    console.log("holaaaaaa "+this.brigadas[0])
     this.bajos$=await this.getnFatigadosBajo();
     console.log(this.bajos$)
     this.medios$=await this.getnFatigadosMedio();
@@ -89,7 +91,7 @@ export class EstadoComponent implements OnInit {
       window.location.reload();
     }, 5000);*/
 
-    this.setDatosRandom();
+    //this.setDatosRandom();
     this.createChartsData()
    
   }

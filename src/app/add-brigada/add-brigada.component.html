@@ -10,10 +10,12 @@
                 <fieldset>
                     <legend>Brigada</legend>
                     
-                         
-                        <label for="n_brigada">N° de Brigada</label>
-                            <input type="number" step="1" min="1" max=100 formControlName="n_brigada"  required><br>
-                             <div *ngIf="BrigadaForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
+                        <tr *ngFor="let brigada of brigadas$.data" >
+
+                            <label for="n_brigada">N° de Brigada</label>
+                                <input type="number" id="number" step="1" min={{brigada.max}} max=100 formControlName="n_brigada"  required><br>
+                                <div *ngIf="BrigadaForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
+                        </tr>
                        
                       
                             

@@ -1,5 +1,12 @@
 
+<ng-container *ngIf="cargo == 'administrador';else second">
     <app-navbar></app-navbar>
+</ng-container>
+
+<ng-template #second>
+    <app-navbar2></app-navbar2>
+</ng-template>
+
   <div class="container2">
         <div class="rectangle">
             <img src="../../assets/images/cetma.png">

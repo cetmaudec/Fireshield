@@ -8,10 +8,11 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string): Observable<boolean> {
-    return this.http.post<{token: string}>('http://localhost:8000/auth', {username: username, password: password})
+    return this.http.post<{token: string, cargo: string}>('http://localhost:8000/auth', {username: username, password: password})
       .pipe(
         map(result => {
           localStorage.setItem('user', username);
+          localStorage.setItem('cargo', result.cargo);
           localStorage.setItem('access_token', result.token);
           return true;
         })
@@ -22,6 +23,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
+    localStorage.removeItem('cargo');
   }
 
   public get loggedIn(): boolean {

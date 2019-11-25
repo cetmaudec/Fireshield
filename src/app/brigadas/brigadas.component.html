@@ -1,30 +1,47 @@
-<app-navbar></app-navbar>
+<ng-container *ngIf="cargo == 'administrador';else second">
+            <app-navbar></app-navbar>
+    </ng-container>
+
+    <ng-template #second>
+            <app-navbar2></app-navbar2>
+    </ng-template>
+
 <head>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 <link href="https://fonts.googleapis.com/css?family=Lora&display=swap" rel="stylesheet">
 
 </head>
-<button class="btn" routerLink="/addbrigada"><span>Añadir Brigada</span></button>
+<button class="btn" *ngIf="cargo == 'administrador';" routerLink="/addbrigada"><span>Añadir Brigada</span></button>
 
 
 
 <div class="pricingdiv">
-        <div *ngFor="let brigada of brigadas$.data">
-        <ul class="theplan">
-            
-            <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"><br/><b>Jefe Brigada:</b> <br />{{brigada.nombre}} {{brigada.apellidoP}} {{brigada.apellidoM}}</li>
-            
-            <li class="title2">Brigada N° {{brigada.n_brigada}}</li>
-           
-            
-                
-              <li>
-                    <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada]">Ingresar</button>
-                    <button class="button" [routerLink]="['/modBrigada', brigada.n_brigada]" >Modificar</button>
-                    <button  class="button" (click)="delBrigada(brigada.n_brigada)">Eliminar</button>
-              </li>
-              
-        </ul>
+      <div *ngFor="let brigada of brigadas$.data">
+            <ng-container *ngIf="cargo == 'administrador';else second">
+                  <ul class="theplan" >
+                        <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"><br/><b>Jefe Brigada:</b> <br />{{brigada.nombre}} {{brigada.apellidoP}} {{brigada.apellidoM}}</li>       
+                        <li class="title2">Brigada N° {{brigada.n_brigada}}</li>
+                        <li>
+                              <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada]">Ingresar</button>
+                              <button class="button" [routerLink]="['/modBrigada', brigada.n_brigada]" *ngIf="cargo == 'administrador';">Modificar</button>
+                              <button  class="button" (click)="delBrigada(brigada.n_brigada)" *ngIf="cargo == 'administrador';">Eliminar</button>
+                        </li>
+                                      
+                  </ul>
+            </ng-container>
+                  
+            <ng-template #second>
+                  <ul class="theplan" *ngIf=" rut_jefe == brigada.rut_jefe ;" >
+                        <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"><br/><b>Jefe Brigada:</b> <br />{{brigada.nombre}} {{brigada.apellidoP}} {{brigada.apellidoM}}</li>       
+                        <li class="title2">Brigada N° {{brigada.n_brigada}}</li>
+                        <li>
+                              <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada]">Ingresar</button>
+                              <button class="button" [routerLink]="['/modBrigada', brigada.n_brigada]" *ngIf="cargo == 'administrador';">Modificar</button>
+                              <button  class="button" (click)="delBrigada(brigada.n_brigada)" *ngIf="cargo == 'administrador';">Eliminar</button>
+                        </li>                       
+                  </ul>
+            </ng-template>          
+       
     </div>
        
     </div>

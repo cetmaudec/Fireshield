@@ -36,13 +36,15 @@ export class EstadobrigadistaComponent implements OnInit {
   waypoints: any;
 
   public lineChartData: ChartDataSets[] = [
-    { data: [65, 59, 80, 81, 56, 55, 40], label: 'Pulsaciones' },
-    { data: [28, 48, 40, 19, 86, 27, 90], label: 'T° Ambiental' },
-    { data: [180, 480, 770, 90, 50, 270, 400], label: 'T° Corporal'}
+    { data: [], label: 'Pulsaciones' },
+    { data: [], label: 'T° Ambiental' },
+    { data: [], label: 'T° Corporal'}
   ];
 
-  public lineChartLabels: Label[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+  public lineChartLabels: Label[] = [];
+ 
   public lineChartOptions: (ChartOptions & { annotation: any }) = {
+    
     responsive: true,
     
     legend: {
@@ -51,14 +53,19 @@ export class EstadobrigadistaComponent implements OnInit {
       }
     },
     scales: {
+      
       xAxes: [
         {
+    
           ticks: {
             fontColor: 'white',
+            autoSkip: true,
+            maxTicksLimit: 5
           },
           gridLines: {
             color: 'rgba(255,255,255,0.3)',
-          }
+          },
+          
 
       }
     ],
@@ -93,6 +100,8 @@ export class EstadobrigadistaComponent implements OnInit {
         },
       ],
     },
+
+   
   };
 
   public lineChartColors: Color[] = [
@@ -221,11 +230,20 @@ export class EstadobrigadistaComponent implements OnInit {
 
   async getUltimasPulsaciones(){
     this.ultimasPulsaciones$ = await this.http.get('http://localhost:8000/ultimaspulsaciones/'+this.rut).toPromise();
-    let tam = this.lineChartData[0].data.length;
-    for (let j = 0; j < this.lineChartData[0].data.length; j++) {
+    let tam = this.ultimasPulsaciones$.data.length;
+    let tam2 = this.ultimasPulsaciones$.data.length;
+
+
+    console.log(this.ultimasPulsaciones$);
+
+    for (let j = 0; j < tam2; j++) {
+     console.log("Entroo");
       this.lineChartData[0].data[j] = this.ultimasPulsaciones$.data[tam-1].pulsaciones;
+
       tam--;
     }
+
+    console.log(this.lineChartData[0].data);
     this.chart.update();
     
   }
@@ -233,8 +251,10 @@ export class EstadobrigadistaComponent implements OnInit {
   async getUltimasTemperaturasAmbientales(){
     this.ultimasTemperaturasAmbientales$ = await this.http.get('http://localhost:8000/ultimastemperaturasambientales/'+this.rut).toPromise();
 
-    let tam = this.lineChartData[1].data.length;
-    for (let j = 0; j < this.lineChartData[1].data.length; j++) {
+    let tam = this.ultimasTemperaturasAmbientales$.data.length;
+    let tam2 = this.ultimasTemperaturasAmbientales$.data.length;
+    console.log(this.ultimasTemperaturasAmbientales$);
+    for (let j = 0; j < tam2; j++) {
       this.lineChartData[1].data[j] = this.ultimasTemperaturasAmbientales$.data[tam-1].t_ambiental;
       tam--;
     }
@@ -245,10 +265,10 @@ export class EstadobrigadistaComponent implements OnInit {
   async getUltimasTemperaturasCorporales(){
     this.ultimasTemperaturasCorporales$ = await this.http.get('http://localhost:8000/ultimastemperaturascorporales/'+this.rut).toPromise();
 
-    let tam = this.lineChartData[2].data.length;
-
-
-    for (let j = 0; j < this.lineChartData[2].data.length; j++) {
+    let tam = this.ultimasTemperaturasCorporales$.data.length;
+    let tam2 = this.ultimasTemperaturasCorporales$.data.length;
+    console.log(this.ultimasTemperaturasCorporales$);
+    for (let j = 0; j < tam2; j++) {
       this.lineChartData[2].data[j] = this.ultimasTemperaturasCorporales$.data[tam-1].t_corporal;
       tam--;
     }
@@ -256,6 +276,7 @@ export class EstadobrigadistaComponent implements OnInit {
     
   }
 
+  
   async getUltimasFechasYHoras(){
     this.ultimasFechasYHoras$ = await this.http.get('http://localhost:8000/ultimasfechasyhoras/'+this.rut).toPromise();
     let tam = this.ultimasFechasYHoras$.data.length;
@@ -267,6 +288,7 @@ export class EstadobrigadistaComponent implements OnInit {
     //lineChartLabels: Label[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
   }
+
 
   
 

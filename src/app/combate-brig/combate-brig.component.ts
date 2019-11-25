@@ -16,8 +16,11 @@ export class CombateBrigComponent implements OnInit {
   id: any ;
   brigadas$: any = [];
   addForm: FormGroup;
+  cargo:any;
+  
   constructor(private formBuilder: FormBuilder,private http: HttpClient,private rutaActiva: ActivatedRoute,private router: Router) { 
     this.id=this.rutaActiva.snapshot.paramMap.get('id');
+    this.cargo=localStorage.getItem('cargo');
   }
 
   async ngOnInit() {

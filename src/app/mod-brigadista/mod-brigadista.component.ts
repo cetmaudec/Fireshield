@@ -54,7 +54,7 @@ export class ModBrigadistaComponent implements OnInit {
       pulsera:result1.pulsera
     });
 
-    this.getnBrigadas();
+    this.getBrigadas();
     await this.getPulseraActual();
     this.getPulserasNoUsadas();
     const result2 = await this.getPulserasNoUsadas();
@@ -87,11 +87,8 @@ export class ModBrigadistaComponent implements OnInit {
           this.ngOnInit();
         }
   }
-  async getnBrigadas(){
-    this.brigadas$ = await this.http.get('http://localhost:8000/nbrigadas').toPromise();
-    
-        
-      
+  async getBrigadas(){
+    this.brigadas$ = await this.http.get('http://localhost:8000/brigadas').toPromise();
   }
 
     async getPulseraActual(){

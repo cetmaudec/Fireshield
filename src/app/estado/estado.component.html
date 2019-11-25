@@ -1,26 +1,27 @@
-<app-navbar></app-navbar>
+<ng-container *ngIf="cargo == 'administrador';else second">
+        <app-navbar></app-navbar>
+</ng-container>
 
-
+<ng-template #second>
+        <app-navbar2></app-navbar2>
+</ng-template>
 
 
 <div class="pricingdiv">
-    <div *ngFor="let chart of charts; let i = index">
-    <ul class="theplan">
+    
         
-        <li class="title"><img  width="80px" height=" " src="../../assets/images/equipo.png"><br /><b>Brigada N° {{brigadas[i].n_brigada}}</b><br/>Combate {{brigadas[i].id}}</li>
+        <div *ngFor="let chart of charts; let i = index">
+            <ul class="theplan">
+                <li class="title"><img  width="80px" height=" " src="../../assets/images/equipo.png"><img  width="60px" height=" " *ngIf="rut_jefe == brigadas[i].rut_jefe;" src="../../assets/images/estrella.png"> <br /><b>Brigada N° {{brigadas[i].n_brigada}}</b><br/>Combate {{brigadas[i].id}}</li>    
+                <li class="pie"><canvas  id="mychart{{i}}" #mycharts>{{charts.chart}}</canvas></li>
+                <li >
+                    <button class="button" href="http://ergonomictrends.com/best-ergonomic-office-chairs-under-200-reviews/"  [routerLink]="['/estadobrigadistasbrigada', brigadas[i].n_brigada]" rel="nofollow" ><span class="icon-tag"></span> Ver Estado</button><br/>
+                    <button class="button" href="http://ergonomictrends.com/best-ergonomic-office-chairs-under-200-reviews/"  [routerLink]="['/mapa', brigadas[i].n_brigada]" rel="nofollow" ><span class="icon-tag"></span> Ver Mapa</button></li>
+            </ul>
+        </div>
         
-        <li class="pie"><canvas  id="mychart{{i}}" #mycharts>{{charts.chart}}</canvas></li>
-       
-        
-            
-          
-            <li >
-              <button class="button" href="http://ergonomictrends.com/best-ergonomic-office-chairs-under-200-reviews/"  [routerLink]="['/estadobrigadistasbrigada', i+1]" rel="nofollow" ><span class="icon-tag"></span> Ver Estado</button><br/>
-              <button class="button" href="http://ergonomictrends.com/best-ergonomic-office-chairs-under-200-reviews/"  [routerLink]="['/mapa', i+1]" rel="nofollow" ><span class="icon-tag"></span> Ver Mapa</button></li>
-       
-          
-    </ul>
-</div>
+    
+    
    
 </div>
 

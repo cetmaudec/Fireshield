@@ -9,14 +9,13 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 })
 export class HomeComponent implements  OnInit  {
   images = [944, 1011, 984].map((n) => `https://picsum.photos/id/${n}/900/500`);
+  cargo:any;
   
-  constructor(config: NgbCarouselConfig) {  
-    config.interval = 2000;  
-    config.wrap = true;  
-    config.keyboard = false;  
-    config.pauseOnHover = false;  
+  constructor() {  
+    this.cargo=localStorage.getItem('cargo');
   }  
   ngOnInit() {  
+    
     
   }  
 

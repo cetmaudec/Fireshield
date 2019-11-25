@@ -1,0 +1,135 @@
+<app-navbar></app-navbar>
+
+<div class="tab">
+        <button class="tablinks" (click)="openCity('Administradores')" id="defaultOpen">Administradores</button>
+        <button class="tablinks" (click)="openCity('Jefes')">Jefes de Brigada</button>
+        <button class="tablinks" (click)="openCity('Añadir')">Añadir Personal</button>
+        <button class="tablinks" (click)="openCity('Solicitud')"> 
+          Solicitudes
+          <span class="badge">{{num}}</span>
+         </button>
+        
+      </div>
+
+<div id="Administradores" class="tabcontent">
+    <div class="pricingdiv">
+        <div *ngFor="let admin of admin$">
+            <ul class="theplan" >
+                <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"><br/><b>Administrador:</b> <br /></li>       
+                <li class="title2">{{admin.nombre}} {{admin.apellidoP}} {{admin.apellidoM}} <br/>{{admin.rut}}</li>
+                <li>
+                    <button class="button" (click)="modPersonal(admin.rut)" >Modificar</button>
+                    <button  class="button" (click)="delPersonal(admin.rut)"  >Eliminar</button>
+                </li>
+            </ul>    
+        </div>           
+    </div>
+</div>
+
+<div id="Jefes" class="tabcontent">
+    <div class="pricingdiv">
+        <div *ngFor="let jefe of jefes$">
+            <ul class="theplan" >
+                <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"><br/><b>Jefe Brigada:</b> <br /></li>       
+                <li class="title2">{{jefe.nombre}} {{jefe.apellidoP}} {{jefe.apellidoM}}<br/>{{jefe.rut}}</li>
+                
+                <li>
+                    <button class="button" (click)="modPersonal(jefe.rut)" >Modificar</button>
+                    <button  class="button" (click)="delPersonal(jefe.rut)"  >Eliminar</button>
+                </li>
+            </ul>    
+        </div>           
+    </div>
+</div>
+
+<div id="Añadir" class="tabcontent">
+    <div id="container">
+        <h1>&bull;Añadir Personal &bull;</h1>
+        <div class="underline">
+        </div>
+        <form [formGroup]="PersonalForm" (ngSubmit)="onSubmit()">
+            <fieldset>
+                <legend>Datos Personales</legend>
+              <div class="name">
+                <label for="nombre" ></label>
+                <input type="text" formControlName="nombre" placeholder="Nombre" requiered><br>
+                <div *ngIf="PersonalForm.get('nombre').hasError('required')"><span>Nombre requerido</span></div>
+              </div>
+              <div class="email">
+                <label for="apellidoP"></label>
+                <input type="text" formControlName="apellidoP" placeholder="Apellido Paterno"required><br>
+                <div *ngIf="PersonalForm.get('apellidoP').hasError('required')"><span>Apellido Paterno requerido</span></div>
+              </div>
+              <div class="name">
+                <label for="apellidoM"></label>
+                <input type="text" formControlName="apellidoM" placeholder="Apellido Materno" required><br>
+                <div *ngIf="PersonalForm.get('apellidoM').hasError('required')"><span>Apellido Materno requerido</span></div>
+              </div>
+              <div class="email">
+                <label for="rut"></label>
+                <input type="text" formControlName="rut" placeholder="Rut"required><br>
+                <div *ngIf="PersonalForm.get('rut').hasError('required')"><span>Rut requerido</span></div>
+              </div>
+              <div >
+                <label for="correo"></label>
+                 <input type="text" formControlName="correo" placeholder="Correo" required><br>
+                 <div *ngIf="PersonalForm.get('correo').hasError('required')"><span>Correo requerido</span></div>
+                 <div *ngIf="PersonalForm.get('correo').hasError('email')"><span>Formato de correo Incorrecto</span></div>
+              </div>
+              <div class="name">
+                <label for="usuario"></label>
+                <input type="text" formControlName="usuario" placeholder="Usuario" required><br>
+                <div *ngIf="PersonalForm.get('usuario').hasError('required')"><span>Usuario requerido</span></div>
+              </div>
+              <div class="email">
+                <label for="pass"></label>
+                <input type="password" formControlName="pass" placeholder="Contraseña"required>
+                
+                <div *ngIf="PersonalForm.get('pass').hasError('required')"><span>Contraseña requerida</span></div>
+              </div>
+            </fieldset>
+           
+           
+            <fieldset>
+            <div class="subject">
+               <label for="cargo"></label>
+               
+                <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
+                  <option value="" class="option" disabled hidden selected>Cargo</option>
+                  <option class="option">Administrador</option>
+                  <option class="option">Jefe Brigada</option>
+                  
+                </select>
+                <div *ngIf="PersonalForm.get('cargo').hasError('required')"><span>Cargo requerido</span></div>
+              
+            </div>
+            </fieldset>
+            
+                
+                <div class="submit">
+                    <input [disabled]="!PersonalForm.valid" type="submit" value="Registrar" id="form_button" />
+                  </div>
+                 
+               
+        </form><!-- // End form -->
+      </div><!-- // End #container -->
+</div>
+
+<div id="Solicitud" class="tabcontent">
+  <div class="pricingdiv">
+    <div *ngFor="let espera of listaEspera$">
+        <ul class="theplan" >
+            <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"><br/><b>{{espera.cargo}}</b> <br /></li>       
+            <li class="title2">{{espera.nombre}} {{espera.apellidoP}} {{espera.apellidoM}} <br/>Rut: {{espera.rut}} <br/>
+              Usuario: {{espera.usuario}}
+            </li>
+            <li>
+                <button class="button"  (click)="addPersonal(espera.rut)">Aceptar</button>
+                <button  class="button"  (click)="rmPersonal(espera.rut)">Rechazar</button>
+            </li>
+        </ul>    
+    </div>           
+</div>
+</div>
+
+

@@ -50,7 +50,7 @@
                     <tr *ngFor="let brigada of brigadas$.data" >
                         
                     <label for="n_brigada">N° de Brigada</label>
-                     <input type="number" step="1" min="1" max={{brigada.numero}} formControlName="n_brigada"  required><br>
+                     <input type="number" step="1" min="1" max=100 formControlName="n_brigada"  required><br>
                      <div *ngIf="BrigadistaForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
                     </tr>
                   </div>

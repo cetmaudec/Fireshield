@@ -9,7 +9,12 @@ import swal from'sweetalert2';
 })
 export class BrigadasComponent implements OnInit {
   brigadas$: any = [];
-  constructor(private http: HttpClient,private router: Router) { }
+  cargo:any;
+  rut_jefe:any;
+  constructor(private http: HttpClient,private router: Router) { 
+    this.cargo=localStorage.getItem('cargo');
+    this.rut_jefe=localStorage.getItem('user');
+  }
   
   ngOnInit() {
     this.getBrigadas();

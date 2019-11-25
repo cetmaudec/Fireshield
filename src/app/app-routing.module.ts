@@ -15,11 +15,13 @@ import { ModBrigadistaComponent } from './mod-brigadista/mod-brigadista.componen
 import { CombatesComponent } from './combates/combates.component';
 import { AddBrigadaComponent } from './add-brigada/add-brigada.component';
 import { ModBrigadaComponent } from './mod-brigada/mod-brigada.component';
-import { AddCombateComponent } from './add-combate/add-combate.component';
 import { CombateBrigComponent } from './combate-brig/combate-brig.component';
 import { UnirseCombateComponent } from './unirse-combate/unirse-combate.component';
 import { ModCombateComponent } from './mod-combate/mod-combate.component';
 import { MapaComponent } from './mapa/mapa.component';
+import { PersonalComponent } from './personal/personal.component';
+import { ModPersonalComponent } from './mod-personal/mod-personal.component';
+
 
 
 
@@ -40,12 +42,12 @@ const routes: Routes = [
   {path: 'combates', component: CombatesComponent,canActivate: [AuthGuard]},
   {path: 'addbrigada', component: AddBrigadaComponent,canActivate: [AuthGuard]},
   {path: 'modBrigada/:id', component: ModBrigadaComponent,canActivate: [AuthGuard]},
-  {path: 'addCombate', component: AddCombateComponent,canActivate: [AuthGuard]},
   {path: 'combateBrig/:id', component: CombateBrigComponent,canActivate: [AuthGuard]},
   {path: 'unirseCombate/:id', component: UnirseCombateComponent,canActivate: [AuthGuard]},
   {path: 'modCombate/:id', component: ModCombateComponent ,canActivate: [AuthGuard]},
   {path: 'mapa/:id', component: MapaComponent ,canActivate: [AuthGuard]},
-
+  {path: 'personal', component: PersonalComponent ,canActivate: [AuthGuard]},
+  {path: 'modPersonal/:id', component: ModPersonalComponent, canActivate: [AuthGuard]},
 
 ];
 

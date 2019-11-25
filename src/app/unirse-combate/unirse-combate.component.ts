@@ -17,7 +17,9 @@ export class UnirseCombateComponent implements OnInit {
   rut:any;
   brigadas$: any = [];
   unirseForm: FormGroup;
+  cargo:any;
   constructor(private rutaActiva: ActivatedRoute,private formBuilder: FormBuilder,private http: HttpClient,private router: Router) {
+    this.cargo=localStorage.getItem('cargo');
     this.id_combate=this.rutaActiva.snapshot.paramMap.get('id');
     this.unirseForm =  this.formBuilder.group({
       n_brigada: new FormControl('',Validators.required),

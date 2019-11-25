@@ -14,7 +14,9 @@ export class EstadobrigadistasbrigadaComponent implements OnInit {
   datosEstado$: any = [];
   latProm: any;
   longProm: any;
+  cargo:any;
   constructor(private rutaActiva: ActivatedRoute,private http: HttpClient) {
+    this.cargo=localStorage.getItem('cargo');
     this.brig=this.rutaActiva.snapshot.paramMap.get('id');
     this.latProm = 0;
     this.longProm = 0;

@@ -14,9 +14,9 @@ import { NgForm } from '@angular/forms';
 export class ContactoComponent implements OnInit {
   ContactoForm: FormGroup;
   mensaje:string='';
-
+  cargo:any;
   constructor(private formBuilder: FormBuilder,private http: HttpClient,private router: Router) {
-
+    this.cargo=localStorage.getItem('cargo');
     this.ContactoForm = this.formBuilder.group({
       nombre: new FormControl(''),
       phone: new FormControl('', [Validators.minLength(9), Validators.pattern('^-?[0-9]\\d*(\\.\\d{1,4})?$')]),
@@ -27,6 +27,7 @@ export class ContactoComponent implements OnInit {
 
 
     });
+
 
    }
 

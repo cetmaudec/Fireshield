@@ -12,6 +12,7 @@ export class AddBrigadaComponent implements OnInit {
   BrigadaForm: FormGroup;
   brigadas$: any = [];
   jefes$: any = [];
+
   constructor(private formBuilder: FormBuilder,private http: HttpClient,private router: Router) { 
     this.BrigadaForm =  this.formBuilder.group({
       n_brigada: new FormControl('',Validators.required),
@@ -20,9 +21,14 @@ export class AddBrigadaComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.getnBrigadas();
     this.getJefes();
   }
+
+  async getnBrigadas(){
+    this.brigadas$= await this.http.get('http://localhost:8000/maxbrigada').toPromise();
+    console.log(this.brigadas$);
+}
 
   onSubmit(){
     console.log("entre");

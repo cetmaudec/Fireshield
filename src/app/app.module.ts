@@ -39,11 +39,13 @@ import { EstadobrigadistasbrigadaComponent } from './estadobrigadistasbrigada/es
 import { EstadobrigadistaComponent } from './estadobrigadista/estadobrigadista.component';
 import { AddBrigadaComponent } from './add-brigada/add-brigada.component';
 import { ModBrigadaComponent } from './mod-brigada/mod-brigada.component';
-import { AddCombateComponent } from './add-combate/add-combate.component';
 import { UnirseCombateComponent } from './unirse-combate/unirse-combate.component';
 import { CombateBrigComponent } from './combate-brig/combate-brig.component';
 import { ModCombateComponent } from './mod-combate/mod-combate.component';
 import { MapaComponent } from './mapa/mapa.component';
+import { Navbar2Component } from './navbar2/navbar2.component';
+import { PersonalComponent } from './personal/personal.component';
+import { ModPersonalComponent } from './mod-personal/mod-personal.component';
 // For MDB Angular Free
 
 export function tokenGetter() {
@@ -69,11 +71,13 @@ export function tokenGetter() {
     EstadobrigadistaComponent,
     AddBrigadaComponent,
     ModBrigadaComponent,
-    AddCombateComponent,
     UnirseCombateComponent,
     CombateBrigComponent,
     ModCombateComponent,
-    MapaComponent
+    MapaComponent,
+    Navbar2Component,
+    PersonalComponent,
+    ModPersonalComponent
 
     //I keep the new line
   ],

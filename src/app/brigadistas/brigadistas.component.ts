@@ -13,9 +13,11 @@ import swal from'sweetalert2';
 export class BrigadistasComponent implements OnInit {
   brig: any ;
   brigadistas$: any = [];
+  cargo:any;
   
   constructor(private rutaActiva: ActivatedRoute,private http: HttpClient) {
     this.brig=this.rutaActiva.snapshot.paramMap.get('id');
+    this.cargo=localStorage.getItem('cargo');
     
    }
 

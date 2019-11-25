@@ -1,32 +1,99 @@
-<app-navbar></app-navbar>
+<ng-container *ngIf="cargo == 'administrador';else second">
+        <app-navbar></app-navbar>
+</ng-container>
 
-<head>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-        <link href="https://fonts.googleapis.com/css?family=Lora&display=swap" rel="stylesheet">
-        
-        </head>
-        <button class="btn" routerLink="/addCombate"><span>Añadir Combate</span></button>
+<ng-template #second>
+        <app-navbar2></app-navbar2>
+</ng-template>
 
-        
-        <div class="pricingdiv">
-                <div  *ngFor="let combate of combates$.data">
-                <ul class="theplan">
-                    
-                    <li class="title"><img  width="120px" height=" " src="../../assets/images/fire.png"><br/><b>ID Combate: {{combate.id}}</b> </li>
-                    
-                    <li class="title2">{{combate.hito}}</li>
-                
-                    
-                        
-                    <li >
-                        <button class="button" [routerLink]="['/combateBrig', combate.id]" >Seleccionar</button>
-                        <button class="button" [routerLink]="['/modCombate', combate.id]" >Modificar</button>
-                        <button  class="button" (click)="delCombate(combate.id)">Eliminar</button>
-                    </li>
-                    
-                </ul>
-            </div>
+    <div class="tab">
+        <button class="tablinks" (click)="openCity('Activos')" id="defaultOpen">Activos</button>
+        <button class="tablinks" (click)="openCity('Todos')">Todos</button>
+        <button class="tablinks" (click)="openCity('Añadir')">Añadir</button>
        
+    </div>
+
+    <div id="Activos" class="tabcontent">
+
+        <div class="pricingdiv">
+            <div  *ngFor="let combate of combates$.data">
+                <ul class="theplan" *ngIf="combate.estado == 1">
+                        
+                        <li class="title"><img  width="120px" height=" " src="../../assets/images/fire.png"><br/><b>ID Combate: {{combate.id}}</b> </li>
+                        
+                        <li class="title2">{{combate.hito}}<br/>
+                            
+                            {{combate.fecha}}<br/>
+                             {{combate.hora}}</li>
+                        
+                            
+                        <li >
+                            <button class="button" [routerLink]="['/combateBrig', combate.id]" >Seleccionar</button>
+                            <button class="button" [routerLink]="['/modCombate', combate.id]" *ngIf="cargo == 'administrador';">Modificar</button>
+                            <button  class="button" (click)="delCombate(combate.id)" *ngIf="cargo == 'administrador';">Finalizar</button>
+                        </li>
+                        
+                    </ul>
+                </div>
+               
+        </div>  
+    </div>  
+    <div id="Todos" class="tabcontent">
+
+            <div class="pricingdiv">
+                <div  *ngFor="let combate of combates$.data">
+                    <ul class="theplan" >
+                            
+                            <li class="title"><img  width="120px" height=" " src="../../assets/images/fire.png"><br/><b>ID Combate: {{combate.id}}</b> </li>
+                            
+                            <li class="title2">{{combate.hito}}<br/>
+                                {{combate.estado}}<br/>
+                                {{combate.fecha}}<br/>
+                                 {{combate.hora}}</li>
+                            
+                                
+                            <li >
+                                <button class="button" [routerLink]="['/combateBrig', combate.id]" >Seleccionar</button>
+                                <button class="button" [routerLink]="['/modCombate', combate.id]" *ngIf="cargo == 'administrador';">Modificar</button>
+                                <button  class="button" (click)="delCombate(combate.id)" *ngIf="cargo == 'administrador';">Finalizar</button>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                   
+            </div>  
+               
+    </div>  
+    <div id="Añadir" class="tabcontent">
+
+            <div id="container">
+                    <h1>&bull;Añadir Combate &bull;</h1>
+                    <div class="underline">
+                    </div>
+                    <form [formGroup]="CombateForm" (ngSubmit)="onSubmit()">
+                        <fieldset  >
+                                <legend >Combate</legend>
+                                <tr *ngFor="let combate of Combat$.data" >
+                                <label for="n_brigada">ID Combate</label>
+                                <input type="number" step="1" min="{{combate.combate}}" max=100 formControlName="id"  required><br>
+                                <div *ngIf="CombateForm.get('id').hasError('required')"><span>N° de brigada requerido</span></div>
+                              </tr>  
+                                <div class="message">
+                                        <label for="message"></label>
+                                        <textarea name="message" placeholder="Hito" id="message_input" formControlName="hito" cols="30" rows="5" required></textarea>
+                                      </div>
+                                    <div *ngIf="CombateForm.get('hito').hasError('required')"><span>Hito requerido</span></div>
+                                  
+                                
+                        </fieldset>  
+                        <div class="submit">
+                                <input [disabled]="!CombateForm.valid" type="submit" value="Registrar" id="form_button" />
+                              </div>
+                    </form><!-- // End form -->
+                  </div><!-- // End #container -->
+               
+    </div>  
+        
     
 
     

@@ -15,7 +15,9 @@ export class MapaComponent implements OnInit {
   latProm: any;
   longProm: any;
   infoWindow: any;
+  cargo:any;
   constructor(private rutaActiva: ActivatedRoute,private http: HttpClient) {
+    this.cargo=localStorage.getItem('cargo');
     this.brig=this.rutaActiva.snapshot.paramMap.get('id');
     this.latProm = 0.0;
     this.longProm = 0.0;

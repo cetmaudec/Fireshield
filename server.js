@@ -50,8 +50,9 @@ con2.connect(function (err) {
     if (err) console.log(err);
         console.log("Connected!");
      });
+     
+app.use(expressJwt({secret: 'todo-app-super-shared-secret'}).unless({path: ['/auth', '/addUsuario']}));
 
-app.use(expressJwt({secret: 'todo-app-super-shared-secret'}).unless({path: ['/auth']}));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors());
 app.use(bodyParser.json());
@@ -62,23 +63,46 @@ app.post('/auth', function(req, res) {
     console.log(req.body.password);
     const select_query=`SELECT COUNT(*) as total FROM usuarios where rut='${req.body.username}' AND CAST(AES_DECRYPT(pass, 'encriptado') AS CHAR)='${req.body.password}';`
     con.query(select_query, (err, result) => {
-    console.log(result[0].total);
-     if (err){
-           return res.sendStatus(401);
+        console.log(result[0].total);
+        if (err){
+            return res.sendStatus(401);
         }else{
             if(result[0].total>0){
                 console.log("entreeeee");
-                var token = jwt.sign({userID: req.body.username}, 'todo-app-super-shared-secret', {expiresIn: '2h'});
-                res.send({token});
+                const select_query2=`SELECT COUNT(*) as total FROM usuarios where rut='${req.body.username}' AND cargo="Administrador";`
+                con.query(select_query2, (err2, result2) => {
+                    console.log(result2[0].total);
+                    if (err2){
+                        return res.sendStatus(401);
+                    }else{
+                        if(result2[0].total>0){
+                            console.log("admin");
+                            var cargo ="administrador";
+                            var token = jwt.sign({userID: req.body.username}, 'todo-app-super-shared-secret');
+                            res.send({token,cargo});
+                        }else{
+                            const select_query3=`SELECT COUNT(*) as total FROM usuarios where rut='${req.body.username}' AND cargo="Jefe Brigada";`
+                            con.query(select_query3, (err3, result3) => {
+                                console.log(result3[0].total);
+                                if (err3){
+                                    return res.sendStatus(401);
+                                }else{
+                                    if(result3[0].total>0){
+                                        console.log("jefe");
+                                        var cargo ="jefe_brigada";
+                                        var token = jwt.sign({userID: req.body.username}, 'todo-app-super-shared-secret');
+                                        res.send({token,cargo});
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });  
             }else{
                 return res.sendStatus(401);
             }
-     }
+        }
     });
-
-    
-
-
 });
 
 
@@ -133,9 +157,26 @@ app.get('/usuarios', (req, res) => {
    	});
 });
 
+app.get('/admin', (req, res) => {
+    const select_query=`SELECT *
+    FROM Usuarios WHERE cargo="Administrador";`
+ con.query(select_query, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
 
 app.get('/estadoBrigadas', (req, res) => {
-    const select_query=`SELECT estado, n_brigada, id FROM combatesbrigada WHERE estado=1;`
+    const select_query=`SELECT c.estado, c.n_brigada, b.rut_jefe, c.id FROM combatesbrigada as c, brigada as b WHERE estado=1 and c.n_brigada=b.n_brigada ;`
     con.query(select_query, (err, result) => {
      console.log("esatdo "+result);
      if (err){
@@ -244,9 +285,44 @@ app.get('/brigadas', (req, res) => {
     });
 });
 
+app.put('/modUsuario/:id', (req, res) => {
+    var id=req.params.id;
+    console.log(id);
+    const upd_query = `UPDATE usuarios SET usuario='${req.body.usuario}', pass=AES_ENCRYPT('${req.body.pass}','encriptado'), correo='${req.body.correo}', rut='${req.body.rut}', nombre='${req.body.nombre}', apellidoP = '${req.body.apellidoP}', apellidoM='${req.body.apellidoM}', cargo='${req.body.cargo}' WHERE rut =?;`
+    console.log(upd_query);
+    con.query(upd_query, id, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
+app.get('/personal/:id', (req, res) => {
+    var id=req.params.id;
+    console.log(id);
+    const select_query=`SELECT usuario, CAST(AES_DECRYPT(pass, 'encriptado') AS CHAR) as pass, correo, rut, nombre, apellidoP, apellidoM, cargo FROM usuarios where rut = ?;`
+    console.log(select_query)
+    con.query(select_query,id, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
+
 app.get('/combates', (req, res) => {
 
-    const select_query=`SELECT * FROM Combate;`
+    const select_query=`SELECT *,DATE_FORMAT(fecha, '%d/%m/%y') as fecha FROM Combate;`
     con.query(select_query, (err, result) => {
     console.log(result);
     if (err){
@@ -289,6 +365,20 @@ app.get('/nbrigadas', (req, res) => {
      }
     });
 });
+
+app.get('/maxbrigada', (req, res) => {
+    const select_query=`SELECT max(n_brigada) AS max FROM brigada;`
+    con.query(select_query, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+            })
+     }
+    });
+});
 app.get('/nbrigadas:id', (req, res) => {
     var id=req.params.id;
     console.log(id);
@@ -306,7 +396,7 @@ app.get('/nbrigadas:id', (req, res) => {
 });
 
 app.get('/jefes', (req, res) => {
-    const select_query=`SELECT nombre, apellidoP, apellidoM, usuarios.rut FROM jefe_brigada, usuarios WHERE jefe_brigada.rut=usuarios.rut;`
+    const select_query=`SELECT * FROM Usuarios WHERE cargo="Jefe Brigada";`
     con.query(select_query, (err, result) => {
      console.log(result);
      if (err){
@@ -456,6 +546,38 @@ app.get('/maxCombat',(req, res) => {
 
 });
 
+app.get('/nEspera',(req, res) => {
+    const select_query=`SELECT COUNT(*) as numero FROM espera;`
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            console.log(result);
+
+            return res.json({
+                data: result
+            });
+        }
+    });
+
+});
+
+app.get('/listaEspera',(req, res) => {
+    const select_query=`SELECT * FROM espera;`
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            console.log(result);
+
+            return res.json({
+                data: result
+            });
+        }
+    });
+
+});
+
 app.put('/modCombate/:id', bodyParser.json(), (req, res, next) => {
     var id=req.params.id;
     const upd_query = `UPDATE combate SET hito='${req.body.hito}' WHERE id =?;`
@@ -470,6 +592,51 @@ app.put('/modCombate/:id', bodyParser.json(), (req, res, next) => {
     })
 })
 
+app.post('/addUsuario', bodyParser.json(), (req, res, next) => {
+    const INSERT_TIPO_QUERY = `INSERT INTO espera (nombre, apellidoP, apellidoM, rut, cargo, correo, usuario, pass) VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}','${req.body.usuario}', AES_ENCRYPT ('${req.body.pass}','encriptado'))`;
+    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
+
+    if(err) {
+        res.status(500).send('Error al añadir solicitud de registro de usuario.');
+        console.log(err); 
+    } else {
+        res.json(res.body)
+
+    }
+})
+});
+
+app.post('/addPersonal', bodyParser.json(), (req, res, next) => {
+    console.log("legueeeeee")
+    const INSERT_TIPO_QUERY = `INSERT INTO usuarios (nombre, apellidoP, apellidoM, rut, cargo, correo, usuario, pass)  VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}','${req.body.usuario}', AES_ENCRYPT ('${req.body.pass}','encriptado'))`;
+    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
+
+    if(err) {
+        res.status(500).send('Error al añadir solicitud de registro de usuario.');
+        console.log(err); 
+    } else {
+        res.json(res.body)
+
+    }
+})
+});
+
+
+app.post('/addEsperaPersonal', bodyParser.json(), (req, res, next) => {
+    console.log("lllllllllllllllllegueeeeee")
+    
+    const INSERT_TIPO_QUERY = `INSERT INTO usuarios (nombre, apellidoP, apellidoM, rut, cargo, correo, usuario, pass)  VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}','${req.body.usuario}', AES_ENCRYPT ('${req.body.pass}','encriptado'))`;
+    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
+
+    if(err) {
+        res.status(500).send('Error al añadir solicitud de registro de usuario.');
+        console.log(err); 
+    } else {
+        res.json(res.body)
+
+    }
+})
+});
 
 app.post('/addBrigadista', bodyParser.json(), (req, res, next) => {
     const INSERT_TIPO_QUERY = `INSERT INTO brigadistas VALUES('${req.body.rut}','${req.body.correo}','${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.f_nacimiento}',${req.body.n_brigada},'${req.body.cargo}',${req.body.peso},${req.body.altura},'0',${req.body.pulsera});`
@@ -503,7 +670,7 @@ app.post('/addBrigada', bodyParser.json(), (req, res, next) => {
 })
 app.post('/addCombate', bodyParser.json(), (req, res, next) => {
     
-    const INSERT_TIPO_QUERY = `INSERT INTO combate (id,hito) VALUES('${req.body.id}','${req.body.hito}');`
+    const INSERT_TIPO_QUERY = `INSERT INTO combate  VALUES('${req.body.id}','${req.body.hito}','1',CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP());`
     con.query(INSERT_TIPO_QUERY, (err, resultados) => {
 
         if(err) {
@@ -629,6 +796,35 @@ app.delete('/delBrigadista/:id',(req, res) => {
     })
 });
 
+app.delete('/delPersonal/:id',(req, res) => {
+    var id=req.params.id;
+    const del_query = `DELETE FROM Usuarios WHERE rut=?;`
+    con.query(del_query,id, (err, resultados) => {
+
+        if(err) {
+            return res.send(err)
+        } else {
+            res.json(res.body)
+
+        }
+    })
+});
+
+
+app.delete('/rmEsperaPersonal/:id',(req, res) => {
+    var id=req.params.id;
+    const del_query = `DELETE FROM Espera WHERE rut=?;`
+    con.query(del_query,id, (err, resultados) => {
+
+        if(err) {
+            return res.send(err)
+        } else {
+            res.json(res.body)
+
+        }
+    })
+});
+
 app.delete('/delBrigada/:id',(req, res) => {
     var id=req.params.id;
     const del_query = `DELETE FROM Brigada WHERE n_brigada=?;`
@@ -643,9 +839,9 @@ app.delete('/delBrigada/:id',(req, res) => {
     })
 });
 
-app.delete('/delCombate/:id',(req, res) => {
+app.put('/finCombate/:id',(req, res) => {
     var id=req.params.id;
-    const del_query = `DELETE FROM Combate WHERE id=?;`
+    const del_query = `UPDATE Combate SET estado =0 WHERE id=?;`
     con.query(del_query,id, (err, resultados) => {
 
         if(err) {
@@ -688,7 +884,7 @@ app.put('/modBrigadista/:id', bodyParser.json(), (req, res, next) => {
 })
 app.put('/modBrigada/:id', bodyParser.json(), (req, res, next) => {
     var id=req.params.id;
-    const upd_query = `UPDATE brigada SET n_brigada=${req.body.n_brigada}, rut_jefe='${req.body.rut}' WHERE n_brigada =?;`
+    const upd_query = `UPDATE brigada SET rut_jefe='${req.body.rut}' WHERE n_brigada =?;`
     con.query(upd_query,id, (err, resultados) => {
 
         if(err) {
@@ -976,7 +1172,8 @@ app.get('/ultimastemperaturasambientales/:rut', (req, res) => {
     WHERE
         d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut
      
-    ORDER BY d.fecha DESC, d.hora DESC LIMIT 7;`
+    ORDER BY d.fecha DESC, d.hora DESC LIMIT 30;`
+    
     console.log(select_query);
     con.query(select_query,[rut,rut,rut], (err, result) => {
      //console.log(result);
@@ -1011,7 +1208,7 @@ app.get('/ultimastemperaturascorporales/:rut', (req, res) => {
     WHERE
         d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut
      
-    ORDER BY d.fecha DESC, d.hora DESC LIMIT 7;`
+    ORDER BY d.fecha DESC, d.hora DESC LIMIT 30;`
     console.log(select_query);
     con.query(select_query,[rut,rut,rut], (err, result) => {
      //console.log(result);
@@ -1047,7 +1244,7 @@ FROM
 WHERE
     d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut
  
-ORDER BY d.fecha DESC, d.hora DESC LIMIT 7;`
+ORDER BY d.fecha DESC, d.hora DESC LIMIT 30;`
 
    
     console.log(select_query);
@@ -1085,7 +1282,7 @@ app.get('/ultimasfechasyhoras/:rut', (req, res) => {
 WHERE
     d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut
  
-ORDER BY d.fecha DESC, d.hora DESC LIMIT 7;`
+ORDER BY d.fecha DESC, d.hora DESC LIMIT 30;`
     console.log(select_query);
     con.query(select_query,[rut,rut], (err, result) => {
      //console.log(result);
@@ -1124,7 +1321,7 @@ app.get('/ultimasPosiciones/:rut', (req, res) => {
     WHERE
         d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut 
      
-    ORDER BY d.fecha DESC, d.hora DESC LIMIT 7;`
+    ORDER BY d.fecha DESC, d.hora DESC LIMIT 30;`
     console.log(select_query);
     con.query(select_query,[rut,rut], (err, result) => {
      //console.log(result);

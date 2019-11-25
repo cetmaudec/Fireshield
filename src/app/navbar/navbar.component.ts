@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { HttpClient ,HttpParams ,HttpHeaders} from '@angular/common/http';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-navbar',
@@ -10,16 +12,23 @@ import { AuthService } from '../auth.service';
 })
 
 export class NavbarComponent implements OnInit {
-
+  espera$: any;
+  num: any;
   fireEvent(e){
     console.log(e.type);
     
   }
-  constructor(private router: Router, public auth: AuthService) { }
+  constructor(private router: Router, public auth: AuthService,private http: HttpClient) { }
 
-  ngOnInit() {
-   
+  async ngOnInit() {
+   this.num=await this.getNumEspera();
     
+  }
+
+  async getNumEspera(){
+    this.espera$= await this.http.get('http://localhost:8000/nEspera').toPromise();
+    return this.espera$.data[0].numero;
+   console.log("espera   "+this.espera$.data[0].numero);
   }
   myFunction() {
     console.log("holi")

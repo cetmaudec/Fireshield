@@ -36,15 +36,16 @@
       
                   <fieldset>
                       <legend>Brigada</legend>
-                      <div class="name">
-                      <tr *ngFor="let brigada of brigadas$.data" >
-                          
-                      <label for="n_brigada">N° de Brigada</label>
-                       <input type="number" step="1" min="1" max={{brigada.numero}} formControlName="n_brigada" required><br>
-                       <div *ngIf="modBrigForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
-                      </tr>
-                    </div>
+                        <div class="name">
+                          <label for="brigada">N° Brigada</label>
+                          <select placeholder="brigada" name="subject" id="subject_input" formControlName="n_brigada" required>
+                            <option *ngFor="let brigada of brigadas$.data" class="option" [ngValue]="brigada.n_brigada"> {{brigada.n_brigada}}</option>
+                          </select>
+                          <div *ngIf="modBrigForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
+
+                        </div>
                     <div class="email">
+                        <label for="pulsera">Pulsera</label>
                         <select placeholder="pulsera" name="subject" id="subject_input" formControlName="pulsera" required>
                           <option *ngFor="let act of act$.data" class="option" value="act.pulsera"> {{act.pulsera}}</option>
                           <option *ngFor="let pulseras of pulserasNoUsadas$.data" class="option"> {{pulseras.id}}</option>
@@ -52,14 +53,19 @@
                       <div *ngIf="modBrigForm.get('pulsera').hasError('required')"><span>ID de Pulsera requerido</span></div>
   
                   </div>
-                  <div class="name">
-                    <select placeholder="cargo" name="subject" id="subject_input" formControlName="cargo" required>
-                        <option value="" class="option">Cargo</option>
-                        <option value="Jefe" class="option">Jefe</option>
-                        <option value="Brigadista" class="option"> Brigadista</option>
-                    </select>
-                      <div *ngIf="modBrigForm.get('cargo').hasError('required')"><span>Cargo requerido</span></div>
-                    </div>
+                  <div class="subject">
+                      <label for="cargo"></label>
+                      
+                       <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
+                         <option value="" class="option" disabled hidden selected>Cargo</option>
+                         <option class="option">Capitán</option>
+                         <option class="option">Motosierrista</option>
+                         <option class="option">Rozón</option>
+                         <option class="option">McLeod</option>
+                       </select>
+                       <div *ngIf="modBrigForm.get('cargo').hasError('required')"><span>Cargo requerido</span></div>
+                     
+                   </div>
                       
                    
                   </fieldset>

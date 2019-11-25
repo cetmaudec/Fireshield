@@ -20,7 +20,7 @@ export class ModBrigadaComponent implements OnInit {
   constructor(private rutaActiva: ActivatedRoute,private formBuilder: FormBuilder,private http: HttpClient,private router: Router) {
       this.brig=this.rutaActiva.snapshot.paramMap.get('id');
       this.modBrigadaForm =  this.formBuilder.group({
-        n_brigada: new FormControl('',Validators.required),
+
         rut: new FormControl('',Validators.required),    
       });
   }
@@ -28,11 +28,7 @@ export class ModBrigadaComponent implements OnInit {
   async ngOnInit() {
     const result1 =  await this.getJefeBrigada();
     console.log("hola "+result1)
-    this.modBrigadaForm.patchValue({
-      n_brigada: this.brig,
-     
-     
-    })
+    
     
     this.getJefes();
     this.getnBrigadas();

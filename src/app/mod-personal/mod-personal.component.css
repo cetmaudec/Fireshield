@@ -1,4 +1,8 @@
 @import url(https://fonts.googleapis.com/css?family=Playfair+Display&display=swap);
+
+body {font-family: Arial;}
+
+/* Style the tab */
 .tab {
   overflow: hidden;
   border: 1px solid #ccc;
@@ -9,15 +13,6 @@
   max-width: 80%;
   margin-left: 10%;
   margin-right: 10.45%;
-}
-.tab button.tablinks span.badge {
-	
-	
-	
-	padding: 2px 8px;
-	border-radius: 80%;
-	background-color: red;
-	color: white;
 }
 
 
@@ -76,14 +71,12 @@
 }
 
 
-
 .pricingdiv{
   display: flex;
   flex-wrap: wrap;
   font-size: 16px;
   justify-content: center;
   font-family: 'Playfair Display', serif;
-  margin-top: 2%;
   
 }
 
@@ -95,7 +88,7 @@
   flex-direction: column;
   color: black;
   width: 320px; /* width of each table */
-  
+  margin-top: 20px;
   margin-right: 25px; /* spacing between tables */
   margin-bottom: 2em;
   border: 1px solid gray;
@@ -129,12 +122,7 @@
   padding: 15px 10px;
   position: relative;
   border-bottom: 1px solid #eee;
-  font-weight: bold;
-  text-align: center;
-  padding: 20px 10px;
-  background-color: #f47e1e;
-  color: white;
-  box-shadow: 0 -10px 5px rgba(0,0,0,.1) inset;
+  background: rgb(218, 122, 33);
 }
 
 .pricingdiv ul.theplan li.title{
@@ -216,6 +204,8 @@
 
 
 
+
+
 .button {
   background-color: #9c83aa;/* Green */
   border: none;
@@ -227,11 +217,12 @@
   font-size: 12px;
   cursor: pointer;
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: auto;
   font-weight: bold;
   text-transform: uppercase;
   width: 80%;
   margin-right: 10%;
+  margin-bottom: 10px;
   cursor: pointer;
   -webkit-transition-duration: 0.4s; /* Safari */
   transition-duration: 0.4s;
@@ -258,7 +249,7 @@ background-image: linear-gradient(to right, #ec915c 0%, #bb2c3d 100%);
   width: 300px;
   transition: all 0.5s;
   cursor: pointer;
-  margin-left: 7.6%;
+  margin-left: 8.4%;
   margin-bottom: 10px;
   font-family: 'Playfair Display', serif;
 }
@@ -289,6 +280,118 @@ position: absolute;
     width: 250px;
     font-size: 20px;
   }
+}
+
+
+
+
+.frow {
+    clear:both;
+    padding:10px;
+    text-align:center;
+}
+
+.frow .col {
+  display: block;
+  float:left;
+  margin: 1% 0 1% 1.6%;
+  padding:2%;
+}
+
+.frow .col:first-child { margin-left: 0; }
+
+.frow .col4 {
+  width: 19.8%;
+}
+
+.frow .col3 {
+  width: 28.26%;
+    }
+    
+.frow .col2 {
+    width: 45%;
+}    
+
+
+@media only screen and (max-width: 480px) {
+	.col {  margin: 1% 0 1% 0%;  margin-left: 0 !important;}
+	.frow .col2, .frow .col3, .frow .col4 { width: 100%; }
+}
+
+
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    color: white;
+    background-image: linear-gradient(90deg,#52bd58cc 0%, #1f4921 100%);
+  	background-image: -moz-linear-gradient(top, #52bd58cc 0%, #1f4921 100%);
+  	background-image: -webkit-linear-gradient(top, #52bd58cc 0%, #1f4921 100%);
+    background-image: linear-gradient(to bottom, #52bd58cc 0%, #1f4921 100%);
+    border: rgba(0, 78, 39, 0.877) 2px solid;
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 8px;  
+  }
+
+  
+  tr:nth-child(even){
+    background-image: linear-gradient(90deg,#da9e66e7 0%, #da9e66e7 100%);
+  	background-image: -moz-linear-gradient(top, #da9e66e7 0%, #da9e66e7 100%);
+  	background-image: -webkit-linear-gradient(top, #da9e66e7 0%, #da9e66e7 100%);
+  	background-image: linear-gradient(to bottom, #da9e66e7 0%, #da9e66e7 100%);
+      border: rgba(0, 78, 39, 0.877) 2px solid;
+    } 
+ 
+
+
+ img{
+    margin-top:-5%;
+    width: 35%;
+    height: 30%;
+ }
+
+.tiempo{
+    margin-top: -7.7%;
+    margin-left: 29%;
+    width: 40%;
+    height: 10%;
+    border: 2px solid gray;
+    border-radius: 2rem;
+    background-color:rgb(97, 91, 91);
+    color: white;
+    text-align: center;
+}
+
+@media only screen and (max-width: 500px) {
+	
+  
+  .tiempo{
+    margin-top: -7.7%;
+    margin-left: 0%;
+    width: 100%;
+    height: 10%;
+    border: 2px solid gray;
+    border-radius: 2rem;
+    background-color:rgb(97, 91, 91);
+    color: white;
+    text-align: center;
+  }
+  
+}
+
+.rectangle{
+    width: 39.2vw;
+    height: 55vh;
+    background-color: rgba(197, 206, 201, 0.877);
+}
+
+agm-map{
+  width: 100%; /* width of each table */
+  height: 100%;
 }
 
 @import url(https://fonts.googleapis.com/css?family=Playfair+Display&display=swap);
@@ -359,7 +462,7 @@ position: absolute;
 	.underline {
 	  border-bottom: solid 2px #c4bebe;
 	  margin: -0.512em auto;
-	  margin-top: 5%;
+	margin-top: 5%;
 	  width: 150px;
 	}
 	
@@ -369,8 +472,16 @@ position: absolute;
 		float: right;
 		width: 47%;
 	}
+
+	.field-icon {
+		float: right;
+		margin-left: -25px;
+		margin-top: -25px;
+		position: relative;
+		z-index: 2;
+	  }
 	
-	input[type='text'], [type='email'],[type=date], select, textarea {
+	input[type='text'], [type='email'],[type=date],[type=password], select, textarea {
 
 		background: none;
 	  	border: none;
@@ -462,7 +573,8 @@ position: absolute;
 	{
 		border: 1px solid #ddd !important;
 		margin: 0;
-		xmin-width: 0;
+		min-width:  0;
+		margin-bottom: 10px;
 		padding: 10px;       
 		position: relative;
 		border-radius:4px;
@@ -523,7 +635,7 @@ position: absolute;
 		margin: 60px auto;
 		width: 95%;
 	  }
-	 
+	  
 	}
 	
 	@media screen and (max-width: 480px) {
@@ -531,7 +643,8 @@ position: absolute;
 		font-size: 26px;
 	  }
 	  
-	 
+	  
+	  
 	  #form_button {
 		padding: 15px 25px;
 	  }
