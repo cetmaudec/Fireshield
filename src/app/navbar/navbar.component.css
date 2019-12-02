@@ -8,10 +8,10 @@ body {
   
   .topnav {
 	overflow: hidden;
-	max-width: 1350px;
+	max-width: 1400px;
 	font-family: 'Playfair Display', serif;
 	margin: 0 auto;
-	margin-top: 20px;
+	margin-top: 10px;
 	margin-bottom: 20px;
 	background-image: linear-gradient(90deg,#51ca57d0 0%, #0c460f 100%);
   	background-image: -moz-linear-gradient(top, #51ca57d0 0%, #0c460f 100%);
@@ -27,7 +27,7 @@ body {
 	display: block;
 	color: #f2f2f2;
 	text-align: center;
-	padding: 18px 30px;
+	padding: 18px 35px;
 	text-decoration: none;
 	font-size: 20px;
 	
@@ -39,16 +39,11 @@ body {
   
   .topnav a.logo {
 	margin-top: 5px;
+	margin-left: 10px;
 	padding: 4px ;
-	width: 100px;
+	width: 80px;
 	}
-	.topnav a.logo2 {
-		margin-top: 5px;
-		padding: 4px ;
-		width: 100px;
-		
-		
-	}
+	
   .topnav a:hover {
 	color: #751f05;
 	transform: scale(1.00);
@@ -56,11 +51,26 @@ body {
   	z-index: 100;
 	
   }
+  .topnav a.logo:hover{
+	color: #751f05;
+	transform: scale(1.1);
+  	transition: all .3s;
+  	z-index: 100;
+	
+  }
+  .topnav a.logo2 {
+	margin-top: 5px;
+	padding: 4px ;
+	width: 100px;
+	
+	
+}
   .topnav a.logo2:hover{
 	transform: scale(1.1);
   	transition: all .3s;
   	z-index: 100;
 	
+	  
   }
 
 
@@ -105,6 +115,7 @@ body {
 	
 	float: right;
   }
+  
   .topnav a.active:hover {
 	background-image: linear-gradient(90deg,#5ba35ed0 0%, #338f36d0 100%);
   	background-image: -moz-linear-gradient(top, #5ba35ed0 0%, #338f36d0 100%);
@@ -122,26 +133,33 @@ body {
 		font-size: 18px;}
 	
   }
-  @media screen and (max-width: 1275px) {
-	.topnav a {padding: 19px 25px;
+  @media screen and (max-width: 1290px) {
+	.topnav a {padding: 19px 27px;
 		text-decoration: none;
 		font-size: 16px;}
 	
   }
-  @media screen and (max-width: 1140px) {
-	.topnav a {padding: 19px 23px;
+  @media screen and (max-width: 1190px) {
+	.topnav a {padding: 19px 24px;
 		text-decoration: none;
 		font-size: 14px;}
 	
   }
-  @media screen and (max-width: 1045px) {
-	.topnav a {padding: 19px 19px;
+  @media screen and (max-width: 1080px) {
+	.topnav a {padding: 19px 21px;
 		text-decoration: none;
 		font-size: 14px;}
+	
+  }
+
+  @media screen and (max-width: 1035px) {
+	.topnav a {padding: 19px 19px;
+		text-decoration: none;
+		font-size: 13px;}
 	
   }
   
-  @media screen and (max-width:985px) {
+  @media screen and (max-width:972px) {
 	.topnav a:not(:first-child) {display: none;}
 	.topnav a.icon {
 	  float: right;

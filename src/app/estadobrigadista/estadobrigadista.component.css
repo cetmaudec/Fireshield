@@ -1,6 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Playfair+Display&display=swap);
 
-body {font-family: Arial;}
+body {font-family: 'Playfair Display', serif;}
 
 /* Style the tab */
 .tab {
@@ -491,6 +491,21 @@ table {
     text-align: center;
   }
   
+}
+h1 {
+  color: #494949;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 7px;
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 0;
+}
+.underline {
+  border-bottom: solid 2px #494949;
+  margin: -0.512em auto;
+  margin-bottom: 5px;
+  width: 170px;
 }
 
 .rectangle{

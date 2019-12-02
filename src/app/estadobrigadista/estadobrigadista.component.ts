@@ -13,7 +13,7 @@ import {MatTabsModule} from '@angular/material/tabs';
   styleUrls: ['./estadobrigadista.component.css']
 })
 export class EstadobrigadistaComponent implements OnInit {
- 
+  cargo:any;
   ultimasPulsaciones$: any = [];
   ultimasTemperaturasAmbientales$: any = [];
   ultimasTemperaturasCorporales$: any = [];
@@ -138,6 +138,8 @@ export class EstadobrigadistaComponent implements OnInit {
  
   
   constructor(private rutaActiva: ActivatedRoute,private http: HttpClient) {
+    this.cargo=localStorage.getItem('cargo');
+
     this.icon = [];
     
    

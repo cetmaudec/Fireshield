@@ -1,70 +1,88 @@
 <app-navbar></app-navbar>
+
+
+
+
 <div id="container">
-        <h1>&bull;Modificar Personal &bull;</h1>
-        <div class="underline">
-        </div>
-        <form [formGroup]="ModPersonalForm" (ngSubmit)="onSubmit()">
-            <fieldset>
-                <legend>Datos Personales</legend>
-              <div class="name">
-                <label for="nombre" >Nombre</label>
-                <input type="text" formControlName="nombre" placeholder="Nombre" requiered><br>
-                <div *ngIf="ModPersonalForm.get('nombre').hasError('required')"><span>Nombre requerido</span></div>
+  <h1>&bull;Modificar Personal &bull;</h1>
+  <div class="underline">
+  </div>
+  <form [formGroup]="ModPersonalForm" (ngSubmit)="onSubmit()">
+      <fieldset>
+          <legend>Datos Personales</legend>
+          <div class="row">
+              <div class="column" >
+                  <label for="nombre" >Nombre</label>
+                  <input type="text" formControlName="nombre" placeholder="Nombre" requiered><br>
+                  <div *ngIf="ModPersonalForm.get('nombre').hasError('required')"><span>Nombre requerido</span></div>
               </div>
-              <div class="email">
-                <label for="apellidoP">Apellido Paterno</label>
-                <input type="text" formControlName="apellidoP" placeholder="Apellido Paterno"required><br>
-                <div *ngIf="ModPersonalForm.get('apellidoP').hasError('required')"><span>Apellido Paterno requerido</span></div>
+              <div class="column" >
+                  <label for="apellidoP">Apellido Paterno</label>
+                  <input type="text" formControlName="apellidoP" placeholder="Apellido Paterno"required><br>
+                  <div *ngIf="ModPersonalForm.get('apellidoP').hasError('required')"><span>Apellido Paterno requerido</span></div>
               </div>
-              <div class="name">
-                <label for="apellidoM">Apellido Materno</label>
-                <input type="text" formControlName="apellidoM" placeholder="Apellido Materno" required><br>
-                <div *ngIf="ModPersonalForm.get('apellidoM').hasError('required')"><span>Apellido Materno requerido</span></div>
+            </div>
+            <div class="row">
+                <div class="column" >
+                    <label for="apellidoM">Apellido Materno</label>
+                    <input type="text" formControlName="apellidoM" placeholder="Apellido Materno" required><br>
+                    <div *ngIf="ModPersonalForm.get('apellidoM').hasError('required')"><span>Apellido Materno requerido</span></div>
+                </div>
+                <div class="column" >
+                    <label for="rut">Rut</label>
+                    <input type="text" formControlName="rut" placeholder="Rut"required><br>
+                    <div *ngIf="ModPersonalForm.get('rut').hasError('required')"><span>Rut requerido</span></div>
+                </div>
               </div>
-              <div class="email">
-                <label for="rut">Rut</label>
-                <input type="text" formControlName="rut" placeholder="Rut"required><br>
-                <div *ngIf="ModPersonalForm.get('rut').hasError('required')"><span>Rut requerido</span></div>
-              </div>
-              <div >
-                <label for="correo">Correo</label>
-                 <input type="text" formControlName="correo" placeholder="Correo" required><br>
-                 <div *ngIf="ModPersonalForm.get('correo').hasError('required')"><span>Correo requerido</span></div>
-                 <div *ngIf="ModPersonalForm.get('correo').hasError('email')"><span>Formato de correo Incorrecto</span></div>
-              </div>
-              <div class="name">
-                <label for="usuario">Usuario</label>
-                <input type="text" formControlName="usuario" placeholder="Usuario" required><br>
-                <div *ngIf="ModPersonalForm.get('usuario').hasError('required')"><span>Usuario requerido</span></div>
-              </div>
-              <div class="email">
-                <label for="pass">Contraseña</label>
-                <input type="password" formControlName="pass" placeholder="Contraseña"required>
-                
-                <div *ngIf="ModPersonalForm.get('pass').hasError('required')"><span>Contraseña requerida</span></div>
-              </div>
-            </fieldset>
-           
-           
-            <fieldset>
-            <div class="subject">
-               <label for="cargo">Cargo</label>
-               
-                <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
-                  <option value="" class="option" disabled hidden selected>Cargo</option>
-                  <option class="option">Administrador</option>
-                  <option class="option">Jefe Brigada</option>
+            <div class="row">
+                  <div class="column2" >
+                    <label for="correo">Correo</label>
+                    <input type="text" formControlName="correo" placeholder="Correo" required><br>
+                    <div *ngIf="ModPersonalForm.get('correo').hasError('required')"><span>Correo requerido</span></div>
+                    <div *ngIf="ModPersonalForm.get('correo').hasError('email')"><span>Formato de correo Incorrecto</span></div>
+                  </div>
                   
-                </select>
-                <div *ngIf="ModPersonalForm.get('cargo').hasError('required')"><span>Cargo requerido</span></div>
+            </div>
+            <div class="row">
+                <div class="column" >
+                    <label for="usuario">Usuario</label>
+                    <input type="text" formControlName="usuario" placeholder="Usuario" required><br>
+                    <div *ngIf="ModPersonalForm.get('usuario').hasError('required')"><span>Usuario requerido</span></div>
+                </div>
+                <div class="column" >
+                    <label for="pass">Contraseña</label>
+                    <input type="password" formControlName="pass" placeholder="Contraseña"required>
+                    
+                    <div *ngIf="ModPersonalForm.get('pass').hasError('required')"><span>Contraseña requerida</span></div>
+                </div>
+              </div>
+            
+        
+      </fieldset>
+     
+     
+      <fieldset>
+          <div class="row">
+              <div class="column2" >
+                  <label for="cargo">Cargo</label>
+         
+                  <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
+                    <option value="" class="option" disabled hidden selected>Cargo</option>
+                    <option class="option">Administrador</option>
+                    <option class="option">Jefe Brigada</option>
+                    
+                  </select>
+                  <div *ngIf="ModPersonalForm.get('cargo').hasError('required')"><span>Cargo requerido</span></div>
+              </div>
               
             </div>
-            </fieldset>
-            
-                
-                <div class="submit">
-                    <input [disabled]="!ModPersonalForm.valid" type="submit" value="Modificar" id="form_button" />
-                  </div>
+      
+      </fieldset>
+      
+          
+          <div class="submit">
+              <input [disabled]="!ModPersonalForm.valid" type="submit" value="Modificar" id="form_button" />
+            </div>
                  
                
     </form><!-- // End form -->

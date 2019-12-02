@@ -23,7 +23,7 @@ export class AddBrigadistaComponent implements OnInit {
       nombre: new FormControl('',Validators.required),
       apellidoP: new FormControl('',Validators.required),
       apellidoM: new FormControl('',Validators.required),
-      rut: new FormControl('',Validators.required),
+      rut: new FormControl('',[Validators.required, Validators.pattern('[0-9]+.+[0-9]+.+[0-9]+-[0-9kK]{1}$')]),
       f_nacimiento: new FormControl('',Validators.required),
       correo: new FormControl('',[Validators.required, Validators.email]),
       n_brigada: new FormControl('',Validators.required),

@@ -1,10 +1,11 @@
-<ng-container *ngIf="cargo == 'administrador';else second">
-        <app-navbar></app-navbar>
+<ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
+    <app-navbar></app-navbar>
 </ng-container>
 
 <ng-template #second>
-        <app-navbar2></app-navbar2>
+    <app-navbar2></app-navbar2>
 </ng-template>
+
 
 <div class="mapa">
     <agm-map (mapClick) = "close_window(infoWindow, gm)" #gm [zoom]="15" [mapTypeId]="'satellite'" [latitude]="latProm" [longitude]="longProm">

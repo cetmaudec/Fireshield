@@ -3,13 +3,15 @@
 body {
 	background: #34495e;
   }
+
+
   
   .topnav {
 	overflow: hidden;
-	max-width: 1350px;
+	max-width: 1400px;
 	font-family: 'Playfair Display', serif;
 	margin: 0 auto;
-	margin-top: 20px;
+	margin-top: 10px;
 	margin-bottom: 20px;
 	background-image: linear-gradient(90deg,#51ca57d0 0%, #0c460f 100%);
   	background-image: -moz-linear-gradient(top, #51ca57d0 0%, #0c460f 100%);
@@ -25,25 +27,67 @@ body {
 	display: block;
 	color: #f2f2f2;
 	text-align: center;
-	padding: 18px 40px;
+	padding: 18px 35px;
 	text-decoration: none;
 	font-size: 20px;
 	
   }
+
+ 
+
+
   
   .topnav a.logo {
+	margin-top: 5px;
+	margin-left: 10px;
+	padding: 4px ;
+	width: 80px;
+	}
 	
+  .topnav a:hover {
+	color: #751f05;
+	transform: scale(1.00);
+	transition: all .2s;
+  	z-index: 100;
+	
+  }
+  .topnav a.logo:hover{
+	color: #751f05;
+	transform: scale(1.1);
+  	transition: all .3s;
+  	z-index: 100;
+	
+  }
+  .topnav a.logo2 {
+	margin-top: 5px;
 	padding: 4px ;
 	width: 100px;
 	
 	
 }
-  .topnav a:hover {
-	color: #751f05;
+  .topnav a.logo2:hover{
+	transform: scale(1.1);
+  	transition: all .3s;
+  	z-index: 100;
 	
+	  
   }
 
-  .topnav a::before {
+
+  
+
+  
+  .topnav a.logo2 .badge {
+	position: absolute;
+	margin-top: -1px;
+	
+	padding: 2px 8px;
+	border-radius: 80%;
+	background-color: red;
+	color: white;
+}
+
+  .topnav a::before{
 	content: "";
 	transition: all 0.4s ease-in-out;
 	position: absolute;
@@ -71,6 +115,7 @@ body {
 	
 	float: right;
   }
+  
   .topnav a.active:hover {
 	background-image: linear-gradient(90deg,#5ba35ed0 0%, #338f36d0 100%);
   	background-image: -moz-linear-gradient(top, #5ba35ed0 0%, #338f36d0 100%);
@@ -82,32 +127,21 @@ body {
   .topnav .icon {
 	display: none;
   }
-  @media screen and (max-width: 1250px) {
-	.topnav a {padding: 19px 32px;
-		text-decoration: none;
-		font-size: 18px;}
-	
-  }
-  @media screen and (max-width: 1090px) {
-	.topnav a {padding: 19px 25px;
-		text-decoration: none;
-		font-size: 16px;}
-	
-  }
-  @media screen and (max-width: 940px) {
-	.topnav a {padding: 19px 21px;
-		text-decoration: none;
-		font-size: 14px;}
-	
-  }
   
-  @media screen and (max-width:840px) {
+  
+  @media screen and (max-width:860px) {
 	.topnav a:not(:first-child) {display: none;}
 	.topnav a.icon {
 	  float: right;
 	  display: block;
 	}
+	
 	.topnav.topnav.responsive a.logo {
+	
+		margin-left: 10px;
+		width: 70px;
+	}
+	.topnav.topnav.responsive a.logo2 {
 	
 		margin-left: 30px;
 		
@@ -118,7 +152,7 @@ body {
   }
   
   
-  @media screen and (max-width: 890px) {
+  @media screen and (max-width: 860px) {
 	.topnav.responsive {position: relative;}
 	.topnav.responsive .icon {
 	  position: absolute;

@@ -20,12 +20,16 @@ export class PersonalComponent implements OnInit {
   num: any;
   espera2$: any=[];
   listaEspera$:any=[];
+  rut:any;
+  cargo:any;
   constructor( private formBuilder: FormBuilder,private http: HttpClient,private router: Router) {
+    this.rut=localStorage.getItem('user');
+    this.cargo=localStorage.getItem('cargo');
     this.PersonalForm =  this.formBuilder.group({
       nombre: new FormControl('',Validators.required),
       apellidoP: new FormControl('',Validators.required),
       apellidoM: new FormControl('',Validators.required),
-      rut: new FormControl('',Validators.required),
+      rut: new FormControl('',[Validators.required, Validators.pattern('[0-9]+.+[0-9]+.+[0-9]+-[0-9kK]{1}$')]),
       correo: new FormControl('',[Validators.required, Validators.email]),
       usuario: new FormControl('',Validators.required),
       pass: new FormControl('',Validators.required),
@@ -88,31 +92,31 @@ export class PersonalComponent implements OnInit {
 
   }
   
-  addPersonal(id:string){
-      console.log(this.listaEspera$[0])
-      console.log(this.PersonalForm.value)
-      this.http.post('http://localhost:8000/addEsperaPersonal', this.listaEspera$[0], { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
-          (response ) => {
-            console.log(response);
-            swal.fire('Registro exitoso de Personal').then(() => {
-                this.router.navigate(['/personal']);
-                
-              }
-            );
-           
-          },
-          (error)=>{
-            swal.fire('Error en el registro de Personal',error).then(() => {
+  addPersonal(id:string, i:number){
+    console.log(this.listaEspera$[i]);
+    console.log(this.PersonalForm.value)
+    this.http.post('http://localhost:8000/addEsperaPersonal', this.listaEspera$[i], { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+        (response ) => {
+          console.log(response);
+          swal.fire('Registro exitoso de Personal').then(() => {
               this.router.navigate(['/personal']);
               
-              }
-            );
-          
-          });
-          this.ngOnInit();
-    
+            }
+          );
+         
+        },
+        (error)=>{
+          swal.fire('Error en el registro de Personal',error).then(() => {
+            this.router.navigate(['/personal']);
+            
+            }
+          );
+        
+        });
+        this.ngOnInit();
+  
 
-  }
+}
 
   rmPersonal(id:string){
     if(confirm("¿Estás seguro de querer añadir este personal "+id+"?")) {

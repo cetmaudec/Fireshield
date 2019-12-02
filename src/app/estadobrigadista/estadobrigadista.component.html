@@ -1,16 +1,13 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>FireShield</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
-</head>
-<body>
+
+  <ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
     <app-navbar></app-navbar>
+</ng-container>
+
+<ng-template #second>
+    <app-navbar2></app-navbar2>
+</ng-template>
+
+
 
     <div class="tab">
             <button class="tablinks" (click)="openCity(event, 'Datos')" id="defaultOpen">Datos</button>
@@ -19,13 +16,13 @@
           </div>
 
     <div id="Datos" class="tabcontent">
+        <h1>&bull;{{datoActual$[0].nombre}} {{datoActual$[0].apellidoP}} {{datoActual$[0].apellidoM}} &bull;</h1>
+        <div class="underline"> </div>
         <div class="pricingdiv">
             <div >
                 <ul class="theplan">
                         <table *ngFor="let brigadista of datoActual$;">
-                                <tr>
-                                    <td>{{brigadista.nombre}} {{brigadista.apellidoP}} {{brigadista.apellidoM}}</td>
-                                </tr>
+                                
 
                                 <tr>
                                     <td>Edad : {{brigadista.edad}}</td>
@@ -95,6 +92,8 @@
     </div>
 
     <div id="Gráficos" class="tabcontent">
+            <h1>&bull;{{datoActual$[0].nombre}} {{datoActual$[0].apellidoP}} {{datoActual$[0].apellidoM}} &bull;</h1>
+            <div class="underline"> </div>
             <div class="pricingdiv">
                 <div >
                     <ul class="theplan2">
@@ -113,6 +112,8 @@
     
 
     <div id="Mapa" class="tabcontent">
+            <h1>&bull;{{datoActual$[0].nombre}} {{datoActual$[0].apellidoP}} {{datoActual$[0].apellidoM}} &bull;</h1>
+            <div class="underline"> </div>
             <div class="pricingdiv">
                 <div >
                     <ul class="theplan3">
@@ -165,8 +166,6 @@
         </div>
     
           
-</body>
-</html>
 
 
 

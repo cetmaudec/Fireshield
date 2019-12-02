@@ -1,5 +1,4 @@
-
-	@import url(https://fonts.googleapis.com/css?family=Playfair+Display&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Playfair+Display&display=swap);
 
 	html {
 		font-family: 'Playfair Display', serif;
@@ -67,16 +66,25 @@
 	.underline {
 	  border-bottom: solid 2px #c4bebe;
 	  margin: -0.512em auto;
-	  margin-top: 5%;
+	margin-top: 5%;
 	  width: 150px;
 	}
 	
 
 	
-	.email {
-		float: right;
-		width: 47%;
-	}
+	.column {
+		float: left;
+		width: 46%;
+		padding: 10px;
+		height: 60px; /* Should be removed. Only for demonstration */
+	  }
+	  
+	  /* Clear floats after the columns */
+	  .row:after {
+		content: "";
+		display: table;
+		clear: both;
+	  }
 	
 	input[type='text'], [type='email'],[type=date], select, textarea {
 
@@ -122,10 +130,7 @@
 		float: none;
 	}
 	
-	.name {
-		float: left;
-		width: 47%;
-	}
+	
 	
 	select {
 	  background: url('https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-arrow-down-32.png') no-repeat right;
@@ -143,7 +148,7 @@
 	}
 
 	.option{
-		color: #696766;
+		color: #888685;
 	}
 	
 	
@@ -189,12 +194,12 @@
 			padding: 5px 5px 5px 10px; 
 			background-color: #ffffffb0;
 		}
-	span{
-		color: red;
-		font-size: 10px;
-	margin: auto;
-	
-	}
+		span{
+			color: #ebc5b2;
+			font-size: 15px;
+			margin-top: 10px;
+		
+		}
 
 	label{
 		color: #ddd;
@@ -227,20 +232,27 @@
 	  color: #F2F3EB;
 	}
 	
-	@media screen and (max-width: 768px) {
-	  #container {
-		margin: 60px auto;
-		width: 95%;
+	@media screen and (max-width: 950px) {
+		#container {
+		  margin: 60px auto;
+		  width: 90%;
+		}
+		
 	  }
-	  
-	}
+
+	@media screen and (max-width: 720px) {
+		.column {
+		  width: 90%;
+		}
+	  }
 	
 	@media screen and (max-width: 480px) {
 	  h1 {
 		font-size: 26px;
 	  }
 	  
-	 
+	  
+	  
 	  #form_button {
 		padding: 15px 25px;
 	  }
@@ -256,7 +268,7 @@
 		width: 35px;
 	  }
 	  
-	 
+	  
 	  
 	  input[type='text'], [type='email'], select, textarea {
 		font-size: 0.875em;

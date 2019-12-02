@@ -66,42 +66,54 @@ app.post('/auth', function(req, res) {
         console.log(result[0].total);
         if (err){
             return res.sendStatus(401);
-        }else{
-            if(result[0].total>0){
+        }else if(result[0].total>0){
+            
                 console.log("entreeeee");
                 const select_query2=`SELECT COUNT(*) as total FROM usuarios where rut='${req.body.username}' AND cargo="Administrador";`
                 con.query(select_query2, (err2, result2) => {
                     console.log(result2[0].total);
                     if (err2){
                         return res.sendStatus(401);
-                    }else{
-                        if(result2[0].total>0){
+                    }else if(result2[0].total>0){
+                        
                             console.log("admin");
                             var cargo ="administrador";
                             var token = jwt.sign({userID: req.body.username}, 'todo-app-super-shared-secret');
                             res.send({token,cargo});
-                        }else{
-                            const select_query3=`SELECT COUNT(*) as total FROM usuarios where rut='${req.body.username}' AND cargo="Jefe Brigada";`
-                            con.query(select_query3, (err3, result3) => {
-                                console.log(result3[0].total);
-                                if (err3){
-                                    return res.sendStatus(401);
-                                }else{
-                                    if(result3[0].total>0){
-                                        console.log("jefe");
-                                        var cargo ="jefe_brigada";
+                    }else{
+                        const select_query3=`SELECT COUNT(*) as total FROM usuarios where rut='${req.body.username}' AND cargo="Jefe Brigada";`
+                        con.query(select_query3, (err3, result3) => {
+                            console.log(result3[0].total);
+                            if (err3){
+                                return res.sendStatus(401);
+                            }else if(result3[0].total>0){     
+                                console.log("jefe");
+                                var cargo ="jefe_brigada";
+                                var token = jwt.sign({userID: req.body.username}, 'todo-app-super-shared-secret');
+                                res.send({token,cargo});
+                            }else{
+                                const select_query4=`SELECT COUNT(*) as total FROM usuarios where rut='${req.body.username}' AND cargo="Super Administrador";`
+                                con.query(select_query4, (err4, result4) => {
+                                    console.log(result4[0].total);
+                                    if (err4){
+                                        return res.sendStatus(401);
+                                    }else if(result4[0].total>0){     
+                                        console.log("super administrador");
+                                        var cargo ="super_admin";
                                         var token = jwt.sign({userID: req.body.username}, 'todo-app-super-shared-secret');
                                         res.send({token,cargo});
-                                    }
-                                }
-                            });
-                        }
-                    }
+                                    }else{
+                                        return res.sendStatus(401);
+                                    }    
+                                });
+                            }    
+                        });
+                    }     
                 });  
-            }else{
-                return res.sendStatus(401);
-            }
+        }else{
+            return res.sendStatus(401);
         }
+        
     });
 });
 
@@ -193,16 +205,19 @@ app.get('/estadoBrigadas', (req, res) => {
 
 
 app.get('/FatigaBajaBrigadas', (req, res) => {
-    const select_query=`SELECT IFNULL(a.fatigaBaja, 0) as fatigaBaja, brigada.n_brigada
-    FROM brigada
+    const select_query=`SELECT IFNULL(a.fatigaBaja, 0) as fatigaBaja, d.n_brigada, d.estado, d.id
+    FROM (SELECT b.n_brigada , c.estado, c.id
+		FROM brigada as b, combatesbrigada as c
+        WHERE b.n_brigada = c.n_brigada AND c.estado=1
+        ) as d
     LEFT JOIN (
-        SELECT count(b.fatigado) as fatigaBaja, b.n_brigada
-        FROM brigadistas as b
-        WHERE b.fatigado = 0
+        SELECT count(b.fatigado) as fatigaBaja, b.n_brigada, c.estado, c.id
+        FROM brigadistas as b, combatesbrigada as c
+        WHERE b.fatigado = 0 AND b.n_brigada=c.n_brigada AND c.estado=1
         group by b.n_brigada
     ) as a
-    ON brigada.n_brigada=a.n_brigada
-    ORDER BY brigada.n_brigada;`
+    ON d.n_brigada=a.n_brigada
+    ORDER BY d.n_brigada;`
     con.query(select_query, (err, result) => {
      console.log(result);
      if (err){
@@ -218,16 +233,19 @@ app.get('/FatigaBajaBrigadas', (req, res) => {
 });
 
 app.get('/FatigaMediaBrigadas', (req, res) => {
-    const select_query=`SELECT IFNULL(a.fatigaMedia, 0) as fatigaMedia, brigada.n_brigada
-    FROM brigada
+    const select_query=`SELECT IFNULL(a.fatigaMedia, 0) as fatigaMedia, d.n_brigada, d.estado, d.id
+    FROM (SELECT b.n_brigada , c.estado, c.id
+		FROM brigada as b, combatesbrigada as c
+        WHERE b.n_brigada = c.n_brigada AND c.estado=1
+        ) as d
     LEFT JOIN (
-        SELECT count(b.fatigado) as fatigaMedia, b.n_brigada
-        FROM brigadistas as b
-        WHERE b.fatigado = 1
+        SELECT count(b.fatigado) as fatigaMedia, b.n_brigada, c.estado, c.id
+        FROM brigadistas as b, combatesbrigada as c
+        WHERE b.fatigado = 1 AND b.n_brigada=c.n_brigada AND c.estado=1
         group by b.n_brigada
     ) as a
-    ON brigada.n_brigada=a.n_brigada
-    ORDER BY brigada.n_brigada;`
+    ON d.n_brigada=a.n_brigada
+    ORDER BY d.n_brigada;`
     con.query(select_query, (err, result) => {
      console.log(result);
      if (err){
@@ -243,16 +261,19 @@ app.get('/FatigaMediaBrigadas', (req, res) => {
 });
 
 app.get('/FatigaAltaBrigadas', (req, res) => {
-    const select_query=`SELECT IFNULL(a.fatigaAlta, 0) as fatigaAlta, brigada.n_brigada
-    FROM brigada
+    const select_query=`SELECT IFNULL(a.fatigaAlta, 0) as fatigaAlta, d.n_brigada, d.estado, d.id
+    FROM (SELECT b.n_brigada , c.estado, c.id
+		FROM brigada as b, combatesbrigada as c
+        WHERE b.n_brigada = c.n_brigada AND c.estado=1
+        ) as d
     LEFT JOIN (
-        SELECT count(b.fatigado) as fatigaAlta, b.n_brigada
-        FROM brigadistas as b
-        WHERE b.fatigado = 2
+        SELECT count(b.fatigado) as fatigaAlta, b.n_brigada, c.estado, c.id
+        FROM brigadistas as b, combatesbrigada as c
+        WHERE b.fatigado = 2 AND b.n_brigada=c.n_brigada AND c.estado=1
         group by b.n_brigada
     ) as a
-    ON brigada.n_brigada=a.n_brigada
-    ORDER BY brigada.n_brigada;`
+    ON d.n_brigada=a.n_brigada
+    ORDER BY d.n_brigada;`
     con.query(select_query, (err, result) => {
      console.log(result);
      if (err){
@@ -339,7 +360,15 @@ app.get('/combates', (req, res) => {
 app.get('/combatesBrig:id', (req, res) => {
     var id=req.params.id;
     console.log(id);
-    const select_query=`SELECT n_brigada, id,DATE_FORMAT(fecha, '%d/%m/%y') as fecha, DATE_FORMAT(hora, '%H:%i') as hora , estado FROM combatesbrigada WHERE id=?;`
+    const select_query=`
+    SELECT n_brigada, id,DATE_FORMAT(fecha, '%d/%m/%y') as fecha, DATE_FORMAT(hora, '%H:%i') as hora , estado
+    FROM (
+        SELECT *
+        FROM combatesbrigada 
+        WHERE combatesbrigada.id=?
+        ORDER BY fecha desc, hora desc
+        LIMIT 18446744073709551615) AS sub
+     group BY sub.n_brigada;`
     con.query(select_query,id, (err, result) => {
      console.log(result);
      if (err){
@@ -563,7 +592,7 @@ app.get('/nEspera',(req, res) => {
 });
 
 app.get('/listaEspera',(req, res) => {
-    const select_query=`SELECT * FROM espera;`
+    const select_query=`SELECT *, CAST(AES_DECRYPT(pass, 'encriptado') AS CHAR) as pass2 FROM espera;`
     con.query(select_query, (err, result) => {
         if(err){
             return res.send(err);
@@ -625,17 +654,18 @@ app.post('/addPersonal', bodyParser.json(), (req, res, next) => {
 app.post('/addEsperaPersonal', bodyParser.json(), (req, res, next) => {
     console.log("lllllllllllllllllegueeeeee")
     
-    const INSERT_TIPO_QUERY = `INSERT INTO usuarios (nombre, apellidoP, apellidoM, rut, cargo, correo, usuario, pass)  VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}','${req.body.usuario}', AES_ENCRYPT ('${req.body.pass}','encriptado'))`;
+    const INSERT_TIPO_QUERY = `INSERT INTO usuarios (nombre, apellidoP, apellidoM, rut, cargo, correo, usuario, pass)  VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}','${req.body.usuario}', AES_ENCRYPT ('${req.body.pass2}','encriptado'))`;
+    console.log(INSERT_TIPO_QUERY);
     con.query(INSERT_TIPO_QUERY, (err, resultados) => {
 
-    if(err) {
-        res.status(500).send('Error al añadir solicitud de registro de usuario.');
-        console.log(err); 
-    } else {
-        res.json(res.body)
+        if(err) {
+            res.status(500).send('Error al añadir solicitud de registro de usuario.');
+            console.log(err); 
+        } else {
+            res.json(res.body)
 
-    }
-})
+        }
+    })
 });
 
 app.post('/addBrigadista', bodyParser.json(), (req, res, next) => {
@@ -683,68 +713,6 @@ app.post('/addCombate', bodyParser.json(), (req, res, next) => {
         }
     })
 })
-app.post('/unirseCombate', bodyParser.json(), (req, res, next) => {
-    let date = new Date()
-    let hours = date.getHours()
-    let min = date.getMinutes()
-    let sec = date.getSeconds()
-    let day = date.getDate()
-    let month = date.getMonth() + 1
-    let year = date.getFullYear()
-    let fecha;
-    if(month < 10){
-        
-         fecha=`${year}-0${month}-${day}`;
-    }else{
-        fecha=`${year}-${month}-${day}`;
-    }
-    console.log(fecha);
-    console.log(`${hours}:${min}:${sec}`)
-
-    const select_query=`SELECT COUNT(*) as total FROM combatesbrigada where n_brigada='${req.body.n_brigada}' AND id='${req.body.id}';`
-    con.query(select_query, (err, result) => {
-    console.log(result[0].total);
-
-        if (err){
-           return res.sendStatus(401);
-        }else{
-            if(result[0].total>0){
-                console.log("update");
-                const UPDATE_TIPO_QUERY = `UPDATE combatesbrigada SET estado=1 ,fecha='${fecha}' , hora='${hours}:${min}:${sec}' WHERE n_brigada='${req.body.n_brigada}' AND id='${req.body.id}';`
-                console.log(UPDATE_TIPO_QUERY)
-                con.query( UPDATE_TIPO_QUERY, (err2, resultados2) => {
-                    if(err2) {
-                        console.log("asasasasaaaaaaaaaaassas");
-                        res.status(500).send('La brigada seleccionada ya posee un combate activo');
-                        
-                    } else {
-                        console.log("holaaaaaaaaaaaaaa"+resultados2)
-                        res.json(res.body)
-
-                    }
-                })
-                
-            }else{
-                const INSERT_TIPO_QUERY = `INSERT INTO combatesbrigada VALUES(${req.body.n_brigada},'${req.body.id}','${year}-0${month}-${day}','${hours}:${min}:${sec}','1');`
-                con.query(INSERT_TIPO_QUERY, (err2, resultados2) => {
-                    if(err2) {
-                        
-                        res.status(500).send('La brigada seleccionada ya posee un combate activo');
-                            
-                    } else {
-                        console.log("holaaaaaaaaaaaaaa"+resultados2)
-                        res.json(res.body)
-
-                    }
-                })
-                
-            }
-     }
-    });
-    
-
-    
-})
 
 app.post('/unirseCombate2', bodyParser.json(), (req, res, next) => {
     console.log("holaaaaaaaaaaaaaa")
@@ -767,7 +735,7 @@ app.post('/unirseCombate2', bodyParser.json(), (req, res, next) => {
     console.log(fecha);
     console.log(`${hours}:${min}:${sec}`)
 
-    const UPDATE_TIPO_QUERY = `UPDATE combatesbrigada SET estado=1 ,fecha='${fecha}' , hora='${hours}:${min}:${sec}' WHERE n_brigada='${req.body.n_brigada}' AND id='${req.body.id}';`
+    const UPDATE_TIPO_QUERY = `INSERT into combatesbrigada values ('${req.body.n_brigada}','${req.body.id}','${fecha}','${hours}:${min}:${sec}', 1);`
     console.log(UPDATE_TIPO_QUERY)
     con.query( UPDATE_TIPO_QUERY, (err, resultados) => {
     if(err) {
@@ -779,6 +747,7 @@ app.post('/unirseCombate2', bodyParser.json(), (req, res, next) => {
     })   
     
 })
+
 
 
 
@@ -857,7 +826,7 @@ app.delete('/updCombateBrig',(req, res) => {
     var id = req.param('id');
     
     console.log("hola "+n_brigada+" "+id)
-    const del_query = `UPDATE combatesbrigada SET estado=0 WHERE n_brigada=? AND id=?;`
+    const del_query = `UPDATE combatesbrigada SET estado=0 WHERE n_brigada=? AND id=? AND estado=1;`
     con.query(del_query,[n_brigada,id], (err, resultados) => {
 
         if(err) {

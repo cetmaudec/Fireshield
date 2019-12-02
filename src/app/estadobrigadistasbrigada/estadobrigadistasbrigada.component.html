@@ -1,10 +1,11 @@
-<ng-container *ngIf="cargo == 'administrador';else second">
-        <app-navbar></app-navbar>
+<ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
+    <app-navbar></app-navbar>
 </ng-container>
 
 <ng-template #second>
-        <app-navbar2></app-navbar2>
+    <app-navbar2></app-navbar2>
 </ng-template>
+
 
 <div class="pricingdiv">
     <div *ngFor="let brigadista of brigadistas$.data ">
@@ -24,7 +25,7 @@
                            <img src="src=../../assets/images/brigadistarojo.png"/>         
                 </ng-container>
             </ng-template>
-            <li class="btn-group"><button class="button" href="http://ergonomictrends.com/best-ergonomic-office-chairs-under-200-reviews/"  rel="nofollow" [routerLink]="['/estadobrigadista', brigadista.rut]"><span class="icon-tag"></span> Ver Estado</button></li>
+            <li><button class="button"  [routerLink]="['/estadobrigadista', brigadista.rut]"><span class="icon-tag"></span> Ver Estado</button></li>
             
     </ul>
 </div>

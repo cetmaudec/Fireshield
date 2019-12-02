@@ -49,7 +49,7 @@ export class UnirseCombateComponent implements OnInit {
   onSubmit(){
     if(this.unirseForm.value!=null){
       console.log(this.unirseForm.value)
-      this.http.post('http://localhost:8000/unirseCombate', this.unirseForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.post('http://localhost:8000/unirseCombate2', this.unirseForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             console.log("responseeee"+response);
             swal.fire('Brigada unida a combate correctamente').then(() => {

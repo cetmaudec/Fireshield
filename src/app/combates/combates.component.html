@@ -1,15 +1,16 @@
-<ng-container *ngIf="cargo == 'administrador';else second">
-        <app-navbar></app-navbar>
+<ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
+    <app-navbar></app-navbar>
 </ng-container>
 
 <ng-template #second>
-        <app-navbar2></app-navbar2>
+    <app-navbar2></app-navbar2>
 </ng-template>
+
 
     <div class="tab">
         <button class="tablinks" (click)="openCity('Activos')" id="defaultOpen">Activos</button>
         <button class="tablinks" (click)="openCity('Todos')">Todos</button>
-        <button class="tablinks" (click)="openCity('Añadir')">Añadir</button>
+        <button class="tablinks" (click)="openCity('Añadir')" *ngIf="cargo == 'administrador' ||cargo=='super_admin';">Añadir</button>
        
     </div>
 
@@ -29,8 +30,8 @@
                             
                         <li >
                             <button class="button" [routerLink]="['/combateBrig', combate.id]" >Seleccionar</button>
-                            <button class="button" [routerLink]="['/modCombate', combate.id]" *ngIf="cargo == 'administrador';">Modificar</button>
-                            <button  class="button" (click)="delCombate(combate.id)" *ngIf="cargo == 'administrador';">Finalizar</button>
+                            <button class="button" [routerLink]="['/modCombate', combate.id]" *ngIf="cargo == 'administrador' ||cargo=='super_admin';">Modificar</button>
+                            <button  class="button" (click)="delCombate(combate.id)" *ngIf="cargo == 'administrador' ||cargo=='super_admin';">Finalizar</button>
                         </li>
                         
                     </ul>
@@ -46,16 +47,19 @@
                             
                             <li class="title"><img  width="120px" height=" " src="../../assets/images/fire.png"><br/><b>ID Combate: {{combate.id}}</b> </li>
                             
-                            <li class="title2">{{combate.hito}}<br/>
-                                {{combate.estado}}<br/>
+                            <li *ngIf="combate.estado == 1" class="title2">{{combate.hito}}<br/>
+                                Activo<br/>
                                 {{combate.fecha}}<br/>
                                  {{combate.hora}}</li>
+                            <li *ngIf="combate.estado == 0" class="title2">{{combate.hito}}<br/>
+                                    Finalizado<br/>
+                                    {{combate.fecha}}<br/>
+                                     {{combate.hora}}</li>
                             
                                 
                             <li >
                                 <button class="button" [routerLink]="['/combateBrig', combate.id]" >Seleccionar</button>
-                                <button class="button" [routerLink]="['/modCombate', combate.id]" *ngIf="cargo == 'administrador';">Modificar</button>
-                                <button  class="button" (click)="delCombate(combate.id)" *ngIf="cargo == 'administrador';">Finalizar</button>
+                                <button class="button" [routerLink]="['/modCombate', combate.id]" *ngIf="cargo == 'administrador' ||cargo=='super_admin';">Modificar</button>
                             </li>
                             
                         </ul>

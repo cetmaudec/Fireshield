@@ -243,6 +243,9 @@
   background-image: -moz-linear-gradient(left, #ec915c 0%, #bb2c3d 100%);
 background-image: -webkit-linear-gradient(left, #ec915c 0%, #bb2c3d 100%);
 background-image: linear-gradient(to right, #ec915c 0%, #bb2c3d 100%);
+transform: scale(1.05);
+  	transition: all .3s;
+  	z-index: 100;
 }
 
 
@@ -294,15 +297,25 @@ position: absolute;
 @import url(https://fonts.googleapis.com/css?family=Playfair+Display&display=swap);
 
 	html {
-		font-family: 'Playfair Display', serif;
 	  -ms-text-size-adjust: 100%;
 	  -webkit-text-size-adjust: 100%;
-	}
-	
-	body {
-	  background: #F2F3EB;
 	  font-family: 'Playfair Display', serif;
 
+  }
+
+  p{
+    margin: auto;
+  }
+  
+  img{
+    margin-top: 5%;
+    width: 40%;
+    height: 40%;
+   
+  }
+
+	body {
+	  background: #F2F3EB;
 	}
 	
 	button {
@@ -315,6 +328,7 @@ position: absolute;
 	}
 	
 	button, input, select, textarea {
+        
 	  color: rgb(99, 97, 97);
 	  font: inherit;
 	  margin: 0;
@@ -338,12 +352,12 @@ position: absolute;
 	  margin: 60px auto;
 	  position: relative;
 	  font-family: 'Playfair Display', serif;
-
 	}
 	
 	form {
 	  padding: 37.5px;
 	  margin: 10px 0;
+	  font-family: 'Playfair Display', serif;
 
 	}
 	
@@ -370,7 +384,7 @@ position: absolute;
 		width: 47%;
 	}
 	
-	input[type='text'], [type='email'],[type=date], select, textarea {
+	input[type='text'], [type='password'],[type='email'],[type=date], select, textarea {
 
 		background: none;
 	  	border: none;
@@ -394,7 +408,7 @@ position: absolute;
 		transition: all 0.3s;
 	}
 	
-	input[type='text']:focus, [type='email']:focus, [type=date]:focus,textarea:focus {
+	input[type='text']:focus, [type='password'], [type='email']:focus, [type=date]:focus,textarea:focus {
 		outline: none;
 		padding: 0 0 0.875em 0;
 	}
@@ -406,7 +420,7 @@ position: absolute;
 		
 	 }
 	 input[type=number]{
-		margin-left: 10px;
+		width: 30%;
 		
      }
 	
@@ -418,6 +432,54 @@ position: absolute;
 		float: left;
 		width: 47%;
 	}
+	.column {
+		
+		float: left;
+		width: 46%;
+		padding: 10px;
+	  }
+	  .column2 {
+		
+		width: 95%;
+		padding: 10px;
+	  }
+	  
+	  /* Clear floats after the columns */
+	  .row {
+		
+		margin-bottom: 2px;
+	  }
+	  .row:after {
+		content: "";
+		display: table;
+		clear: both;
+	  }
+
+	  
+	fieldset 
+	{
+		border: 1px solid #ddd !important;
+		margin: 0;
+		min-width:  0;
+		margin-bottom: 10px;
+		padding: 10px;       
+		position: relative;
+		border-radius:4px;
+		padding-left:10px!important;
+	}	
+	
+		legend
+		{
+			font-size:14px;
+			font-weight:bold;
+			margin-bottom: 0px; 
+			width: 35%; 
+			border: 1px solid #ddd;
+			color: black;
+			border-radius: 4px; 
+			padding: 5px 5px 5px 10px; 
+			background-color: #d1d1d1b0;
+		}
 	
 	select {
 	  background: url('https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-arrow-down-32.png') no-repeat right;
@@ -441,7 +503,7 @@ position: absolute;
 	
 	::-webkit-input-placeholder {
 		color: #e6dfdc;
-		font-family: 'Playfair Display', serif;
+		font-family: 'Merriweather', serif;
 		font-size: 15px;
 	}
 	
@@ -458,55 +520,38 @@ position: absolute;
 	:-ms-input-placeholder {
 		color: #c9c3c3;
 	}
-	fieldset 
-	{
-		border: 1px solid #ddd !important;
-		margin: 0;
-		xmin-width: 0;
-		padding: 10px;       
-		position: relative;
-		border-radius:4px;
-		padding-left:10px!important;
-	}	
+	form fieldset {
+        font-family: 'Helvetica', Arial, sans-serif;
+		font-size: 15px;
+		color:rgb(255, 255, 255);
+        text-align: left;
+        margin-left: 10px;
+      }
 	
-		legend
-		{
-			font-size:14px;
-			font-weight:bold;
-			margin-bottom: 0px; 
-			width: 35%; 
-			border: 1px solid #ddd;
-			border-radius: 4px; 
-			padding: 5px 5px 5px 10px; 
-			background-color: #ffffffb0;
-		}
-	span{
-		color: red;
-		font-size: 10px;
-	margin: auto;
+	  span{
+		color: #ebc5b2;
+		font-size: 15px;
+		margin-top: 10px;
 	
-	}
-
-	label{
-		color: #ddd;
 	}
 
 	#form_button {
-        margin-left: 10px;
-        width: 50%;
-	  background: none;
-	  border: solid 2px #927e74;
-	  background-color: #ee6622;
-	  color: #474544;
-	  cursor: pointer;
-	  display: inline-block;
-	  font-family: 'Playfair Display', serif;
-	  font-size: 0.875em;
-	  font-weight: bold;
-	  outline: none;
-	  padding: 20px 35px;
-	  text-transform: uppercase;
-	  -webkit-transition: all 0.3s;
+		margin-left: 10px;
+		margin-top: 10px;
+        width: 46%;
+		background: none;
+		border: solid 2px #927e74;
+		background-color: #ee6622;
+		color: #474544;
+		cursor: pointer;
+		display: inline-block;
+		font-family: 'Helvetica', Arial, sans-serif;
+		font-size: 0.875em;
+		font-weight: bold;
+		outline: none;
+		padding: 20px 35px;
+		text-transform: uppercase;
+	  	-webkit-transition: all 0.3s;
 		-moz-transition: all 0.3s;
 		-ms-transition: all 0.3s;
 		-o-transition: all 0.3s;
@@ -517,21 +562,29 @@ position: absolute;
 	  background: rgb(209, 89, 29);
 	  color: #F2F3EB;
 	}
-	
-	@media screen and (max-width: 768px) {
-	  #container {
-		margin: 60px auto;
-		width: 95%;
+	@media screen and (max-width: 950px) {
+		#container {
+		  margin: 60px auto;
+		  width: 90%;
+		}
+		
 	  }
-	 
-	}
+
+	@media screen and (max-width: 720px) {
+		.column {
+		  width: 90%;
+		}
+	  }
+	
+	
 	
 	@media screen and (max-width: 480px) {
 	  h1 {
 		font-size: 26px;
 	  }
 	  
-	 
+	  
+	  
 	  #form_button {
 		padding: 15px 25px;
 	  }
@@ -547,9 +600,9 @@ position: absolute;
 		width: 35px;
 	  }
 	  
+	 
 	  
-	  
-	  input[type='text'], [type='email'], select, textarea {
+	  input[type='text'], [type='password'], [type='email'], select, textarea {
 		font-size: 0.875em;
 	  }
 	}

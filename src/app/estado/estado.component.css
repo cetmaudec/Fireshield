@@ -163,5 +163,8 @@
   background-image: -moz-linear-gradient(left, #ec915c 0%, #bb2c3d 100%);
 background-image: -webkit-linear-gradient(left, #ec915c 0%, #bb2c3d 100%);
 background-image: linear-gradient(to right, #ec915c 0%, #bb2c3d 100%);
+transform: scale(1.05);
+  	transition: all .3s;
+  	z-index: 100;
 }
 

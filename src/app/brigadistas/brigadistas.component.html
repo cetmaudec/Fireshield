@@ -1,10 +1,11 @@
-<ng-container *ngIf="cargo == 'administrador';else second">
-        <app-navbar></app-navbar>
+<ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
+    <app-navbar></app-navbar>
 </ng-container>
 
 <ng-template #second>
-        <app-navbar2></app-navbar2>
+    <app-navbar2></app-navbar2>
 </ng-template>
+
 
 
 
@@ -14,7 +15,7 @@
     
     </head>
 
-    <button class="btn" routerLink="/addBrigadista" *ngIf="cargo == 'administrador';"><span>Añadir Brigadista</span></button>
+    <button class="btn" routerLink="/addBrigadista" *ngIf="cargo == 'administrador' ||cargo=='super_admin';"><span>Añadir Brigadista</span></button>
 
     <div class="pricingdiv">
             <div *ngFor="let brigadista of brigadistas$.data">
@@ -33,7 +34,7 @@
                     </li>
                 
                     
-                    <li *ngIf="cargo == 'administrador';">
+                    <li *ngIf="cargo == 'administrador' ||cargo=='super_admin';">
                         <button class="button" [routerLink]="['/modBrigadista', brigadista.rut]" >Modificar</button>
                         <button  class="button" (click)="delBrig(brigadista.rut)" >Eliminar</button>
                             

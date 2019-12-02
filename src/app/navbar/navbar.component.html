@@ -4,7 +4,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <div class="topnav" id="myTopnav">
-	<a routerLink="/home" class="logo"><img  width="40px" height="" src="../../assets/images/logito2.png"></a>
+	<a routerLink="/home" class="logo"><img  width="35px" height="" src="../../assets/images/logito2.png"></a>
 	
 	<a routerLink="/estado" *ngIf="auth.loggedIn"><span>Estado Cuadrilla</span></a>
 		<a *ngIf="auth.loggedIn" ><span>Reportería</span></a>
@@ -12,7 +12,7 @@
 		<a routerLink="/combates"*ngIf="auth.loggedIn"><span>Combates</span></a>
 		<a routerLink="/personal"*ngIf="auth.loggedIn"><span>Personal</span></a>
 		<a routerLink="/contacto"*ngIf="auth.loggedIn"><span>Contacto</span></a>
-		<a class="logo2" routerLink="/personal" *ngIf="auth.loggedIn">
+		<a  class="logo2" routerLink="/personal" *ngIf="auth.loggedIn">
 			<img  width="40px" height="" src="../../assets/images/campana.png">
 			<ng-container *ngIf="num != 0;">
 				<span class="badge">{{num}}</span>

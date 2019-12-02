@@ -9,23 +9,30 @@
             <form [formGroup]="BrigadaForm" (ngSubmit)="onSubmit()">
                 <fieldset>
                     <legend>Brigada</legend>
-                    
-                        <tr *ngFor="let brigada of brigadas$.data" >
-
-                            <label for="n_brigada">N° de Brigada</label>
-                                <input type="number" id="number" step="1" min={{brigada.max}} max=100 formControlName="n_brigada"  required><br>
-                                <div *ngIf="BrigadaForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
-                        </tr>
+                    <div class="row">
+                            <div class="column" >
+                                <tr *ngFor="let brigada of brigadas$.data" >
+                                    <label for="n_brigada">N° de Brigada</label>
+                                    <input type="number" id="number" step="1" min={{brigada.max+1}} max=100 formControlName="n_brigada"  required><br>
+                                    <div *ngIf="BrigadaForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
+                                </tr>
+                                           
+                            </div>
+                            <div class="column" >
+                                <select  formControlName="rut" >
+                                    <option value=""class="option">Elija el jefe de brigada</option>
+                                    <option  *ngFor="let jefe of jefes$.data" class="option">{{jefe.rut}}</option>         
+                                </select>
+                                        
+                                <div *ngIf="BrigadaForm.get('rut').hasError('required')"><span>Rut Jefe Brigada requerido</span></div>
+                            </div>
+                          </div>
+              
+                        
                        
                       
                             
-                            <select  formControlName="rut" >
-                                <option value=""class="option">Elija el jefe de brigada</option>
-                                <option  *ngFor="let jefe of jefes$.data" class="option">{{jefe.rut}}</option>
-                               
-                            </select>
-                        
-                            <div *ngIf="BrigadaForm.get('rut').hasError('required')"><span>Rut requerido</span></div>
+                            
                             
                 </fieldset>  
                 <div class="submit">

@@ -96,45 +96,39 @@
 }  
 
 
-li.btn-group .button {
-  background: rgb(228, 48, 48);
+.button {
+  background-color: #9c83aa;/* Green */
   border: none;
   color: white;
-  font-size: 1em;
   padding: 0.75em 1.5em;
-  width: 50%;
-  bottom: 1.25em;
-  margin-top: 10px;
+  margin-left: 10%;
   text-align: center;
   text-decoration: none;
   font-size: 12px;
   cursor: pointer;
   display: block;
-  
-  margin: 10px auto;
-  border-radius: 5px;
+  margin-top: 5%;
+  margin-bottom: 5%;
   font-weight: bold;
-  
-  
-}
-
-
-.button {
   text-transform: uppercase;
-  margin: 3px;
+  width: 80%;
+  margin-right: 10%;
   cursor: pointer;
   -webkit-transition-duration: 0.4s; /* Safari */
   transition-duration: 0.4s;
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 .button:hover {
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
-  background-image: linear-gradient(90deg,#7e1919cc 0%, #250404cc 100%);
-  	background-image: -moz-linear-gradient(top, #7e1919cc 0%, #250404cc 100%);
-  	background-image: -webkit-linear-gradient(top, #7e1919cc 0%, #250404cc 100%);
-  	background-image: linear-gradient(to bottom, #7e1919cc 0%, #250404cc 100%);
+  background-image: -moz-linear-gradient(left, #ec915c 0%, #bb2c3d 100%);
+background-image: -webkit-linear-gradient(left, #ec915c 0%, #bb2c3d 100%);
+background-image: linear-gradient(to right, #ec915c 0%, #bb2c3d 100%);
+transform: scale(1.05);
+  	transition: all .3s;
+  	z-index: 100;
 }
+
 
 
 
