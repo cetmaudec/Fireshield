@@ -1,4 +1,4 @@
-import { Component, OnInit ,ViewChild, ViewChildren, QueryList, ElementRef,AfterViewInit } from '@angular/core';
+import { Component, OnInit ,ViewChild, ViewChildren, QueryList, ElementRef,AfterViewInit, ChangeDetectorRef  } from '@angular/core';
 import { HttpClient ,HttpParams ,HttpHeaders} from '@angular/common/http';
 import { FormBuilder, FormGroup, FormControl, Validators,ReactiveFormsModule } from '@angular/forms';
 import {Router} from '@angular/router';
@@ -22,7 +22,8 @@ export class PersonalComponent implements OnInit {
   listaEspera$:any=[];
   rut:any;
   cargo:any;
-  constructor( private formBuilder: FormBuilder,private http: HttpClient,private router: Router) {
+  intervalHolder: any;
+  constructor( private formBuilder: FormBuilder,private http: HttpClient,private router: Router, private _changeDetectorRef: ChangeDetectorRef) {
     this.rut=localStorage.getItem('user');
     this.cargo=localStorage.getItem('cargo');
     this.PersonalForm =  this.formBuilder.group({
@@ -40,6 +41,18 @@ export class PersonalComponent implements OnInit {
 
   async ngOnInit() {
     document.getElementById("defaultOpen").click();
+    this.getData();
+    this.intervalHolder =  setInterval(()=>{
+      this._changeDetectorRef.markForCheck();
+      //console.log("entro");
+      this.getData();
+    }, 5000);
+    
+    
+    
+  }
+
+  async getData(){
     this.admin$=await this.getAdmin();
     this.jefes$=await this.getJefes();
     console.log(this.admin$)

@@ -27,11 +27,13 @@ export class BrigadasComponent implements OnInit {
     )
    console.log("brigadas"+this.brigadas$);
   }
-  delBrigada(id:string){
-    if(confirm("¿Estás seguro de querer borrar la brigada "+id+"?")) {
+  delBrigada(id:string, id2:string){
+    
+    if(confirm("¿Estás seguro de querer borrar la brigada "+id2 + "-" + id+"?")) {
+      let params = new HttpParams().set("n_brigada", id).set("nombre",id2);
       console.log("Implement delete functionality here");
     
-    this.http.delete('http://localhost:8000/delBrigada/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+    this.http.delete('http://localhost:8000/delBrigada', { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
           (response ) => {
             swal.fire('Borrado de brigada completa').then(() => {
               location.reload();

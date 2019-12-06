@@ -1,6 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Playfair+Display&display=swap);
 
-	html {
+
+   html {
 	  -ms-text-size-adjust: 100%;
 	  -webkit-text-size-adjust: 100%;
 	  font-family: 'Playfair Display', serif;
@@ -146,7 +147,7 @@
 	  .column2 {
 		
 		width: 95%;
-		padding: 10px;
+		padding: 1px;
 	  }
 	  
 	  /* Clear floats after the columns */

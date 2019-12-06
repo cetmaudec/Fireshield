@@ -66,16 +66,35 @@
             <legend>Brigada</legend>
 
             <div class="row">
-              <div class="column" >
-                <tr *ngFor="let brigada of brigadas$.data" >
-                  <label for="n_brigada">N° de Brigada
-                    <input type="number" step="1" min="1" max=100 formControlName="n_brigada"  required>
-                    </label>
-                  
-                   <div *ngIf="BrigadistaForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
-                  </tr>
-              </div>
-              <div class="column" >
+                
+                    <div class="column" >
+                        
+                            <select formControlName="nombre_brigada" (change)="onChange($event.target.value);">
+                                    <option value="" class="option">Nombre Brigada</option>
+                                    <option *ngFor="let nombre of nombresbrigadas$" value="{{nombre.nombre}}" class="option">{{nombre.nombre}} - {{nombre.region}}</option>           
+                            </select>
+                            <div *ngIf="BrigadistaForm.get('nombre_brigada').hasError('required')"><span>Nombre de brigada requerido</span></div>
+                        
+                                   
+                    </div>
+                    <div class="column" >
+                        <select formControlName="n_brigada">
+                            <option value="" class="option">N° de Brigada</option>
+                            <option *ngFor="let nombre of brigadas$.data" value="{{nombre.n_brigada}}" class="option">{{nombre.n_brigada}}</option>           
+                       </select>
+             
+                        <div *ngIf="BrigadistaForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
+                    
+                    
+                     </div>
+            
+              
+            
+             
+            </div>
+           
+        <div class="row">
+            <div class="column" >
                 <label for="pulsera"></label>
            
                 <select formControlName="pulsera" required>
@@ -84,10 +103,7 @@
                 </select>
                 <div *ngIf="BrigadistaForm.get('pulsera').hasError('required')"><span>ID de pulsera requerido</span></div>
               </div>
-            </div>
-           
-        <div class="row">
-            <div class="column2" >
+            <div class="column" >
            <label for="cargo"></label>
            
             <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>

@@ -291,7 +291,7 @@ app.get('/FatigaAltaBrigadas', (req, res) => {
 
 app.get('/brigadas', (req, res) => {
 
-    const select_query=`SELECT b.n_brigada, b.rut_jefe, u.nombre, u.apellidoP, u.apellidoM FROM Brigada as b, Usuarios as u WHERE b.rut_jefe = u.rut ORDER BY n_brigada;`
+    const select_query=`SELECT b.n_brigada, b.rut_jefe, u.nombre, u.apellidoP, u.apellidoM, b.nombre as nombre_brigada FROM Brigada as b, Usuarios as u WHERE b.rut_jefe = u.rut ORDER BY n_brigada;`
  con.query(select_query, (err, result) => {
      console.log(result);
      if (err){
@@ -395,9 +395,11 @@ app.get('/nbrigadas', (req, res) => {
     });
 });
 
-app.get('/maxbrigada', (req, res) => {
-    const select_query=`SELECT max(n_brigada) AS max FROM brigada;`
-    con.query(select_query, (err, result) => {
+
+app.get('/maxbrigada:id', (req, res) => {
+    var id=req.params.id;
+    const select_query=`SELECT max(n_brigada) AS max FROM brigada where nombre = ?;`
+    con.query(select_query, id, (err, result) => {
      console.log(result);
      if (err){
            return res.send(err)
@@ -407,6 +409,37 @@ app.get('/maxbrigada', (req, res) => {
             })
      }
     });
+});
+
+
+app.get('/brigadasPorNombre:id', (req, res) => {
+    var id=req.params.id;
+    const select_query=`SELECT n_brigada FROM brigada where nombre = ? ORDER BY n_brigada ASC;`
+    con.query(select_query, id, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+            })
+     }
+    });
+});
+app.get('/nombresbrigadas',(req, res) => {
+    const select_query=`SELECT * FROM nombrebrig ORDER BY nombre ASC;`
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            console.log(result);
+
+            return res.json({
+                data: result
+            });
+        }
+    });
+
 });
 app.get('/nbrigadas:id', (req, res) => {
     var id=req.params.id;
@@ -506,15 +539,19 @@ app.get('/brigadistas/:id', (req, res) => {
     });
 });
 
-app.get('/jefeBrigada/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`SELECT * FROM brigada WHERE n_brigada=?; `
-    con.query(select_query,id, (err, result) => {
+app.get('/jefeBrigada', (req, res) => {
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+
+    console.log("Holaaaa: " + id);
+    console.log("Holaaaa2: " + id2);
+    select_query=`SELECT * FROM brigada WHERE n_brigada=? AND nombre = ?; `
+    con.query(select_query,[id, id2], (err, result) => {
      console.log(result);
      if (err){
            return res.send(err)
         }else{
+            console.log("Hola soy la respuesta : " + res);
             return res.json({
 
                 data: result
@@ -669,7 +706,7 @@ app.post('/addEsperaPersonal', bodyParser.json(), (req, res, next) => {
 });
 
 app.post('/addBrigadista', bodyParser.json(), (req, res, next) => {
-    const INSERT_TIPO_QUERY = `INSERT INTO brigadistas VALUES('${req.body.rut}','${req.body.correo}','${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.f_nacimiento}',${req.body.n_brigada},'${req.body.cargo}',${req.body.peso},${req.body.altura},'0',${req.body.pulsera});`
+    const INSERT_TIPO_QUERY = `INSERT INTO brigadistas VALUES('${req.body.rut}','${req.body.correo}','${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.f_nacimiento}',${req.body.n_brigada},'${req.body.cargo}',${req.body.peso},${req.body.altura},'0',${req.body.pulsera},${req.body.nombre_brigada});`
     con.query(INSERT_TIPO_QUERY, (err, resultados) => {
 
         if(err) {
@@ -685,7 +722,7 @@ app.post('/addBrigadista', bodyParser.json(), (req, res, next) => {
 
 app.post('/addBrigada', bodyParser.json(), (req, res, next) => {
     console.log(req.body.n_brigada)
-    const INSERT_TIPO_QUERY = `INSERT INTO brigada VALUES(${req.body.n_brigada},'${req.body.rut}','0','0','0');`
+    const INSERT_TIPO_QUERY = `INSERT INTO brigada VALUES(${req.body.n_brigada},'${req.body.rut}','${req.body.nombre}');`
     con.query(INSERT_TIPO_QUERY, (err, resultados) => {
 
         if(err) {
@@ -693,6 +730,7 @@ app.post('/addBrigada', bodyParser.json(), (req, res, next) => {
             res.status(500).send('Error al añadir nueva brigada');
             
         } else {
+            console.log(res);
             res.json(res.body)
 
         }
@@ -794,10 +832,11 @@ app.delete('/rmEsperaPersonal/:id',(req, res) => {
     })
 });
 
-app.delete('/delBrigada/:id',(req, res) => {
-    var id=req.params.id;
-    const del_query = `DELETE FROM Brigada WHERE n_brigada=?;`
-    con.query(del_query,id, (err, resultados) => {
+app.delete('/delBrigada',(req, res) => {
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+    const del_query = `DELETE FROM Brigada WHERE n_brigada=? AND nombre = ?;`
+    con.query(del_query,[id,id2], (err, resultados) => {
 
         if(err) {
             return res.send(err)
@@ -851,10 +890,13 @@ app.put('/modBrigadista/:id', bodyParser.json(), (req, res, next) => {
         }
     })
 })
-app.put('/modBrigada/:id', bodyParser.json(), (req, res, next) => {
-    var id=req.params.id;
-    const upd_query = `UPDATE brigada SET rut_jefe='${req.body.rut}' WHERE n_brigada =?;`
-    con.query(upd_query,id, (err, resultados) => {
+app.put('/modBrigada', bodyParser.json(), (req, res, next) => {
+    var id=req.param('n_brigada');
+    var id2= req.param('nombre');
+    console.log(id);
+    console.log(id2);
+    const upd_query = `UPDATE brigada SET rut_jefe='${req.body.rut}' WHERE n_brigada =? AND nombre = ?;`
+    con.query(upd_query,[id,id2], (err, resultados) => {
 
         if(err) {
             return res.send(err)

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators,ReactiveFormsModule } from '@angular/forms';
-import { HttpClient , HttpHeaders} from '@angular/common/http';
+import { HttpClient , HttpHeaders, HttpParams} from '@angular/common/http';
 import { ActivatedRoute, Params } from '@angular/router';
 import {Router} from '@angular/router';
 import swal from'sweetalert2';
@@ -13,12 +13,29 @@ import { from } from 'rxjs';
 })
 export class ModBrigadaComponent implements OnInit {
   brig: any ;
+  brig2: any;
   brigada$: any;
   modBrigadaForm: FormGroup;
   jefes$: any = [];
   brigadas$: any = [];
+  datos: any;
+
   constructor(private rutaActiva: ActivatedRoute,private formBuilder: FormBuilder,private http: HttpClient,private router: Router) {
       this.brig=this.rutaActiva.snapshot.paramMap.get('id');
+      console.log(this.brig);
+      this.brig2 = this.rutaActiva.snapshot.paramMap.get('id2');
+    
+      this.datos =
+        {
+          "numero" : this.brig,
+          "nombre" : this.brig2
+        }
+       
+
+
+
+     
+      
       this.modBrigadaForm =  this.formBuilder.group({
 
         rut: new FormControl('',Validators.required),    
@@ -26,22 +43,39 @@ export class ModBrigadaComponent implements OnInit {
   }
 
   async ngOnInit() {
+    
+    console.log("hola soy datos : " + this.datos);
     const result1 =  await this.getJefeBrigada();
+    console.log("hola soy result1 " + result1);
+    this.modBrigadaForm = this.formBuilder.group({
+      rut: [result1]
+    });
+    
     console.log("hola "+result1)
     
     
     this.getJefes();
-    this.getnBrigadas();
+
+
+
+
+    //this.getnBrigadas();
+
   }
 
   async getJefeBrigada(){
-    this.brigada$ = await this.http.get('http://localhost:8000/jefeBrigada/'+this.brig).toPromise();
-    return this.brigada$.data[0];
+    let params = new HttpParams().set("n_brigada", this.brig).set("nombre",this.brig2);
+    this.brigada$ = await this.http.get('http://localhost:8000/jefeBrigada',{headers: new HttpHeaders({
+    'Content-Type':'application/json'
+    }), params: params}).toPromise();
+    console.log(this.brigada$.data[0].rut_jefe);
+    return this.brigada$.data[0].rut_jefe;
     
   }
   onSubmit(){
     if(this.modBrigadaForm.value!=null){
-      this.http.put('http://localhost:8000/modBrigada/'+this.brig, this.modBrigadaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      let params = new HttpParams().set("n_brigada", this.brig).set("nombre",this.brig2);
+      this.http.put('http://localhost:8000/modBrigada/', this.modBrigadaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Modificación exitosa de brigada').then(() => {

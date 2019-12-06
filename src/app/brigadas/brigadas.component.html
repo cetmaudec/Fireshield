@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css?family=Lora&display=swap" rel="stylesheet">
 
 </head>
-<button class="btn" *ngIf="cargo == 'administrador' ||cargo=='super_admin';" routerLink="/addbrigada"><span>Añadir Brigada</span></button>
+<button class="btn" *ngIf="cargo == 'administrador' || cargo=='super_admin';" routerLink="/addbrigada"><span>Añadir Brigada</span></button>
 
 
 
@@ -21,11 +21,11 @@
             <ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
                   <ul class="theplan" >
                         <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"><br/><b>Jefe Brigada:</b> <br />{{brigada.nombre}} {{brigada.apellidoP}} {{brigada.apellidoM}}</li>       
-                        <li class="title2">Brigada N° {{brigada.n_brigada}}</li>
+                        <li class="title2">Brigada {{brigada.nombre_brigada}} - {{brigada.n_brigada}}</li>
                         <li>
-                              <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada]">Seleccionar</button>
-                              <button class="button" [routerLink]="['/modBrigada', brigada.n_brigada]"*ngIf="cargo == 'administrador' ||cargo=='super_admin';">Modificar</button>
-                              <button  class="button" (click)="delBrigada(brigada.n_brigada)" *ngIf="cargo == 'administrador' ||cargo=='super_admin';">Eliminar</button>
+                              <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada, brigada.nombre_brigada]">Seleccionar</button>
+                              <button class="button" [routerLink]="['/modBrigada', brigada.n_brigada, brigada.nombre_brigada]"*ngIf="cargo == 'administrador' ||cargo=='super_admin';">Modificar</button>
+                              <button  class="button" (click)="delBrigada(brigada.n_brigada, brigada.nombre_brigada)" *ngIf="cargo == 'administrador' ||cargo=='super_admin';">Eliminar</button>
                         </li>
                                       
                   </ul>
@@ -36,7 +36,7 @@
                         <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"><br/><b>Jefe Brigada:</b> <br />{{brigada.nombre}} {{brigada.apellidoP}} {{brigada.apellidoM}}</li>       
                         <li class="title2">Brigada N° {{brigada.n_brigada}}</li>
                         <li>
-                              <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada]">Seleccionar</button>
+                              <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada, brigada.nombre_brigada]">Seleccionar</button>
                               
                         </li>                       
                   </ul>

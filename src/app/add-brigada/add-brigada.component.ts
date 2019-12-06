@@ -11,24 +11,41 @@ import swal from'sweetalert2';
 export class AddBrigadaComponent implements OnInit {
   BrigadaForm: FormGroup;
   brigadas$: any = [];
+  brigadas2$: any =[];
+  nombresbrigadas$: any=[];
+  nombresbrigadas2$: any=[];
   jefes$: any = [];
+  jefes2$: any = [];
+
 
   constructor(private formBuilder: FormBuilder,private http: HttpClient,private router: Router) { 
     this.BrigadaForm =  this.formBuilder.group({
+      nombre: new FormControl('',Validators.required),
       n_brigada: new FormControl('',Validators.required),
       rut: new FormControl('',Validators.required),
     });
+    
   }
 
-  ngOnInit() {
-    this.getnBrigadas();
-    this.getJefes();
-  }
-
-  async getnBrigadas(){
-    this.brigadas$= await this.http.get('http://localhost:8000/maxbrigada').toPromise();
+  async ngOnInit() {
+    this.nombresbrigadas$ = await this.getBrigadas();
+    this.getnBrigadas("Alerce");
+    console.log(this.nombresbrigadas$);
     console.log(this.brigadas$);
-}
+    this.jefes$ = await this.getJefes();
+    console.log(this.jefes$);
+  }
+
+  async getBrigadas(){
+    this.nombresbrigadas2$= await this.http.get('http://localhost:8000/nombresbrigadas').toPromise();
+    return this.nombresbrigadas2$.data;
+    
+  }
+
+  async getnBrigadas(nombre){
+    this.brigadas$= await this.http.get('http://localhost:8000/maxbrigada' + nombre).toPromise();
+   
+  }
 
   onSubmit(){
     console.log("entre");
@@ -54,12 +71,23 @@ export class AddBrigadaComponent implements OnInit {
           this.ngOnInit();
         }
       }
+    
+     
+  
 
  
 async getJefes(){
-  this.jefes$=await this.http.get('http://localhost:8000/jefes').toPromise();
-    
-  console.log(this.jefes$);
+  this.jefes2$=await this.http.get('http://localhost:8000/jefes').toPromise();
+  return this.jefes2$.data;
+  
+}
+
+onChange(deviceValue) {
+  console.log(deviceValue);
+
+  this.getnBrigadas(deviceValue);
+
+
 }
 
 }

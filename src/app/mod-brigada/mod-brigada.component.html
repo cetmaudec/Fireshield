@@ -3,19 +3,17 @@
 
     
       <div id="container">
-            <h1>&bull;Modificar Brigada {{brig}}&bull;</h1>
+            <h1>&bull;Modificar Brigada {{brig2}} - {{brig}} &bull;</h1>
             <div class="underline">
             </div>
             <form [formGroup]="modBrigadaForm" (ngSubmit)="onSubmit()">
                 <fieldset>
                     <legend>Brigada</legend>
                     
-                   
-                            
                               
                                 <select  placeholder="Rut" name="subject" id="subject_input" formControlName="rut" required>
-                                    <option value="" class="option">Rut Jefe de Brigada</option>
-                                    <option  *ngFor="let jefe of jefes$.data" class="option" >{{jefe.rut}}</option>
+                                  
+                                    <option *ngFor="let jefe of jefes$.data" [value]="jefe.rut" class="option" >{{jefe.rut}}</option>
                                 </select>
                             
                         

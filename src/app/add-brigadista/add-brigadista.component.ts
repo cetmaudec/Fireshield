@@ -13,9 +13,12 @@ import { NgForm } from '@angular/forms';
 export class AddBrigadistaComponent implements OnInit {
   BrigadistaForm: FormGroup;
   brigadas$: any = [];
+  brigadas2$: any;
   mensaje:string='';
   pulsera$:any=[];
   pulserasNoUsadas$:any=[];
+  nombresbrigadas$: any;
+  nombresbrigadas2$:any;
 
  
   constructor(private formBuilder: FormBuilder,private http: HttpClient,private router: Router) { 
@@ -28,6 +31,7 @@ export class AddBrigadistaComponent implements OnInit {
       correo: new FormControl('',[Validators.required, Validators.email]),
       n_brigada: new FormControl('',Validators.required),
       cargo: new FormControl('',Validators.required),
+      nombre_brigada: new FormControl('',Validators.required),
       peso: new FormControl('',Validators.required),
       altura: new FormControl('',Validators.required),
       pulsera: new FormControl('',Validators.required),
@@ -35,12 +39,36 @@ export class AddBrigadistaComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.getnBrigadas();
+  async ngOnInit() {
+    this.nombresbrigadas$ = await this.getBrigadas();
+    this.getnBrigadas("Alerce");
+    console.log(this.nombresbrigadas$);
     this.getPulseras();
     this.getPulserasNoUsadas();
     console.log("hola");
   }
+
+  async getBrigadas(){
+    this.nombresbrigadas2$= await this.http.get('http://localhost:8000/nombresbrigadas').toPromise();
+    return this.nombresbrigadas2$.data;
+  }
+
+  
+  onChange(deviceValue) {
+    console.log(deviceValue);
+
+    this.getnBrigadas(deviceValue);
+
+
+  }
+
+  async getnBrigadas(nombre){
+    this.brigadas$= await this.http.get('http://localhost:8000/brigadasPorNombre' + nombre).toPromise();
+    console.log(this.brigadas$.data);
+   
+  }
+
+
   onSubmit(){
     console.log("entre");
     if(this.BrigadistaForm.value!=null){
@@ -65,13 +93,7 @@ export class AddBrigadistaComponent implements OnInit {
           this.ngOnInit();
         }
       }
-  getnBrigadas(){
-      this.http.get('http://localhost:8000/nbrigadas').subscribe(resp =>
-      this.brigadas$ = resp as []
-  
-    )
-    console.log(this.brigadas$);
-  }
+
   getPulseras(){
     this.http.get('http://localhost:8000/npulseras').subscribe(resp =>
       this.pulsera$ = resp as []
