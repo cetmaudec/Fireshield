@@ -25,11 +25,11 @@ export class NavbarComponent implements OnInit {
 
   async ngOnInit() {
     this.getData();
-    /*this.intervalHolder =  setInterval(()=>{
+    this.intervalHolder =  setInterval(()=>{
       this._changeDetectorRef.markForCheck();
       //console.log("entro");
       this.getData();
-    }, 5000);*/
+    }, 5000);
     
     
   }

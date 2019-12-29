@@ -11,15 +11,15 @@ import swal from'sweetalert2';
   styleUrls: ['./brigadistas.component.css']
 })
 export class BrigadistasComponent implements OnInit {
-  brig: any ;
-  brig2: any;
+  n_brigada: any ;
+  nombre_brigada: any;
   brigadistas$: any = [];
   cargo:any;
   
   constructor(private rutaActiva: ActivatedRoute,private http: HttpClient) {
-    this.brig=this.rutaActiva.snapshot.paramMap.get('id');
-    this.brig2=this.rutaActiva.snapshot.paramMap.get('id2');
-    console.log(this.brig2);
+    this.n_brigada=this.rutaActiva.snapshot.paramMap.get('id');
+    this.nombre_brigada=this.rutaActiva.snapshot.paramMap.get('id2');
+    
     this.cargo=localStorage.getItem('cargo');
     
    }
@@ -30,14 +30,14 @@ export class BrigadistasComponent implements OnInit {
     
   }
   getBrigadistas(){
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('id', this.brig);
-
-
-    console.log(this.brig);
-    this.http.get('http://localhost:8000/brigadistas/'+this.brig).subscribe(resp =>
+    let params = new HttpParams().set("n_brigada", this.n_brigada).set("nombre",this.nombre_brigada);
+    
+    console.log(this.n_brigada);
+    console.log(this.nombre_brigada);
+    this.http.get('http://localhost:8000/brigadistas',{headers: new HttpHeaders({
+      'Content-Type':'application/json'
+      }), params: params}).subscribe(resp =>
       this.brigadistas$ = resp as []
-  
     )
    console.log(URL);
   }

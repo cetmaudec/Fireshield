@@ -1,0 +1,269 @@
+<app-navbar></app-navbar>
+
+<div class="tab">
+    <button class="tablinks" (click)="openCity('Combates')" id="defaultOpen">Combates</button>
+    <button class="tablinks" (click)="openCity('Brigadas')">Brigadas</button>
+    
+   
+</div>
+
+<div id="Combates" class="tabcontent">
+
+        
+
+        <h1 class="animated rotateIn">&bull;Seleccione instancia de reporte&bull;</h1>
+       
+    
+       
+    <div class="select-box">
+            <label class="custom-select" for="styledSelect1">
+                <select (change)="onChange($event.target.value);">
+                    
+                    <option value="Activos">
+                      Activos
+                    </option>
+
+                    <option value="Último Mes">
+                        Último Mes
+                    </option>
+
+                    <option value="Últimos 6 Meses">
+                        Últimos 6 Meses
+                    </option>
+                    
+                    <option value="Último Año">
+                      Último Año
+                    </option>
+
+                    <option value="Todos">
+                        Todos
+                    </option>
+                    
+                </select>
+            </label>
+          
+
+        
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">ID Combate</th>
+                        <th scope="col">Hito</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Fecha Inicio</th>
+                        <th scope="col">Hora Inicio</th>
+                        <th scope="col" *ngIf="eleccion$ != 'Activos'">Tiempo en Combate</th>
+                        
+                        <th scope="col" >Generar Reporte</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <ng-container *ngIf="eleccion$ == 'Activos'">
+                  <tr  *ngFor="let comb of combactivos$.data ">
+                      <td data-label="ID Combate:">{{comb.id}}</td>
+                    <td data-label="Hito:">{{comb.hito}}</td>
+                    <td data-label="Estado:">Activo</td>
+                    <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
+                    <td data-label="Hora Inicio:">{{comb.hora}}</td>
+                    <button  class="button" >Descargar</button>
+                    
+                  </tr>
+                </ng-container>
+
+                <ng-container *ngIf="eleccion$ == 'Último Mes'">
+                    <tr  *ngFor="let comb of combmes$.data; let i = index">
+                        <td data-label="ID Combate:">{{comb.id}}</td>
+                      <td data-label="Hito:">{{comb.hito}}</td>
+                      <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                      <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+                      <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
+                      <td data-label="Hora Inicio:">{{comb.hora}}</td>
+                      <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
+                      
+                      <button  class="button" >Descargar</button>
+                      
+                    </tr>
+                  </ng-container>
+
+                  <ng-container *ngIf="eleccion$ == 'Últimos 6 Meses'">
+                    <tr  *ngFor="let comb of comb6mes$.data; let i = index ">
+                        <td data-label="ID Combate:">{{comb.id}}</td>
+                      <td data-label="Hito:">{{comb.hito}}</td>
+                      <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                      <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+                      <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
+                      <td data-label="Hora Inicio:">{{comb.hora}}</td>
+                      <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
+                      <button  class="button" >Descargar</button>
+                      
+                    </tr>
+                  </ng-container>
+
+                  <ng-container *ngIf="eleccion$ == 'Último Año'">
+                    <tr  *ngFor="let comb of combanyo$.data ; let i = index">
+                        <td data-label="ID Combate:">{{comb.id}}</td>
+                      <td data-label="Hito:">{{comb.hito}}</td>
+                      <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                      <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+                      <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
+                      <td data-label="Hora Inicio:">{{comb.hora}}</td>
+                      <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
+                      <button  class="button" >Descargar</button>
+                      
+                    </tr>
+                  </ng-container>
+
+                  <ng-container *ngIf="eleccion$ == 'Todos'">
+                    <tr  *ngFor="let comb of combtodos$.data; let i = index ">
+                        <td data-label="ID Combate:">{{comb.id}}</td>
+                      <td data-label="Hito:">{{comb.hito}}</td>
+                      <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                      <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+                      <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
+                      <td data-label="Hora Inicio:">{{comb.hora}}</td>
+                      <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
+                      <button  class="button" >Descargar</button>
+                      
+                    </tr>
+                  </ng-container>
+
+                  
+                
+                </tbody>
+              </table>
+            
+
+        
+    </div>  
+  </div>   
+
+<div id="Brigadas" class="tabcontent">
+
+  <h1 class="animated rotateIn">&bull;Seleccione instancia de reporte&bull;</h1>
+  <div class="select-box">
+    <label class="custom-select" for="styledSelect1">
+        <select (change)="onChange($event.target.value);">
+            
+            <option value="Último Mes2">
+                Último Mes
+            </option>
+
+            <option value="Últimos 6 Meses2">
+                Últimos 6 Meses
+            </option>
+            
+            <option value="Último Año2">
+              Último Año
+            </option>
+
+            <option value="Todos2">
+                Todos
+            </option>
+            
+        </select>
+    </label>
+  
+
+
+
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">Nombre Brigada</th>
+                <th scope="col">N° Brigada</th>
+                <th scope="col">ID Combate</th>
+                <th scope="col">N° Fatiga Media</th>
+                <th scope="col">N° Fatiga Alta</th>
+                <th scope="col">fecha inicio</th>
+                <th scope="col">fecha fin</th>
+                <th scope="col">Tiempo en Combate</th>
+                <th scope="col">Estado</th>
+                
+                <th scope="col" >Generar Reporte</th>
+            </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngIf="eleccion2$ == 'Último Mes2'">
+          <tr  *ngFor="let comb of combmes2$.data ">
+              <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
+            <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
+            <td data-label="ID Combate:">{{comb.id}}</td>
+            <td data-label="N° Fatiga Media:">{{comb.nMedia}}</td>
+            <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
+            <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
+            <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
+            <td data-label="tiempo:">asasas</td>
+            <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+            <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+            
+            <button  class="button" >Descargar</button>
+            
+          </tr>
+        </ng-container>
+
+        <ng-container *ngIf="eleccion2$ == 'Últimos 6 Meses2'">
+          <tr  *ngFor="let comb of comb6mes2$.data ">
+              <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
+            <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
+            <td data-label="ID Combate:">{{comb.id}}</td>
+            <td data-label="N° Fatiga Media:">{{comb.nMedia}}</td>
+            <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
+            <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
+            <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
+            <td data-label="tiempo:">asasas</td>
+            <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+            <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+            
+            <button  class="button" >Descargar</button>
+            
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="eleccion2$ == 'Último Año2'">
+          <tr  *ngFor="let comb of combanyo2$.data ">
+              <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
+            <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
+            <td data-label="ID Combate:">{{comb.id}}</td>
+            <td data-label="N° Fatiga Media:">{{comb.nMedia}}</td>
+            <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
+            <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
+            <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
+            <td data-label="tiempo:">asasas</td>
+            <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+            <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+            
+            <button  class="button" >Descargar</button>
+            
+          </tr>
+        </ng-container>
+
+        <ng-container *ngIf="eleccion2$ == 'Todos2'">
+          <tr  *ngFor="let comb of combtodos2$.data ">
+              <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
+            <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
+            <td data-label="ID Combate:">{{comb.id}}</td>
+            <td data-label="N° Fatiga Media:">{{comb.nMedia}}</td>
+            <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
+            <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
+            <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
+            <td data-label="tiempo:">asasas</td>
+            <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+            <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+            
+            <button  class="button" >Descargar</button>
+            
+          </tr>
+        </ng-container>
+
+        
+          
+        
+        </tbody>
+      </table>-->
+    
+
+
+</div>   
+</div> 
+
+ 

@@ -77,7 +77,7 @@ export class EstadoComponent implements OnInit {
     }
     
     this.brigadas=await this.getDatosEstado();
-    console.log("holaaaaaa "+this.brigadas[0])
+    console.log("holaaaaaa "+this.brigadas)
     this.bajos$=await this.getnFatigadosBajo();
     console.log(this.bajos$)
     this.medios$=await this.getnFatigadosMedio();
@@ -91,7 +91,7 @@ export class EstadoComponent implements OnInit {
       window.location.reload();
     }, 5000);*/
 
-    //this.setDatosRandom();
+    this.setDatosRandom();
     this.createChartsData()
    
   }
@@ -114,6 +114,7 @@ export class EstadoComponent implements OnInit {
 
   async getDatosEstado() {
     this.estadoBrig$= await this.http.get('http://localhost:8000/estadoBrigadas').toPromise();
+    console.log(this.estadoBrig$)
     return this.estadoBrig$.data;
     }
   

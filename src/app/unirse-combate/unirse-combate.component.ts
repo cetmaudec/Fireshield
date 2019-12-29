@@ -23,6 +23,7 @@ export class UnirseCombateComponent implements OnInit {
     this.id_combate=this.rutaActiva.snapshot.paramMap.get('id');
     this.unirseForm =  this.formBuilder.group({
       n_brigada: new FormControl('',Validators.required),
+     
       id: new FormControl('',Validators.required)
     });
     
@@ -31,9 +32,11 @@ export class UnirseCombateComponent implements OnInit {
   ngOnInit() {
    
     this.getnBrigadas();
+    
     this.unirseForm.patchValue({
       
-      id:this.id_combate
+      id:this.id_combate,
+      
       
     })
     this.rut =localStorage.getItem('user');
@@ -42,11 +45,12 @@ export class UnirseCombateComponent implements OnInit {
   }
   async getnBrigadas(){
     this.brigadas$ = await this.http.get('http://localhost:8000/nbrigadas'+localStorage.getItem('user')).toPromise();
-        
+    console.log("holaaaa "+this.brigadas$.data[2].nombre);
       
   }
 
   onSubmit(){
+    console.log("llegueee")
     if(this.unirseForm.value!=null){
       console.log(this.unirseForm.value)
       this.http.post('http://localhost:8000/unirseCombate2', this.unirseForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
@@ -69,7 +73,9 @@ export class UnirseCombateComponent implements OnInit {
           
           });
           this.ngOnInit();
+          
         }
+       
   }
 
 }

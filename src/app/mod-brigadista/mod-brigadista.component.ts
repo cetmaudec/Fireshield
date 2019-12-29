@@ -13,22 +13,23 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./mod-brigadista.component.css']
 })
 export class ModBrigadistaComponent implements OnInit {
-  brig: any ;
+  rut: any ;
   brigadas$: any = [];
   pulsera$:any=[];
   modBrigForm: FormGroup;
   brigadista$:any;
   pulserasNoUsadas$:any=[];
   act$:any=[];
-
+  nombresbrigadas$: any;
+  nombresbrigadas2$:any;
   constructor(private rutaActiva: ActivatedRoute,private formBuilder: FormBuilder,private http: HttpClient,private router: Router) { 
-    this.brig=this.rutaActiva.snapshot.paramMap.get('id');
-    console.log(this.brig);
+    this.rut=this.rutaActiva.snapshot.paramMap.get('id');
+    console.log(this.rut);
     this.modBrigForm =  this.formBuilder.group({
       nombre: new FormControl('',Validators.required),
       apellidoP: new FormControl('',Validators.required),
       apellidoM: new FormControl('',Validators.required),
-
+      nombre_brigada: new FormControl('',Validators.required),
       correo: new FormControl('',[Validators.required, Validators.email]),
       n_brigada: new FormControl('',Validators.required),
       cargo: new FormControl('',Validators.required),
@@ -42,11 +43,14 @@ export class ModBrigadistaComponent implements OnInit {
   async ngOnInit() {
     const result1 =  await this.getBrigadista();
     console.log(result1);
+    this.nombresbrigadas$ = await this.getNombresBrigadas();
+    this.getnBrigadas(result1.nombre_brigada);
     this.modBrigForm.patchValue({
       nombre:result1.nombre,
       apellidoP:result1.apellidoP,
       apellidoM:result1.apellidoM,
       correo:result1.correo,
+      nombre_brigada:result1.nombre_brigada,
       n_brigada:result1.n_brigada,
       cargo:result1.cargo,
       peso:result1.peso,
@@ -54,23 +58,43 @@ export class ModBrigadistaComponent implements OnInit {
       pulsera:result1.pulsera
     });
 
-    this.getBrigadas();
+  
     await this.getPulseraActual();
     this.getPulserasNoUsadas();
     const result2 = await this.getPulserasNoUsadas();
     console.log(result2);
   }
+
+  async getNombresBrigadas(){
+    this.nombresbrigadas2$= await this.http.get('http://localhost:8000/nombresbrigadas').toPromise();
+    return this.nombresbrigadas2$.data;
+  }
+
+  onChange(deviceValue) {
+    console.log(deviceValue);
+
+    this.getnBrigadas(deviceValue);
+
+
+  }
+
+  async getnBrigadas(nombre){
+    this.brigadas$= await this.http.get('http://localhost:8000/brigadasPorNombre' + nombre).toPromise();
+    console.log(this.brigadas$.data);
+   
+  }
+
   async getBrigadista(){
-    this.brigadista$ = await this.http.get('http://localhost:8000/brigadista/'+this.brig).toPromise();
+    this.brigadista$ = await this.http.get('http://localhost:8000/brigadista/'+this.rut).toPromise();
     return this.brigadista$.data[0]
   }
   onSubmit(){
     if(this.modBrigForm.value!=null){
-      this.http.put('http://localhost:8000/modBrigadista/'+this.brig, this.modBrigForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.put('http://localhost:8000/modBrigadista/'+this.rut, this.modBrigForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Modificación exitosa de brigadista').then(() => {
-                this.router.navigate(['/brigadistas/'+this.modBrigForm.value.n_brigada]);
+                this.router.navigate(['/brigadistas/'+this.modBrigForm.value.n_brigada+'/'+this.modBrigForm.value.nombre_brigada]);
                 
               }
             );
@@ -87,12 +111,10 @@ export class ModBrigadistaComponent implements OnInit {
           this.ngOnInit();
         }
   }
-  async getBrigadas(){
-    this.brigadas$ = await this.http.get('http://localhost:8000/brigadas').toPromise();
-  }
+  
 
     async getPulseraActual(){
-      this.act$ = await this.http.get('http://localhost:8000/pulseraAct/'+this.brig).toPromise();
+      this.act$ = await this.http.get('http://localhost:8000/pulseraAct/'+this.rut).toPromise();
       return this.act$;
     }
   

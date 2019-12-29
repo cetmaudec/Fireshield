@@ -9,7 +9,8 @@ import { Observable } from 'rxjs';
   styleUrls: ['./mapa.component.css']
 })
 export class MapaComponent implements OnInit {
-  brig: any ;
+  n_brigada: any ;
+  nombre_brigada: any ;
   brigadistas$: any = [];
   datosEstado$: any = [];
   latProm: any;
@@ -18,7 +19,8 @@ export class MapaComponent implements OnInit {
   cargo:any;
   constructor(private rutaActiva: ActivatedRoute,private http: HttpClient) {
     this.cargo=localStorage.getItem('cargo');
-    this.brig=this.rutaActiva.snapshot.paramMap.get('id');
+    this.n_brigada=this.rutaActiva.snapshot.paramMap.get('id');
+    this.nombre_brigada = this.rutaActiva.snapshot.paramMap.get('id2');
     this.latProm = 0.0;
     this.longProm = 0.0;
    }
@@ -35,20 +37,13 @@ export class MapaComponent implements OnInit {
 
   async getBrigadistas(){
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('id', this.brig);
-
-
-    console.log(this.brig);
-    this.brigadistas$ = await this.http.get('http://localhost:8000/estadobrigadistas/'+this.brig).toPromise();
     
-    try {
-      
-    }catch(e) {
-      if(e instanceof RangeError){
-        this.brigadistas$ = 0;
-      }
-      
-    }
+
+    let params = new HttpParams().set("n_brigada", this.n_brigada).set("nombre",this.nombre_brigada);
+    
+    this.brigadistas$ = await this.http.get('http://localhost:8000/estadobrigadistas',{ headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).toPromise();
+    
+    
 
     this.calcLatLongProm();
 

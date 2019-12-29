@@ -76,7 +76,7 @@ export class AddBrigadistaComponent implements OnInit {
           (response ) => {
             console.log(response);
             swal.fire('Registro exitoso de brigadista').then(() => {
-                this.router.navigate(['/brigadistas/'+this.BrigadistaForm.value.n_brigada]);
+                this.router.navigate(['/brigadistas/'+this.BrigadistaForm.value.n_brigada+'/'+this.BrigadistaForm.value.nombre_brigada]);
                 
               }
             );
@@ -84,8 +84,7 @@ export class AddBrigadistaComponent implements OnInit {
           },
           (error)=>{
             swal.fire('Error en el registro de brigadista',error).then(() => {
-              this.router.navigate(['/brigadas']);
-              
+                console.log(error)
               }
             );
           

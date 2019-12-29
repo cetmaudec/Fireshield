@@ -45,13 +45,13 @@ export class CombateBrigComponent implements OnInit {
     console.log("hola   "+this.brigadas$)
   }
   
-  retirar(n_brigada:string){
+  retirar(n_brigada:string,nombre:string){
     console.log("me retiro")
     console.log(n_brigada)
     if(confirm("¿Estás seguro de querer retirarse del combate "+this.id+"?")) {
       console.log("Implement delete functionality here");
 
-      let params = new HttpParams().set("n_brigada",n_brigada).set("id", this.id);
+      let params = new HttpParams().set("n_brigada",n_brigada).set("id", this.id).set("nombre_brigada",nombre);
       
       
       this.http.delete('http://localhost:8000/updCombateBrig', { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
@@ -70,16 +70,18 @@ export class CombateBrigComponent implements OnInit {
   
     }
   }
-  unir(id:string,n_brigada:string){
+  unir(id:string,n_brigada:string,nombre:string){
     console.log("unir "+id+" "+n_brigada);
-    let params = new HttpParams();
-    params = params.append('n_brigada',n_brigada);
-    params = params.append('id', this.id);
-
-    this.addForm.setValue({'n_brigada':n_brigada, 'id':id})
-  // prueba esoooooo
-  //req.query.name
-      this.http.post('http://localhost:8000/unirseCombate2', this.addForm.value,  { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
+    
+    console.log("nombre "+nombre)
+    let params = new HttpParams().set("n_brigada",n_brigada).set("id", id).set("nombre_brigada",nombre);
+  
+    let data = {
+      n_brigada: n_brigada,
+      id: id,
+      nombre_brigada: nombre,
+    };
+      this.http.post('http://localhost:8000/unirseCombate',data, {headers: new HttpHeaders({'Content-Type':'application/json'})}).subscribe(
           (response ) => {
             console.log("responseeee"+response);
             swal.fire('Brigada unida a combate correctamente').then(() => {

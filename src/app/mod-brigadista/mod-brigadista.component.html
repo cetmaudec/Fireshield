@@ -46,13 +46,25 @@
             <legend>Brigada</legend>
             <div class="row">
                 <div class="column" >
+                    <label for="brigada">Nombre Brigada</label>
+                    <select formControlName="nombre_brigada" (change)="onChange($event.target.value);">
+                            <option value="" class="option">Nombre Brigada</option>
+                            <option *ngFor="let nombre of nombresbrigadas$"  [value]="nombre.nombre" class="option">{{nombre.nombre}} - {{nombre.region}}</option>           
+                    </select>
+                    <div *ngIf="modBrigForm.get('nombre_brigada').hasError('required')"><span>Nombre de brigada requerido</span></div>
+                
+                           
+                </div>
+                <div class="column" >
                     <label for="brigada">N° Brigada</label>
                     <select placeholder="brigada" name="subject" id="subject_input" formControlName="n_brigada" required>
                       <option *ngFor="let brigada of brigadas$.data" class="option" [ngValue]="brigada.n_brigada"> {{brigada.n_brigada}}</option>
                     </select>
                     <div *ngIf="modBrigForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
                 </div>
-                <div class="column" >
+              </div>
+              <div class="row">
+                <div class="column2" >
                     <label for="pulsera">Pulsera</label>
                     <select placeholder="pulsera" name="subject" id="subject_input" formControlName="pulsera" required>
                       <option *ngFor="let act of act$.data" class="option" value="act.pulsera"> {{act.pulsera}}</option>
@@ -61,6 +73,7 @@
                   <div *ngIf="modBrigForm.get('pulsera').hasError('required')"><span>ID de Pulsera requerido</span></div>
                 </div>
               </div>
+              
               
             
         <div class="row">

@@ -22,7 +22,7 @@
                     <div class="name">
                             <select formControlName="n_brigada">
                                     <option value=""class="option">Elija su brigada</option>
-                                    <option *ngFor="let brigada of brigadas$.data" [ngValue]="brigada.n_brigada"class="option">{{brigada.n_brigada}}</option>
+                                    <option *ngFor="let brigada of brigadas$.data" [ngValue]="{'numero':brigada.n_brigada,'nombre':brigada.nombre}"class="option"> {{brigada.nombre}} - {{brigada.n_brigada}}</option>
                                     
                                   </select> 
                         

@@ -21,6 +21,7 @@ import { ModCombateComponent } from './mod-combate/mod-combate.component';
 import { MapaComponent } from './mapa/mapa.component';
 import { PersonalComponent } from './personal/personal.component';
 import { ModPersonalComponent } from './mod-personal/mod-personal.component';
+import { ReporteriaComponent } from './reporteria/reporteria.component';
 
 
 
@@ -33,7 +34,7 @@ const routes: Routes = [
   {path: 'home', component: HomeComponent,canActivate: [AuthGuard]},
   {path: 'estado', component: EstadoComponent,canActivate: [AuthGuard]},
   {path: 'contacto', component: ContactoComponent,canActivate: [AuthGuard]},
-  {path: 'estadobrigadistasbrigada/:id', component: EstadobrigadistasbrigadaComponent,canActivate: [AuthGuard]},
+  {path: 'estadobrigadistasbrigada/:id/:id2', component: EstadobrigadistasbrigadaComponent,canActivate: [AuthGuard]},
   {path: 'estadobrigadista/:rut', component: EstadobrigadistaComponent,canActivate: [AuthGuard]},
   {path: 'brigadas', component: BrigadasComponent,canActivate: [AuthGuard]},
   {path: 'brigadistas/:id/:id2', component: BrigadistasComponent,canActivate: [AuthGuard]},
@@ -45,9 +46,10 @@ const routes: Routes = [
   {path: 'combateBrig/:id', component: CombateBrigComponent,canActivate: [AuthGuard]},
   {path: 'unirseCombate/:id', component: UnirseCombateComponent,canActivate: [AuthGuard]},
   {path: 'modCombate/:id', component: ModCombateComponent ,canActivate: [AuthGuard]},
-  {path: 'mapa/:id', component: MapaComponent ,canActivate: [AuthGuard]},
+  {path: 'mapa/:id/:id2', component: MapaComponent ,canActivate: [AuthGuard]},
   {path: 'personal', component: PersonalComponent ,canActivate: [AuthGuard]},
   {path: 'modPersonal/:id', component: ModPersonalComponent, canActivate: [AuthGuard]},
+  {path: 'reporteria', component: ReporteriaComponent, canActivate: [AuthGuard]},
 
 ];
 

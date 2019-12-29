@@ -46,6 +46,7 @@ import { MapaComponent } from './mapa/mapa.component';
 import { Navbar2Component } from './navbar2/navbar2.component';
 import { PersonalComponent } from './personal/personal.component';
 import { ModPersonalComponent } from './mod-personal/mod-personal.component';
+import { ReporteriaComponent } from './reporteria/reporteria.component';
 // For MDB Angular Free
 
 export function tokenGetter() {
@@ -77,7 +78,8 @@ export function tokenGetter() {
     MapaComponent,
     Navbar2Component,
     PersonalComponent,
-    ModPersonalComponent
+    ModPersonalComponent,
+    ReporteriaComponent
 
     //I keep the new line
   ],
