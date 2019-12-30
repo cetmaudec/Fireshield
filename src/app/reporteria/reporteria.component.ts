@@ -1,8 +1,11 @@
 import { Component, OnInit ,NgModule} from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators,ReactiveFormsModule } from '@angular/forms';
-import { HttpClient , HttpHeaders} from '@angular/common/http';
+import { HttpClient ,HttpParams ,HttpHeaders} from '@angular/common/http';
 import { ActivatedRoute, Params } from '@angular/router';
 import {Router} from '@angular/router';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+
 import swal from'sweetalert2';
 import * as moment from 'moment';
 @Component({
@@ -25,6 +28,9 @@ export class ReporteriaComponent implements OnInit {
   combtodos2$: any = [];
 
   combmes2fin$: any = [];
+  comb6mes2fin$: any = [];
+  combanyo2fin$: any = [];
+  combtodos2fin$: any = [];
 
   tiempo:any=[];
   tiempo2:any=[];
@@ -36,6 +42,9 @@ export class ReporteriaComponent implements OnInit {
   tiempo2datos2:any=[];
   tiempo3datos2:any=[];
 
+
+  existe:any=[];
+
   constructor(private rutaActiva: ActivatedRoute,private formBuilder: FormBuilder,private http: HttpClient,private router: Router) { 
     this.eleccion$='Activos';
     this.eleccion2$='Último Mes2';
@@ -45,6 +54,7 @@ export class ReporteriaComponent implements OnInit {
     this.tiempodatos2=[];
     this.tiempo2datos2=[];
     this.tiempo3datos2=[];
+    pdfMake.vfs = pdfFonts.pdfMake.vfs; 
   }
 
   ngOnInit() {
@@ -315,9 +325,6 @@ export class ReporteriaComponent implements OnInit {
     this.combmes2$= await this.http.get('http://localhost:8000/combMes2').toPromise();
     this.combmes2fin$ = await this.http.get('http://localhost:8000/combFin').toPromise();
 
-    this.getTiempo(this.combmes2$);
-  
-    
     let tam = this.combmes2$.data.length;
 
     let k = 0;
@@ -327,9 +334,49 @@ export class ReporteriaComponent implements OnInit {
       time = 0;
       this.datos2 = await this.calcularTiempo(this.combmes2$.data[i].nombre_brigada, this.combmes2$.data[i].n_brigada, k, this.combmes2fin$);
       k = this.datos2.i;
-      this.tiempodatos2[i]=this.datos2.dias;
-      this.tiempo2datos2[i]=this.datos2.horas;
-      this.tiempo3datos2[i]=this.datos2.minutos;
+      let params = new HttpParams().set("n_brigada", this.combmes2$.data[i].n_brigada).set("nombre",this.combmes2$.data[i].nombre_brigada);
+      
+      this.existe = await this.http.get('http://localhost:8000/existe',{headers: new HttpHeaders({
+        'Content-Type':'application/json'
+        }), params: params}).toPromise();
+
+        console.log("condicion : "+ this.existe.data[0].cond);
+        
+        if(this.existe.data[0].cond == 1){
+          console.log("condicion 1 ");
+          this.tiempodatos2[i]=this.datos2.dias;
+          this.tiempo2datos2[i]=this.datos2.horas;
+          this.tiempo3datos2[i]=this.datos2.minutos;
+        }else{
+          console.log("condicion 0 ");
+          let dateString1=this.combmes2$.data[i].fecha + ' ' + this.combmes2$.data[i].hora;
+
+          let date=dateString1.split(' ');
+
+          var anyo = Number(date[0].split('-')[0]);
+          var mes = Number(date[0].split('-')[1]);
+          var dia = Number(date[0].split('-')[2]);
+          var hora = Number(date[1].split(':')[0]);
+          var minuto = Number(date[1].split(':')[1]);
+          var segundo = Number(date[1].split(':')[2]);
+
+          var dateObj=new Date(anyo,mes-1,dia,hora,minuto,segundo);
+
+          var fechaAct = new Date();
+
+
+          var dif = fechaAct.getTime() - dateObj.getTime(); 
+
+          console.log("Diferencia : "+dif);
+
+          this.dhm(dif);
+          this.tiempodatos2[i] = this.datos1.dias;
+          this.tiempo2datos2[i] = this.datos1.horas;
+          this.tiempo3datos2[i] = this.datos1.minutos;
+
+
+
+        }
     }
     
     console.log(this.tiempodatos2);
@@ -340,21 +387,251 @@ export class ReporteriaComponent implements OnInit {
   async getComb6Mes2(){
     this.comb6mes2$= await this.http.get('http://localhost:8000/comb6Mes2').toPromise();
 
-    this.getTiempo(this.comb6mes2$);
+    this.comb6mes2fin$= await this.http.get('http://localhost:8000/combFin').toPromise();
+
+    let tam = this.comb6mes2$.data.length;
+
+    let k = 0;
+    let time;
+
+    for(let i = 0; i<tam;i++){
+      time = 0;
+      this.datos2 = await this.calcularTiempo(this.comb6mes2$.data[i].nombre_brigada, this.comb6mes2$.data[i].n_brigada, k, this.comb6mes2fin$);
+      k = this.datos2.i;
+
+      
+      let params = new HttpParams().set("n_brigada", this.comb6mes2$.data[i].n_brigada).set("nombre",this.comb6mes2$.data[i].nombre_brigada);
+      
+      this.existe = await this.http.get('http://localhost:8000/existe',{headers: new HttpHeaders({
+        'Content-Type':'application/json'
+        }), params: params}).toPromise();
+
+        console.log("condicion : "+ this.existe.data[0].cond);
+        
+        if(this.existe.data[0].cond == 1){
+          console.log("condicion 1 ");
+          this.tiempodatos2[i]=this.datos2.dias;
+          this.tiempo2datos2[i]=this.datos2.horas;
+          this.tiempo3datos2[i]=this.datos2.minutos;
+        }else{
+          console.log("condicion 0 ");
+          let dateString1=this.comb6mes2$.data[i].fecha + ' ' + this.comb6mes2$.data[i].hora;
+
+          let date=dateString1.split(' ');
+
+          var anyo = Number(date[0].split('-')[0]);
+          var mes = Number(date[0].split('-')[1]);
+          var dia = Number(date[0].split('-')[2]);
+          var hora = Number(date[1].split(':')[0]);
+          var minuto = Number(date[1].split(':')[1]);
+          var segundo = Number(date[1].split(':')[2]);
+
+          var dateObj=new Date(anyo,mes-1,dia,hora,minuto,segundo);
+
+          var fechaAct = new Date();
+
+
+          var dif = fechaAct.getTime() - dateObj.getTime(); 
+
+          console.log("Diferencia : "+dif);
+
+          this.dhm(dif);
+          this.tiempodatos2[i] = this.datos1.dias;
+          this.tiempo2datos2[i] = this.datos1.horas;
+          this.tiempo3datos2[i] = this.datos1.minutos;
+
+
+
+        }
+      
+    }
+    
+    console.log(this.tiempodatos2);
+    console.log(this.tiempo2datos2);
+    console.log(this.tiempo3datos2);
    
   }
 
   async getCombAnyo2(){
     this.combanyo2$= await this.http.get('http://localhost:8000/combAnyo2').toPromise();
 
-    this.getTiempo(this.combanyo2$);
+    
+    this.combanyo2fin$= await this.http.get('http://localhost:8000/combFin').toPromise();
+
+    let tam = this.combanyo2$.data.length;
+
+    let k = 0;
+    let time;
+
+    for(let i = 0; i<tam;i++){
+      time = 0;
+      this.datos2 = await this.calcularTiempo(this.combanyo2$.data[i].nombre_brigada, this.combanyo2$.data[i].n_brigada, k, this.combanyo2fin$);
+      k = this.datos2.i;
+      let params = new HttpParams().set("n_brigada", this.combanyo2$.data[i].n_brigada).set("nombre",this.combanyo2$.data[i].nombre_brigada);
+      
+      this.existe = await this.http.get('http://localhost:8000/existe',{headers: new HttpHeaders({
+        'Content-Type':'application/json'
+        }), params: params}).toPromise();
+
+        console.log("condicion : "+ this.existe.data[0].cond);
+        
+        if(this.existe.data[0].cond == 1){
+          console.log("condicion 1 ");
+          this.tiempodatos2[i]=this.datos2.dias;
+          this.tiempo2datos2[i]=this.datos2.horas;
+          this.tiempo3datos2[i]=this.datos2.minutos;
+        }else{
+          console.log("condicion 0 ");
+          let dateString1=this.combanyo2$.data[i].fecha + ' ' + this.combanyo2$.data[i].hora;
+
+          let date=dateString1.split(' ');
+
+          var anyo = Number(date[0].split('-')[0]);
+          var mes = Number(date[0].split('-')[1]);
+          var dia = Number(date[0].split('-')[2]);
+          var hora = Number(date[1].split(':')[0]);
+          var minuto = Number(date[1].split(':')[1]);
+          var segundo = Number(date[1].split(':')[2]);
+
+          var dateObj=new Date(anyo,mes-1,dia,hora,minuto,segundo);
+
+          var fechaAct = new Date();
+
+
+          var dif = fechaAct.getTime() - dateObj.getTime(); 
+
+          console.log("Diferencia : "+dif);
+
+          this.dhm(dif);
+          this.tiempodatos2[i] = this.datos1.dias;
+          this.tiempo2datos2[i] = this.datos1.horas;
+          this.tiempo3datos2[i] = this.datos1.minutos;
+
+
+
+        }
+    }
+    
+    console.log(this.tiempodatos2);
+    console.log(this.tiempo2datos2);
+    console.log(this.tiempo3datos2);
    
   }
 
   async getCombTodos2(){
     this.combtodos2$= await this.http.get('http://localhost:8000/combTodos2').toPromise();
 
-    this.getTiempo(this.combtodos2$);
+    this.combtodos2fin$= await this.http.get('http://localhost:8000/combFin').toPromise();
+
+    let tam = this.combtodos2$.data.length;
+
+    let k = 0;
+    let time;
+
+    for(let i = 0; i<tam;i++){
+      time = 0;
+      this.datos2 = await this.calcularTiempo(this.combtodos2$.data[i].nombre_brigada, this.combtodos2$.data[i].n_brigada, k, this.combtodos2fin$);
+      k = this.datos2.i;
+      let params = new HttpParams().set("n_brigada", this.combtodos2$.data[i].n_brigada).set("nombre",this.combtodos2$.data[i].nombre_brigada);
+      
+      this.existe = await this.http.get('http://localhost:8000/existe',{headers: new HttpHeaders({
+        'Content-Type':'application/json'
+        }), params: params}).toPromise();
+
+        console.log("condicion : "+ this.existe.data[0].cond);
+        
+        if(this.existe.data[0].cond == 1){
+          console.log("condicion 1 ");
+          this.tiempodatos2[i]=this.datos2.dias;
+          this.tiempo2datos2[i]=this.datos2.horas;
+          this.tiempo3datos2[i]=this.datos2.minutos;
+        }else{
+          console.log("condicion 0 ");
+          let dateString1=this.combtodos2$.data[i].fecha + ' ' + this.combtodos2$.data[i].hora;
+
+          let date=dateString1.split(' ');
+
+          var anyo = Number(date[0].split('-')[0]);
+          var mes = Number(date[0].split('-')[1]);
+          var dia = Number(date[0].split('-')[2]);
+          var hora = Number(date[1].split(':')[0]);
+          var minuto = Number(date[1].split(':')[1]);
+          var segundo = Number(date[1].split(':')[2]);
+
+          var dateObj=new Date(anyo,mes-1,dia,hora,minuto,segundo);
+
+          var fechaAct = new Date();
+
+
+          var dif = fechaAct.getTime() - dateObj.getTime(); 
+
+          console.log("Diferencia : "+dif);
+
+          this.dhm(dif);
+          this.tiempodatos2[i] = this.datos1.dias;
+          this.tiempo2datos2[i] = this.datos1.horas;
+          this.tiempo3datos2[i] = this.datos1.minutos;
+
+
+
+        }
+    }
+    
+    console.log(this.tiempodatos2);
+    console.log(this.tiempo2datos2);
+    console.log(this.tiempo3datos2);
    
+  }
+
+  generatePdf(idcombate, hito, fecha, hora){
+    const dd = {
+      
+      
+      content: [
+
+
+
+        { 
+          text: ['Combate N°' + idcombate + ': ',
+            {
+              text: hito, fontSize: 15, underline: false
+
+
+            },
+          ], fontSize: 30, bold: true, alignment: 'center'
+      
+      
+        },
+        '\n\n\n',
+
+        {
+          ul: [
+            'Fecha de inicio del combate : ' + fecha,
+            'Hora de inicio del combate : ' + hora,
+            ]
+        }
+
+       
+
+
+
+
+      ]
+
+
+
+
+
+    }
+
+
+
+
+    pdfMake.createPdf(dd).open({}, window);
+
+
+
+    //pdfMake.createPdf(dd).download("nombredeprueba.pdf")
+
   }
 }

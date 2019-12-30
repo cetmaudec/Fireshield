@@ -66,7 +66,7 @@
                     <td data-label="Estado:">Activo</td>
                     <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
                     <td data-label="Hora Inicio:">{{comb.hora}}</td>
-                    <button  class="button" >Descargar</button>
+                    <button  class="button" (click)="generatePdf(comb.id, comb.hito, comb.fecha, comb.hora)" >Descargar</button>
                     
                   </tr>
                 </ng-container>
@@ -185,7 +185,7 @@
         </thead>
         <tbody>
         <ng-container *ngIf="eleccion2$ == 'Último Mes2'">
-          <tr  *ngFor="let comb of combmes2$.data ">
+          <tr  *ngFor="let comb of combmes2$.data; let i = index ">
               <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
             <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
             <td data-label="ID Combate:">{{comb.id}}</td>
@@ -193,7 +193,7 @@
             <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
             <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
             <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
-            <td data-label="tiempo:">asasas</td>
+            <td data-label="tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
             <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
             <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
             
@@ -203,7 +203,7 @@
         </ng-container>
 
         <ng-container *ngIf="eleccion2$ == 'Últimos 6 Meses2'">
-          <tr  *ngFor="let comb of comb6mes2$.data ">
+          <tr  *ngFor="let comb of comb6mes2$.data; let i = index">
               <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
             <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
             <td data-label="ID Combate:">{{comb.id}}</td>
@@ -211,7 +211,7 @@
             <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
             <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
             <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
-            <td data-label="tiempo:">asasas</td>
+            <td data-label="tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
             <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
             <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
             
@@ -220,7 +220,7 @@
           </tr>
         </ng-container>
         <ng-container *ngIf="eleccion2$ == 'Último Año2'">
-          <tr  *ngFor="let comb of combanyo2$.data ">
+          <tr  *ngFor="let comb of combanyo2$.data; let i = index">
               <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
             <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
             <td data-label="ID Combate:">{{comb.id}}</td>
@@ -228,7 +228,7 @@
             <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
             <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
             <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
-            <td data-label="tiempo:">asasas</td>
+            <td data-label="tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
             <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
             <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
             
@@ -238,7 +238,7 @@
         </ng-container>
 
         <ng-container *ngIf="eleccion2$ == 'Todos2'">
-          <tr  *ngFor="let comb of combtodos2$.data ">
+          <tr  *ngFor="let comb of combtodos2$.data; let i = index">
               <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
             <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
             <td data-label="ID Combate:">{{comb.id}}</td>
@@ -246,7 +246,7 @@
             <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
             <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
             <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
-            <td data-label="tiempo:">asasas</td>
+            <td data-label="tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
             <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
             <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
             

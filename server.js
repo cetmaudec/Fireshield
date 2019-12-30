@@ -768,27 +768,6 @@ app.get('/combMes2',(req, res) => {
 
 });
 
-app.get('/combFin', (req, res) => {
-
-
-    const select_query=`
-            SELECT n_brigada, nombre_brigada, id, DATE_FORMAT(cb.fecha, '%Y-%m-%d') as fecha, hora, DATE_FORMAT(fecharetiro, '%Y-%m-%d') as fechafin, horaretiro as horafin
-        FROM combatesbrigadafin as cb
-        `
-    console.log(select_query);
-    con.query(select_query, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
 
 
 app.get('/comb6Mes',(req, res) => {
@@ -945,8 +924,6 @@ app.get('/comb6Mes2',(req, res) => {
 
 
 
-
-
 app.get('/combAnyo',(req, res) => {
 
     var fechatotal = new Date();
@@ -1096,6 +1073,7 @@ app.get('/combAnyo2',(req, res) => {
 });
 
 
+
 app.get('/combTodos',(req, res) => {
 
     var fechatotal = new Date();
@@ -1243,7 +1221,70 @@ app.get('/combTodos2',(req, res) => {
 
 });
 
+app.get('/combFin', (req, res) => {
 
+
+    const select_query=`
+            SELECT n_brigada, nombre_brigada, id, DATE_FORMAT(cb.fecha, '%Y-%m-%d') as fecha, hora, DATE_FORMAT(fecharetiro, '%Y-%m-%d') as fechafin, horaretiro as horafin
+        FROM combatesbrigadafin as cb`
+    console.log(select_query);
+    con.query(select_query, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+
+
+app.get('/existe', bodyParser.json(), (req, res) => {
+    var nombre = req.param('nombre');
+    var n_brigada = req.param('n_brigada');
+
+    console.log(nombre);
+    console.log(n_brigada);
+
+    const get_query = `SELECT EXISTS(SELECT * FROM combatesbrigadafin WHERE nombre_brigada = ? and n_brigada=?) as cond;`
+
+    con.query(get_query, [nombre, n_brigada], (err, resultados) => {
+
+        if(err) {
+            
+            return res.send(err)
+        } else {
+            console.log(resultados);
+            return res.json({
+
+                data: resultados
+
+            })
+
+        }
+    })
+})
+
+
+app.delete('/delBrigada',(req, res) => {
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+    const del_query = `DELETE FROM Brigada WHERE n_brigada=? AND nombre = ?;`
+    con.query(del_query,[id,id2], (err, resultados) => {
+
+        if(err) {
+            return res.send(err)
+        } else {
+            res.json(res.body)
+
+        }
+    })
+});
 
 
 
