@@ -25,9 +25,6 @@ import { ReporteriaComponent } from './reporteria/reporteria.component';
 
 
 
-
-
-
 const routes: Routes = [
   {path:'', component: LoginComponent},
   {path: 'registro', component: RegistroComponent},

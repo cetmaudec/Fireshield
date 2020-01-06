@@ -15,6 +15,8 @@ export class Navbar2Component implements OnInit {
   ngOnInit() {
   }
 
+  // Método que sirve para que el navbar sea responsive y que se vuelva tipo tablet/celular al achicarse mucho.
+
   myFunction() {
     console.log("holi")
     var x = document.getElementById("myTopnav");
@@ -25,6 +27,8 @@ export class Navbar2Component implements OnInit {
     }
   }
   
+  // Método que permite utilizar el servicio de autentificacion para que el usuario actual pueda deslogearse.
+
   logout() {
     this.auth.logout();
     this.router.navigate(['']);

@@ -53,20 +53,21 @@
                         <th scope="col">Estado</th>
                         <th scope="col">Fecha Inicio</th>
                         <th scope="col">Hora Inicio</th>
-                        <th scope="col" *ngIf="eleccion$ != 'Activos'">Tiempo en Combate</th>
+                        <th scope="col" >Tiempo en Combate</th>
                         
                         <th scope="col" >Generar Reporte</th>
                     </tr>
                 </thead>
                 <tbody>
                 <ng-container *ngIf="eleccion$ == 'Activos'">
-                  <tr  *ngFor="let comb of combactivos$.data ">
+                  <tr  *ngFor="let comb of combactivos$.data; let i = index">
                       <td data-label="ID Combate:">{{comb.id}}</td>
                     <td data-label="Hito:">{{comb.hito}}</td>
                     <td data-label="Estado:">Activo</td>
                     <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
                     <td data-label="Hora Inicio:">{{comb.hora}}</td>
-                    <button  class="button" (click)="generatePdf(comb.id, comb.hito, comb.fecha, comb.hora)" >Descargar</button>
+                    <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
+                    <button  class="button" (click)="generatePdfActivos(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,i,comb.nfatigaAlta, comb.nfatigaMedia)" >Descargar</button>
                     
                   </tr>
                 </ng-container>
@@ -81,7 +82,7 @@
                       <td data-label="Hora Inicio:">{{comb.hora}}</td>
                       <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
                       
-                      <button  class="button" >Descargar</button>
+                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)">Descargar</button>
                       
                     </tr>
                   </ng-container>
@@ -95,7 +96,7 @@
                       <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
                       <td data-label="Hora Inicio:">{{comb.hora}}</td>
                       <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                      <button  class="button" >Descargar</button>
+                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >Descargar</button>
                       
                     </tr>
                   </ng-container>
@@ -109,7 +110,7 @@
                       <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
                       <td data-label="Hora Inicio:">{{comb.hora}}</td>
                       <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                      <button  class="button" >Descargar</button>
+                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >Descargar</button>
                       
                     </tr>
                   </ng-container>
@@ -123,7 +124,7 @@
                       <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
                       <td data-label="Hora Inicio:">{{comb.hora}}</td>
                       <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                      <button  class="button" >Descargar</button>
+                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >Descargar</button>
                       
                     </tr>
                   </ng-container>

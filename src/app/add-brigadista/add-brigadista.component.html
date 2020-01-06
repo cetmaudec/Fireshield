@@ -71,7 +71,7 @@
                         
                             <select formControlName="nombre_brigada" (change)="onChange($event.target.value);">
                                     <option value="" class="option">Nombre Brigada</option>
-                                    <option *ngFor="let nombre of nombresbrigadas$" value="{{nombre.nombre}}" class="option">{{nombre.nombre}} - {{nombre.region}}</option>           
+                                    <option *ngFor="let nombre of nombresbrigadas$.data" value="{{nombre.nombre}}" class="option">{{nombre.nombre}} - {{nombre.region}}</option>           
                             </select>
                             <div *ngIf="BrigadistaForm.get('nombre_brigada').hasError('required')"><span>Nombre de brigada requerido</span></div>
                         

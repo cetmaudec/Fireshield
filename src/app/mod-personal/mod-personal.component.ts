@@ -1,9 +1,9 @@
-import { Component, OnInit ,NgModule} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators,ReactiveFormsModule } from '@angular/forms';
 import { HttpClient , HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
 import swal from'sweetalert2';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-mod-personal',
@@ -11,11 +11,30 @@ import { ActivatedRoute, Params } from '@angular/router';
   styleUrls: ['./mod-personal.component.css']
 })
 export class ModPersonalComponent implements OnInit {
-  rut:any;
-  ModPersonalForm: FormGroup;
-  personal$:any;
-  mensaje:string='';
 
+  /*
+    Variables utilizadas para poder modificar correctamente a un miembro del personal. 
+  */
+
+  // Variable que almacena el rut del personal que será modificado.
+
+  rut:any;
+
+  // Variable de tipo FormGroup que permite trabajar el formulario para modificar al miembro del personal.
+
+  ModPersonalForm: FormGroup;
+
+  // Variable que almacena toda la información personal del miembro del personal que se desea modificar.
+
+  personal$:any;
+  
+   /*
+    En el constructor se obtiene el rut del miembro del personal a través de la ruta, además de inicializar el formulario 
+    con valores vacíos. Por otro lado, se declaran variables que serán útiles para realizar consultas a la 
+    base de datos a través del server (HttpClient) y para redirigir luego de modificar el personal. Notar que el rut
+    debe estar bien escrito para que pueda ser validado.
+   */
+ 
 
   constructor(private rutaActiva: ActivatedRoute, private formBuilder: FormBuilder,private http: HttpClient,private router: Router) { 
     this.rut=this.rutaActiva.snapshot.paramMap.get('id');
@@ -32,9 +51,17 @@ export class ModPersonalComponent implements OnInit {
 
   }
 
+  /*
+    En el OnInit se llaman los métodos necesarios para que al iniciar el formulario, este conozca todos los datos
+    actuales del personal. Además, se rellenan los campos con estos datos. 
+  */
+
+
   async ngOnInit() {
+    
+    // Se obtienen los datos actuales del mimebro del personal, para luego rellenar los campos con eso.
+
     const result1 =  await this.getPersonal();
-    console.log(result1);
     this.ModPersonalForm.patchValue({
       nombre:result1.nombre,
       apellidoP:result1.apellidoP,
@@ -45,12 +72,18 @@ export class ModPersonalComponent implements OnInit {
       pass:result1.pass,
       cargo:result1.cargo
     });
-    console.log(this.ModPersonalForm.value.pass)
-
 
     
 
   }
+
+   /*
+    Método que es llamado cuando se oprime el botón de modificar personal. Se realiza un put en el server y de
+    acuerdo a la respuesta que este mismo entrege, se despliega una pop-up en la pantalla. Si el server indica
+    que se realizó correctamente la modificación, se desplegará el mensaje "Modificado con éxito", en caso
+    contrario, se despliega el mensaje "Error en la modificación de los datos del usuario". Además, se redirige al usuario a
+    la pantalla en donde se muestran todos los miembros del personal.
+  */
 
   onSubmit(){
     if(this.ModPersonalForm.value!=null){
@@ -78,6 +111,8 @@ export class ModPersonalComponent implements OnInit {
     }
       
   }
+
+
   async getPersonal(){
     this.personal$ = await this.http.get('http://localhost:8000/personal/'+this.rut).toPromise();
     return this.personal$.data[0];

@@ -3,24 +3,43 @@ import { FormBuilder, FormGroup, FormControl, Validators,ReactiveFormsModule } f
 import { HttpClient , HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
 import swal from'sweetalert2';
-import { BrigadasComponent } from '../brigadas/brigadas.component';
-import { NgForm } from '@angular/forms';
+
 @Component({
   selector: 'app-add-brigadista',
   templateUrl: './add-brigadista.component.html',
   styleUrls: ['./add-brigadista.component.css']
 })
 export class AddBrigadistaComponent implements OnInit {
-  BrigadistaForm: FormGroup;
-  brigadas$: any = [];
-  brigadas2$: any;
-  mensaje:string='';
-  pulsera$:any=[];
-  pulserasNoUsadas$:any=[];
-  nombresbrigadas$: any;
-  nombresbrigadas2$:any;
+  /*
+    Variables utilizadas para poder añadir correctamente un nuevo brigadista. 
+  */
 
- 
+  // Variable de tipo FormGroup que permite trabajar el formulario.
+
+  BrigadistaForm: FormGroup;
+  
+  // Variable que contiene todos los nombres de brigadas disponibles.
+
+  nombresbrigadas$: any;
+
+  /* 
+    Variable en donde se almacenan todos los números de brigada correspondientes
+    al nombre de la brigada en donde se desea agregar al brigadista.
+  */
+
+  brigadas$: any = [];
+
+  // Variable que contiene todos los números de id de pulsera que aún no han sido usados por ningún brigadista.
+
+  pulserasNoUsadas$:any=[];
+
+  /*
+    En el constructor se inicializa el formulario con valores vacíos. Además, se declaran variables que serán útiles
+    para realizar consultas a la base de datos a través del server (HttpClient) y para redirigir luego de añadir al nuevo
+    brigadadista. Además, a través del pattern, se restringe a que los ruts sean ingresados correctamente, y que los correos
+    tengan un correcto formato.
+  */
+
   constructor(private formBuilder: FormBuilder,private http: HttpClient,private router: Router) { 
     this.BrigadistaForm =  this.formBuilder.group({
       nombre: new FormControl('',Validators.required),
@@ -39,35 +58,59 @@ export class AddBrigadistaComponent implements OnInit {
     });
   }
 
+  /*
+    En el OnInit se llaman los métodos necesarios para que al iniciar el formulario, este conozca los valores
+    posibles para cada campo. En este caso, se necesitan saber los nombres de las brigadas disponibles y los números
+    asociados a cada una de estas. Además, se necesitan saber todas las pulseras que aún no han sido usadas.
+  */
+
   async ngOnInit() {
-    this.nombresbrigadas$ = await this.getBrigadas();
+
+    // Método que obtiene el nombre de todas las brigadas.
+
+    this.getBrigadas();
+
+    /*
+
+     Método que obtiene todos los numeros de brigada de la brigada correspondiente. En este caso,
+     se inicializa con el nombre de una brigada cualquiera.
+    
+    */
+
     this.getnBrigadas("Alerce");
-    console.log(this.nombresbrigadas$);
-    this.getPulseras();
+
+    // Método que obtiene todas las pulseras que no han sido utilizadas por ningún brigadista.
+
     this.getPulserasNoUsadas();
-    console.log("hola");
+ 
   }
 
   async getBrigadas(){
-    this.nombresbrigadas2$= await this.http.get('http://localhost:8000/nombresbrigadas').toPromise();
-    return this.nombresbrigadas2$.data;
+    this.nombresbrigadas$= await this.http.get('http://localhost:8000/nombresbrigadas').toPromise();
   }
 
-  
+  /*
+    Método que de acuerdo al nombre de la brigada seleccionada por el usuario, se obtiene el máximo número de brigada
+    asociado a ese nombre de brigada en particular.
+  */
+
   onChange(deviceValue) {
-    console.log(deviceValue);
 
     this.getnBrigadas(deviceValue);
-
 
   }
 
   async getnBrigadas(nombre){
     this.brigadas$= await this.http.get('http://localhost:8000/brigadasPorNombre' + nombre).toPromise();
-    console.log(this.brigadas$.data);
-   
   }
 
+  /*
+    Método que es llamado cuando se oprime el botón de registrar brigadadista. Se realiza un post en el server y de
+    acuerdo a la respuesta que este mismo entrege, se despliega una pop-up en la pantalla. Si el server indica
+    que se realizó correctamente la inserción, se desplegará el mensaje "Registro exitoso del brigadista", en caso
+    contrario, se despliega el mensaje "Error en el registro del brigadista". Además, se redirige al usuario a
+    la pantalla en donde se muestran los brigadistas de la brigada en donde insertó al brigadista.
+  */
 
   onSubmit(){
     console.log("entre");
@@ -93,19 +136,13 @@ export class AddBrigadistaComponent implements OnInit {
         }
       }
 
-  getPulseras(){
-    this.http.get('http://localhost:8000/npulseras').subscribe(resp =>
-      this.pulsera$ = resp as []
   
-    )
-    console.log(this.pulsera$);
-  }
   getPulserasNoUsadas(){
     this.http.get('http://localhost:8000/pulserasnousadas').subscribe(resp =>
       this.pulserasNoUsadas$ = resp as []
   
     )
-    console.log(this.pulsera$);
+
   }
   	
 }

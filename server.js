@@ -341,6 +341,42 @@ app.get('/personal/:id', (req, res) => {
     });
 });
 
+app.get('/brigadasCombate/:id', (req, res) => {
+    var id=req.params.id;
+    console.log(id);
+    const select_query=`select n_brigada from combatesbrigada where id=?;`
+    console.log(select_query)
+    con.query(select_query,id, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/combatesFin/:id', (req, res) => {
+    var id=req.params.id;
+    console.log(id);
+    const select_query=`select nombre_brigada, n_brigada, id, DATE_FORMAT(fecha, '%Y-%m-%d') as fecha, hora, DATE_FORMAT(fecharetiro, '%Y-%m-%d') as fecharetiro, horaretiro from combatesbrigadafin where id=?;`
+    console.log(select_query)
+    con.query(select_query,id, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
+
 app.get('/combates', (req, res) => {
 
     const select_query=`SELECT *,DATE_FORMAT(fecha, '%d/%m/%y') as fecha FROM Combate;`
@@ -644,7 +680,7 @@ app.get('/listaEspera',(req, res) => {
 
 
 app.get('/combActivos',(req, res) => {
-    const select_query=`SELECT *, DATE_FORMAT(fecha, '%d/%m/%y') as fecha FROM combate WHERE estado=1;`
+    const select_query=`SELECT *, DATE_FORMAT(fecha, '%Y-%m-%d') as fecha FROM combate WHERE estado=1;`
     con.query(select_query, (err, result) => {
         if(err){
             return res.send(err);
@@ -689,44 +725,54 @@ app.get('/combMes2',(req, res) => {
     var fechatotal = new Date();
             var mes;
             var dia;
-            if(fechatotal.getMonth()+1>=0 && fechatotal.getMonth()+1<=9){
+            let fechaAux = fechatotal.getMonth()+1;
+            if(fechaAux>=0 && fechaAux<=9){
                 //console.log("Entre aquí");
-                mes = "0" + fechatotal.getMonth()+1;
-
+                console.log(fechatotal.getMonth());
+                console.log(fechaAux);
+                console.log(fechaAux.toString());
+                mes = "0" + fechaAux;
             }else{
                 mes = fechatotal.getMonth() + 1;
             }
-            if(fechatotal.getDate()>=0 && fechatotal.getDate<=9){
-                dia = "0" + fechatotal.getDate();
+            let diaAux = fechatotal.getDate();
+            if(diaAux>=0 && diaAux<=9){
+                dia = "0" + diaAux;
             }else{
                 dia = fechatotal.getDate();
             }
-
             var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
 
     var horatotal =  new Date();
             var hora;
             var minuto;
             var segundo;
-            if(horatotal.getHours()>=0 && horatotal.getHours()<=9){
-                hora = "0" + horatotal.getHours();
+            let horaAux = horatotal.getHours();
+            if(horaAux>=0 && horaAux<=9){
+                hora = "0" + horaAux;
             }else{
                 hora = horatotal.getHours();
             }
 
-            if(horatotal.getMinutes()>=0 && horatotal.getMinutes()<=9){
-                minuto = "0" + horatotal.getMinutes();
+            let minutoAux = horatotal.getMinutes();
+            if(minutoAux>=0 && minutoAux<=9){
+                minuto = "0" + minutoAux;
             }else{
                 minuto = horatotal.getMinutes();
             }
 
-            if(horatotal.getSeconds()>=0 && horatotal.getSeconds()<=9){
-                segundo = "0" + horatotal.getSeconds();
+            let segundoAux = horatotal.getSeconds();
+
+            if(segundoAux>=0 && segundoAux<=9){
+                segundo = "0" + segundoAux;
             }else{
                 segundo = horatotal.getSeconds();
             }
 
             var horafinal = hora + ":" + minuto + ":" + segundo;
+
+            console.log("Fechaaaaa:" + fecha);
+            console.log("Hora fin:" + horafinal);
 
             
     const select_query=`SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
@@ -775,44 +821,54 @@ app.get('/comb6Mes',(req, res) => {
     var fechatotal = new Date();
             var mes;
             var dia;
-            if(fechatotal.getMonth()+1>=0 && fechatotal.getMonth()+1<=9){
+            let fechaAux = fechatotal.getMonth()+1;
+            if(fechaAux>=0 && fechaAux<=9){
                 //console.log("Entre aquí");
-                mes = "0" + fechatotal.getMonth()+1;
-
+                console.log(fechatotal.getMonth());
+                console.log(fechaAux);
+                console.log(fechaAux.toString());
+                mes = "0" + fechaAux;
             }else{
                 mes = fechatotal.getMonth() + 1;
             }
-            if(fechatotal.getDate()>=0 && fechatotal.getDate<=9){
-                dia = "0" + fechatotal.getDate();
+            let diaAux = fechatotal.getDate();
+            if(diaAux>=0 && diaAux<=9){
+                dia = "0" + diaAux;
             }else{
                 dia = fechatotal.getDate();
             }
-
             var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
 
     var horatotal =  new Date();
             var hora;
             var minuto;
             var segundo;
-            if(horatotal.getHours()>=0 && horatotal.getHours()<=9){
-                hora = "0" + horatotal.getHours();
+            let horaAux = horatotal.getHours();
+            if(horaAux>=0 && horaAux<=9){
+                hora = "0" + horaAux;
             }else{
                 hora = horatotal.getHours();
             }
 
-            if(horatotal.getMinutes()>=0 && horatotal.getMinutes()<=9){
-                minuto = "0" + horatotal.getMinutes();
+            let minutoAux = horatotal.getMinutes();
+            if(minutoAux>=0 && minutoAux<=9){
+                minuto = "0" + minutoAux;
             }else{
                 minuto = horatotal.getMinutes();
             }
 
-            if(horatotal.getSeconds()>=0 && horatotal.getSeconds()<=9){
-                segundo = "0" + horatotal.getSeconds();
+            let segundoAux = horatotal.getSeconds();
+
+            if(segundoAux>=0 && segundoAux<=9){
+                segundo = "0" + segundoAux;
             }else{
                 segundo = horatotal.getSeconds();
             }
 
             var horafinal = hora + ":" + minuto + ":" + segundo;
+
+            console.log("Fechaaaaa:" + fecha);
+            console.log("Hora fin:" + horafinal);
     const select_query=`SELECT c.id, c.hito, c.estado, DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin
     FROM(
         SELECT *
@@ -842,44 +898,54 @@ app.get('/comb6Mes2',(req, res) => {
     var fechatotal = new Date();
             var mes;
             var dia;
-            if(fechatotal.getMonth()+1>=0 && fechatotal.getMonth()+1<=9){
+            let fechaAux = fechatotal.getMonth()+1;
+            if(fechaAux>=0 && fechaAux<=9){
                 //console.log("Entre aquí");
-                mes = "0" + fechatotal.getMonth()+1;
-
+                console.log(fechatotal.getMonth());
+                console.log(fechaAux);
+                console.log(fechaAux.toString());
+                mes = "0" + fechaAux;
             }else{
                 mes = fechatotal.getMonth() + 1;
             }
-            if(fechatotal.getDate()>=0 && fechatotal.getDate<=9){
-                dia = "0" + fechatotal.getDate();
+            let diaAux = fechatotal.getDate();
+            if(diaAux>=0 && diaAux<=9){
+                dia = "0" + diaAux;
             }else{
                 dia = fechatotal.getDate();
             }
-
             var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
 
     var horatotal =  new Date();
             var hora;
             var minuto;
             var segundo;
-            if(horatotal.getHours()>=0 && horatotal.getHours()<=9){
-                hora = "0" + horatotal.getHours();
+            let horaAux = horatotal.getHours();
+            if(horaAux>=0 && horaAux<=9){
+                hora = "0" + horaAux;
             }else{
                 hora = horatotal.getHours();
             }
 
-            if(horatotal.getMinutes()>=0 && horatotal.getMinutes()<=9){
-                minuto = "0" + horatotal.getMinutes();
+            let minutoAux = horatotal.getMinutes();
+            if(minutoAux>=0 && minutoAux<=9){
+                minuto = "0" + minutoAux;
             }else{
                 minuto = horatotal.getMinutes();
             }
 
-            if(horatotal.getSeconds()>=0 && horatotal.getSeconds()<=9){
-                segundo = "0" + horatotal.getSeconds();
+            let segundoAux = horatotal.getSeconds();
+
+            if(segundoAux>=0 && segundoAux<=9){
+                segundo = "0" + segundoAux;
             }else{
                 segundo = horatotal.getSeconds();
             }
 
             var horafinal = hora + ":" + minuto + ":" + segundo;
+
+            console.log("Fechaaaaa:" + fecha);
+            console.log("Hora fin:" + horafinal);
     const select_query=`SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
     FROM(
         SELECT *
@@ -929,44 +995,54 @@ app.get('/combAnyo',(req, res) => {
     var fechatotal = new Date();
             var mes;
             var dia;
-            if(fechatotal.getMonth()+1>=0 && fechatotal.getMonth()+1<=9){
+            let fechaAux = fechatotal.getMonth()+1;
+            if(fechaAux>=0 && fechaAux<=9){
                 //console.log("Entre aquí");
-                mes = "0" + fechatotal.getMonth()+1;
-
+                console.log(fechatotal.getMonth());
+                console.log(fechaAux);
+                console.log(fechaAux.toString());
+                mes = "0" + fechaAux;
             }else{
                 mes = fechatotal.getMonth() + 1;
             }
-            if(fechatotal.getDate()>=0 && fechatotal.getDate<=9){
-                dia = "0" + fechatotal.getDate();
+            let diaAux = fechatotal.getDate();
+            if(diaAux>=0 && diaAux<=9){
+                dia = "0" + diaAux;
             }else{
                 dia = fechatotal.getDate();
             }
-
             var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
 
     var horatotal =  new Date();
             var hora;
             var minuto;
             var segundo;
-            if(horatotal.getHours()>=0 && horatotal.getHours()<=9){
-                hora = "0" + horatotal.getHours();
+            let horaAux = horatotal.getHours();
+            if(horaAux>=0 && horaAux<=9){
+                hora = "0" + horaAux;
             }else{
                 hora = horatotal.getHours();
             }
 
-            if(horatotal.getMinutes()>=0 && horatotal.getMinutes()<=9){
-                minuto = "0" + horatotal.getMinutes();
+            let minutoAux = horatotal.getMinutes();
+            if(minutoAux>=0 && minutoAux<=9){
+                minuto = "0" + minutoAux;
             }else{
                 minuto = horatotal.getMinutes();
             }
 
-            if(horatotal.getSeconds()>=0 && horatotal.getSeconds()<=9){
-                segundo = "0" + horatotal.getSeconds();
+            let segundoAux = horatotal.getSeconds();
+
+            if(segundoAux>=0 && segundoAux<=9){
+                segundo = "0" + segundoAux;
             }else{
                 segundo = horatotal.getSeconds();
             }
 
             var horafinal = hora + ":" + minuto + ":" + segundo;
+
+            console.log("Fechaaaaa:" + fecha);
+            console.log("Hora fin:" + horafinal);
     const select_query=`SELECT c.id, c.hito, c.estado,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin
     FROM(
         SELECT *
@@ -996,44 +1072,54 @@ app.get('/combAnyo2',(req, res) => {
     var fechatotal = new Date();
             var mes;
             var dia;
-            if(fechatotal.getMonth()+1>=0 && fechatotal.getMonth()+1<=9){
+            let fechaAux = fechatotal.getMonth()+1;
+            if(fechaAux>=0 && fechaAux<=9){
                 //console.log("Entre aquí");
-                mes = "0" + fechatotal.getMonth()+1;
-
+                console.log(fechatotal.getMonth());
+                console.log(fechaAux);
+                console.log(fechaAux.toString());
+                mes = "0" + fechaAux;
             }else{
                 mes = fechatotal.getMonth() + 1;
             }
-            if(fechatotal.getDate()>=0 && fechatotal.getDate<=9){
-                dia = "0" + fechatotal.getDate();
+            let diaAux = fechatotal.getDate();
+            if(diaAux>=0 && diaAux<=9){
+                dia = "0" + diaAux;
             }else{
                 dia = fechatotal.getDate();
             }
-
             var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
 
     var horatotal =  new Date();
             var hora;
             var minuto;
             var segundo;
-            if(horatotal.getHours()>=0 && horatotal.getHours()<=9){
-                hora = "0" + horatotal.getHours();
+            let horaAux = horatotal.getHours();
+            if(horaAux>=0 && horaAux<=9){
+                hora = "0" + horaAux;
             }else{
                 hora = horatotal.getHours();
             }
 
-            if(horatotal.getMinutes()>=0 && horatotal.getMinutes()<=9){
-                minuto = "0" + horatotal.getMinutes();
+            let minutoAux = horatotal.getMinutes();
+            if(minutoAux>=0 && minutoAux<=9){
+                minuto = "0" + minutoAux;
             }else{
                 minuto = horatotal.getMinutes();
             }
 
-            if(horatotal.getSeconds()>=0 && horatotal.getSeconds()<=9){
-                segundo = "0" + horatotal.getSeconds();
+            let segundoAux = horatotal.getSeconds();
+
+            if(segundoAux>=0 && segundoAux<=9){
+                segundo = "0" + segundoAux;
             }else{
                 segundo = horatotal.getSeconds();
             }
 
             var horafinal = hora + ":" + minuto + ":" + segundo;
+
+            console.log("Fechaaaaa:" + fecha);
+            console.log("Hora fin:" + horafinal);
     const select_query=`SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
     FROM(
         SELECT *
@@ -1079,44 +1165,54 @@ app.get('/combTodos',(req, res) => {
     var fechatotal = new Date();
             var mes;
             var dia;
-            if(fechatotal.getMonth()+1>=0 && fechatotal.getMonth()+1<=9){
+            let fechaAux = fechatotal.getMonth()+1;
+            if(fechaAux>=0 && fechaAux<=9){
                 //console.log("Entre aquí");
-                mes = "0" + fechatotal.getMonth()+1;
-
+                console.log(fechatotal.getMonth());
+                console.log(fechaAux);
+                console.log(fechaAux.toString());
+                mes = "0" + fechaAux;
             }else{
                 mes = fechatotal.getMonth() + 1;
             }
-            if(fechatotal.getDate()>=0 && fechatotal.getDate<=9){
-                dia = "0" + fechatotal.getDate();
+            let diaAux = fechatotal.getDate();
+            if(diaAux>=0 && diaAux<=9){
+                dia = "0" + diaAux;
             }else{
                 dia = fechatotal.getDate();
             }
-
             var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
 
     var horatotal =  new Date();
             var hora;
             var minuto;
             var segundo;
-            if(horatotal.getHours()>=0 && horatotal.getHours()<=9){
-                hora = "0" + horatotal.getHours();
+            let horaAux = horatotal.getHours();
+            if(horaAux>=0 && horaAux<=9){
+                hora = "0" + horaAux;
             }else{
                 hora = horatotal.getHours();
             }
 
-            if(horatotal.getMinutes()>=0 && horatotal.getMinutes()<=9){
-                minuto = "0" + horatotal.getMinutes();
+            let minutoAux = horatotal.getMinutes();
+            if(minutoAux>=0 && minutoAux<=9){
+                minuto = "0" + minutoAux;
             }else{
                 minuto = horatotal.getMinutes();
             }
 
-            if(horatotal.getSeconds()>=0 && horatotal.getSeconds()<=9){
-                segundo = "0" + horatotal.getSeconds();
+            let segundoAux = horatotal.getSeconds();
+
+            if(segundoAux>=0 && segundoAux<=9){
+                segundo = "0" + segundoAux;
             }else{
                 segundo = horatotal.getSeconds();
             }
 
             var horafinal = hora + ":" + minuto + ":" + segundo;
+
+            console.log("Fechaaaaa:" + fecha);
+            console.log("Hora fin:" + horafinal);
     const select_query=`SELECT c.id, c.hito,c.estado, DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin,IFNULL(cf.horafin, '${horafinal}')  as horafin
     FROM(
         SELECT *
@@ -1142,47 +1238,59 @@ app.get('/combTodos',(req, res) => {
 
 app.get('/combTodos2',(req, res) => {
 
+    console.log("Que pasaaaaaaaa");
+
     var fechatotal = new Date();
             var mes;
             var dia;
-            if(fechatotal.getMonth()+1>=0 && fechatotal.getMonth()+1<=9){
+            let fechaAux = fechatotal.getMonth()+1;
+            if(fechaAux>=0 && fechaAux<=9){
                 //console.log("Entre aquí");
-                mes = "0" + fechatotal.getMonth()+1;
-
+                console.log(fechatotal.getMonth());
+                console.log(fechaAux);
+                console.log(fechaAux.toString());
+                mes = "0" + fechaAux;
             }else{
                 mes = fechatotal.getMonth() + 1;
             }
-            if(fechatotal.getDate()>=0 && fechatotal.getDate<=9){
-                dia = "0" + fechatotal.getDate();
+            let diaAux = fechatotal.getDate();
+            if(diaAux>=0 && diaAux<=9){
+                dia = "0" + diaAux;
             }else{
                 dia = fechatotal.getDate();
             }
-
             var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
 
     var horatotal =  new Date();
             var hora;
             var minuto;
             var segundo;
-            if(horatotal.getHours()>=0 && horatotal.getHours()<=9){
-                hora = "0" + horatotal.getHours();
+            let horaAux = horatotal.getHours();
+            if(horaAux>=0 && horaAux<=9){
+                hora = "0" + horaAux;
             }else{
                 hora = horatotal.getHours();
             }
 
-            if(horatotal.getMinutes()>=0 && horatotal.getMinutes()<=9){
-                minuto = "0" + horatotal.getMinutes();
+            let minutoAux = horatotal.getMinutes();
+            if(minutoAux>=0 && minutoAux<=9){
+                minuto = "0" + minutoAux;
             }else{
                 minuto = horatotal.getMinutes();
             }
 
-            if(horatotal.getSeconds()>=0 && horatotal.getSeconds()<=9){
-                segundo = "0" + horatotal.getSeconds();
+            let segundoAux = horatotal.getSeconds();
+
+            if(segundoAux>=0 && segundoAux<=9){
+                segundo = "0" + segundoAux;
             }else{
                 segundo = horatotal.getSeconds();
             }
 
             var horafinal = hora + ":" + minuto + ":" + segundo;
+
+            console.log("Fechaaaaa:" + fecha);
+            console.log("Hora fin:" + horafinal);
     const select_query=`SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
     FROM(
         SELECT *

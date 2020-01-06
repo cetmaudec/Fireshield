@@ -1,11 +1,9 @@
-import { Component, OnInit ,NgModule} from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators,ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit} from '@angular/core';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient , HttpHeaders} from '@angular/common/http';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {Router} from '@angular/router';
 import swal from'sweetalert2';
-import { BrigadasComponent } from '../brigadas/brigadas.component';
-import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-unirse-combate',
@@ -13,11 +11,40 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./unirse-combate.component.css']
 })
 export class UnirseCombateComponent implements OnInit {
+
+  /*
+    Variables utilizadas para que los jefes de brigada puedan unir alguna de sus brigadas a un combate en especifico. 
+  */
+
+  // Variable que almacena el id de combate al cual el jefe de brigada desea unir alguna de sus brigadas. Se obtiene por ruta.
+
   id_combate:any;
+
+  // Variable que obtiene el rut del usuario actual.
+
   rut:any;
+
+  /*
+    Variable que almacena la informacion de todas las brigadas que están a cargo del usuario. Solo corresponde para jefes de 
+    brigada.
+  */
+  
   brigadas$: any = [];
+  
+  // Variable de tipo FormGroup que permite trabajar el formulario para unirse a cierto combate.
+
   unirseForm: FormGroup;
+
+  // Variable que almacena el cargo del usuario de la sesión actual.
+  
   cargo:any;
+
+  /*
+    En el constructor se obtiene el cargo del usuario actual, además de inicializar el formulario con valores vacíos. 
+    Por otro lado, se declaran variables que serán útiles para realizar consultas a la base de datos a través 
+    del server (HttpClient) y para redirigir luego de unirse al combate.
+  */
+
   constructor(private rutaActiva: ActivatedRoute,private formBuilder: FormBuilder,private http: HttpClient,private router: Router) {
     this.cargo=localStorage.getItem('cargo');
     this.id_combate=this.rutaActiva.snapshot.paramMap.get('id');
@@ -28,6 +55,8 @@ export class UnirseCombateComponent implements OnInit {
     });
     
    }
+
+  // En el OnInit, se obtienen todas las brigadas pertenecientes al usuario de la sesión actual. 
 
   ngOnInit() {
    
@@ -40,14 +69,20 @@ export class UnirseCombateComponent implements OnInit {
       
     })
     this.rut =localStorage.getItem('user');
-    console.log(this.rut)
 
   }
   async getnBrigadas(){
     this.brigadas$ = await this.http.get('http://localhost:8000/nbrigadas'+localStorage.getItem('user')).toPromise();
-    console.log("holaaaa "+this.brigadas$.data[2].nombre);
       
   }
+
+  /*
+    Método que es llamado cuando se oprime el botón de unirse. Se realiza un post en el server y de
+    acuerdo a la respuesta que este mismo entrege, se despliega una pop-up en la pantalla. Si el server indica
+    que se realizó correctamente la inserción, se desplegará el mensaje "Brigada unida a combate correctamente", en caso
+    contrario, se despliega el mensaje "Error al unir a combate". Además, se redirige al usuario a
+    la pantalla en donde se muestran todos los combates por brigada.
+  */
 
   onSubmit(){
     console.log("llegueee")

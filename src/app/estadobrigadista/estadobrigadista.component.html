@@ -118,19 +118,7 @@
                 <div >
                     <ul class="theplan3">
                             <agm-map (mapClick) = "close_window(infoWindow, gm)" #gm [zoom]="15" [mapTypeId]="'satellite'" *ngFor="let brigadista of datoActual$;" [latitude]="brigadista.latidud" [longitude]="brigadista.longitud">
-                                    <!--
-                                    <agm-marker #m [latitude]="brigadista.latidud" [longitude]="brigadista.longitud" [iconUrl]="iconAct" (mouseOver)="onMouseOver(infoWindow,gm)">
-                                        
-                                       
-                                
-                                        
-                                   
-                                        <agm-info-window #infoWindow>
-                                            <button [routerLink]="['/estadobrigadista', brigadista.rut]">{{brigadista.nombre}} {{brigadista.apellidoP}} {{brigadista.apellidoM}}</button>
-                                        </agm-info-window>
-                                           
-                                        </agm-marker>
-                                        -->
+              
 
                                         <agm-polyline  [strokeColor]="'red'">
                                             <ng-container *ngFor="let pos of ultimasPosicionesfinal$; let i = index;">
