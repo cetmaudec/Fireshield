@@ -1,8 +1,9 @@
 import { Component, OnInit ,NgModule} from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators,ReactiveFormsModule } from '@angular/forms';
-import { HttpClient , HttpHeaders} from '@angular/common/http';
+import { HttpClient , HttpHeaders,HttpParams} from '@angular/common/http';
 import {Router} from '@angular/router';
 import swal from'sweetalert2';
+import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-add-brigadista',
@@ -33,6 +34,9 @@ export class AddBrigadistaComponent implements OnInit {
 
   pulserasNoUsadas$:any=[];
 
+  n_brigada:any;
+  nombre_brigada:any;
+
   /*
     En el constructor se inicializa el formulario con valores vacíos. Además, se declaran variables que serán útiles
     para realizar consultas a la base de datos a través del server (HttpClient) y para redirigir luego de añadir al nuevo
@@ -40,7 +44,14 @@ export class AddBrigadistaComponent implements OnInit {
     tengan un correcto formato.
   */
 
-  constructor(private formBuilder: FormBuilder,private http: HttpClient,private router: Router) { 
+  constructor(private rutaActiva: ActivatedRoute, private formBuilder: FormBuilder,private http: HttpClient,private router: Router) { 
+
+    this.n_brigada=this.rutaActiva.snapshot.paramMap.get('id');
+
+    // Se obtiene el nombre de la brigada de la que se desean conocer sus brigadistas.
+
+    this.nombre_brigada=this.rutaActiva.snapshot.paramMap.get('id2');
+    console.log(this.n_brigada,this.nombre_brigada)
     this.BrigadistaForm =  this.formBuilder.group({
       nombre: new FormControl('',Validators.required),
       apellidoP: new FormControl('',Validators.required),
@@ -48,9 +59,9 @@ export class AddBrigadistaComponent implements OnInit {
       rut: new FormControl('',[Validators.required, Validators.pattern('[0-9]+.+[0-9]+.+[0-9]+-[0-9kK]{1}$')]),
       f_nacimiento: new FormControl('',Validators.required),
       correo: new FormControl('',[Validators.required, Validators.email]),
-      n_brigada: new FormControl('',Validators.required),
+     
       cargo: new FormControl('',Validators.required),
-      nombre_brigada: new FormControl('',Validators.required),
+     
       peso: new FormControl('',Validators.required),
       altura: new FormControl('',Validators.required),
       pulsera: new FormControl('',Validators.required),
@@ -65,6 +76,7 @@ export class AddBrigadistaComponent implements OnInit {
   */
 
   async ngOnInit() {
+   
 
     // Método que obtiene el nombre de todas las brigadas.
 
@@ -114,12 +126,16 @@ export class AddBrigadistaComponent implements OnInit {
 
   onSubmit(){
     console.log("entre");
+    console.log(this.BrigadistaForm.value)
+    
     if(this.BrigadistaForm.value!=null){
-      this.http.post('http://localhost:8000/addBrigadista', this.BrigadistaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      console.log(this.n_brigada, this.nombre_brigada)
+      let params = new HttpParams().set("n_brigada", this.n_brigada).set("nombre_brigada",this.nombre_brigada);
+      this.http.post('http://localhost:8000/addBrigadista', this.BrigadistaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params:params}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Registro exitoso de brigadista').then(() => {
-                this.router.navigate(['/brigadistas/'+this.BrigadistaForm.value.n_brigada+'/'+this.BrigadistaForm.value.nombre_brigada]);
+                this.router.navigate(['/brigadistas/'+this.n_brigada+'/'+this.nombre_brigada]);
                 
               }
             );

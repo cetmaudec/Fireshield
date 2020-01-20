@@ -74,6 +74,8 @@
                           <label for="rut"></label>
                           <input type="text" formControlName="rut" placeholder="Rut"required><br>
                           <div *ngIf="PersonalForm.get('rut').hasError('required')"><span>Rut requerido</span></div>
+                          <div *ngIf="PersonalForm.get('rut').hasError('pattern')"><span>Formato de rut Incorrecto</span></div>
+
                       </div>
                     </div>
                   <div class="row">
@@ -86,12 +88,8 @@
                         
                     </div>
                 <div class="row">
-                    <div class="column" >
-                        <label for="usuario"></label>
-                        <input type="text" formControlName="usuario" placeholder="Usuario" required><br>
-                        <div *ngIf="PersonalForm.get('usuario').hasError('required')"><span>Usuario requerido</span></div>
-                      </div>
-                      <div class="column" >
+                    
+                      <div class="column2" >
                           <label for="pass"></label>
                           <input type="password" formControlName="pass" placeholder="Contraseña"required>
                           

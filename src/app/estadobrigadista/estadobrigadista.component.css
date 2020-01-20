@@ -48,9 +48,9 @@ body {font-family: 'Playfair Display', serif;}
   -webkit-animation: fadeEffect 1s;
   animation: fadeEffect 1s;
   background-image: linear-gradient(90deg,#e4bc96cc 0%, #725a43 100%);
-  	background-image: -moz-linear-gradient(top, #e4bc96cc 0%, #725a43 100%);
-  	background-image: -webkit-linear-gradient(top, #e4bc96cc 0%, #725a43 100%);
-  	background-image: linear-gradient(to bottom, #e4bc96cc 0%, #725a43 100%);
+      background-image: -moz-linear-gradient(top, #e4bc96cc 0%, #725a43 100%);
+      background-image: -webkit-linear-gradient(top, #e4bc96cc 0%, #725a43 100%);
+      background-image: linear-gradient(to bottom, #e4bc96cc 0%, #725a43 100%);
 }
 
 /* Fade in tabs */
@@ -65,8 +65,8 @@ body {font-family: 'Playfair Display', serif;}
 }
 
 .tabs-title {
-	float: none;
-	display: inline-block;
+    float: none;
+    display: inline-block;
 }
 
 
@@ -76,11 +76,11 @@ body {font-family: 'Playfair Display', serif;}
   font-size: 16px;
   justify-content: center;
   font-family: 'Playfair Display', serif;
-  
+
 }
 
 .pricingdiv ul.theplan{
-  
+
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -88,10 +88,10 @@ body {font-family: 'Playfair Display', serif;}
   width: 450px; /* width of each table */
   height: 320px;
  /* spacing between tables */
-  
-  
+
+
   transition: all .5s;
- 
+
 }
 
 .pricingdiv ul.theplan2{
@@ -109,9 +109,9 @@ body {font-family: 'Playfair Display', serif;}
   border: 3px solid rgb(26, 26, 26);
   transition: all .5s;
   background-image: linear-gradient(90deg,#d6e2e6d7 0%, #707c80d7 100%);
-  	background-image: -moz-linear-gradient(top, #d6e2e6d7 0%, #707c80d7 100%);
-  	background-image: -webkit-linear-gradient(top, #d6e2e6d7 0%, #707c80d7 100%);
-  	background-image: linear-gradient(to bottom, #d6e2e6d7 0%, #707c80d7 100%);
+      background-image: -moz-linear-gradient(top, #d6e2e6d7 0%, #707c80d7 100%);
+      background-image: -webkit-linear-gradient(top, #d6e2e6d7 0%, #707c80d7 100%);
+      background-image: linear-gradient(to bottom, #d6e2e6d7 0%, #707c80d7 100%);
 }
 
 .pricingdiv ul.theplan3{
@@ -127,7 +127,7 @@ body {font-family: 'Playfair Display', serif;}
   margin-bottom: 2em;
   margin-top:  2em;;
   transition: all .5s;
-  
+
 }
 
 
@@ -150,9 +150,9 @@ body {font-family: 'Playfair Display', serif;}
 .pricingdiv ul.theplan img{
   width: 50%;
   height: auto;
-  
-  
-  
+
+
+
 }
 
 .pricingdiv ul.theplan li{
@@ -161,7 +161,7 @@ body {font-family: 'Playfair Display', serif;}
   font-weight: bold;
   text-align: center;
   padding: 20px 10px;
-  
+
   color: white;
 }
 
@@ -169,46 +169,46 @@ body {font-family: 'Playfair Display', serif;}
   font-weight: bold;
   text-align: center;
   padding: 20px 10px;
-  
+
   color: white;
-  
+
 }
 .pricingdiv ul.theplan li.title2{
   font-weight: bold;
   text-align: center;
   padding: 20px 10px;
   background-image: linear-gradient(90deg,#c49c48cc 0%, #244e0ccc 100%);
-  	background-image: -moz-linear-gradient(top, #c49c48cc 0%, #244e0ccc 100%);
-  	background-image: -webkit-linear-gradient(top, #c49c48cc 0%, #244e0ccc 100%);
-  	background-image: linear-gradient(to bottom, #c49c48cc 0%, #244e0ccc 100%);
+      background-image: -moz-linear-gradient(top, #c49c48cc 0%, #244e0ccc 100%);
+      background-image: -webkit-linear-gradient(top, #c49c48cc 0%, #244e0ccc 100%);
+      background-image: linear-gradient(to bottom, #c49c48cc 0%, #244e0ccc 100%);
   color: white;
   box-shadow: 0 -10px 5px rgba(0,0,0,.1) inset;
-  
+
 }
 
 .pricingdiv ul.theplan:nth-of-type(2) li.title{
   background: rgb(196, 107, 48);
   color: white;
 }
-    
+
 .pricingdiv ul.theplan:nth-of-type(3) li.title{
   background: rgb(210, 117, 251);
   color: white;
 }
 
 .pricingdiv ul.theplan li b{
- 
+
 }
 .pricingdiv ul.theplan li.title b{
   font-size: 200%;
 }
 .pricingdiv ul.theplan li.pie{
- 
+
   background-image: linear-gradient(90deg,#523c0db2 0%, #201906b2 100%);
-  	background-image: -moz-linear-gradient(top, #523c0db2 0%, #201906b2 100%);
-  	background-image: -webkit-linear-gradient(top, #523c0db2 0%, #201906b2 100%);
-  	background-image: linear-gradient(to bottom, #523c0db2 0%, #201906b2 100%);
-  
+      background-image: -moz-linear-gradient(top, #523c0db2 0%, #201906b2 100%);
+      background-image: -webkit-linear-gradient(top, #523c0db2 0%, #201906b2 100%);
+      background-image: linear-gradient(to bottom, #523c0db2 0%, #201906b2 100%);
+
 }
 
 .pricingdiv ul.theplan:last-of-type{ /* remove right margin in very last table */
@@ -219,7 +219,7 @@ body {font-family: 'Playfair Display', serif;}
 .pricingdiv ul.theplan li:last-of-type{
   text-align: center;
   margin-top: auto; /*align last LI (price botton li) to the very bottom of UL */
-}  
+}
 
 .pricingdiv ul.theplan2:last-of-type{ /* remove right margin in very last table */
   margin-right: 0;
@@ -229,7 +229,7 @@ body {font-family: 'Playfair Display', serif;}
 .pricingdiv ul.theplan2 li:last-of-type{
   text-align: center;
   margin-top: auto; /*align last LI (price botton li) to the very bottom of UL */
-}  
+}
 
 .pricingdiv ul.theplan3:last-of-type{ /* remove right margin in very last table */
   margin-right: 0;
@@ -239,7 +239,7 @@ body {font-family: 'Playfair Display', serif;}
 .pricingdiv ul.theplan3 li:last-of-type{
   text-align: center;
   margin-top: auto; /*align last LI (price botton li) to the very bottom of UL */
-}  
+}
 
 .pricingdiv a.pricebutton{
   background: rgb(228, 48, 48);
@@ -255,140 +255,140 @@ body {font-family: 'Playfair Display', serif;}
 }
 
 @media only screen and (max-width: 1400px) {
-	
- 
+
+
   .pricingdiv ul.theplan3{
-   
+
     width: 800px; /* width of each table */
    height: 400px;
-    
+
   }
-  
+
 }
 @media only screen and (max-width: 1100px) {
-	
+
   .pricingdiv ul.theplan2{
-   
+
     width: 600px; /* width of each table */
    height: 350px;
-    
+
   }
   .pricingdiv ul.theplan3{
-   
+
     width: 600px; /* width of each table */
    height: 400px;
-    
+
   }
-  
+
 }
 
 @media only screen and (max-width: 900px) {
-	
+
   .pricingdiv ul.theplan2{
-   
+
     width: 500px; /* width of each table */
    height: 300px;
-    
+
   }
   .pricingdiv ul.theplan3{
-   
+
     width: 450px; /* width of each table */
    height: 400px;
-    
+
   }
-  
+
 }
 
 @media only screen and (max-width: 750px) {
-	.pricingdiv ul.theplan{
-   
+    .pricingdiv ul.theplan{
+
     width: 400px; /* width of each table */
    height: 300px;
-    
+
   }
   .pricingdiv ul.theplan2{
-   
+
     width: 400px; /* width of each table */
    height: 250px;
-    
+
   }
   .pricingdiv ul.theplan3{
-   
+
     width: 400px; /* width of each table */
    height: 400px;
-    
+
   }
-  
+
 }
 
 
 @media only screen and (max-width: 600px) {
-	.pricingdiv ul.theplan{
-   
+    .pricingdiv ul.theplan{
+
     width: 300px; /* width of each table */
    height: 300px;
-    
+
   }
   .pricingdiv ul.theplan2{
-   
+
     width: 300px; /* width of each table */
    height: 200px;
-    
+
   }
   .pricingdiv ul.theplan3{
-   
+
     width: 300px; /* width of each table */
    height: 300px;
-    
+
   }
-  
+
 }
 @media only screen and (max-width: 500px) {
-	.pricingdiv ul.theplan{
-   
+    .pricingdiv ul.theplan{
+
     width: 200px; /* width of each table */
    height: 300px;
-    
+
   }
   .pricingdiv ul.theplan2{
-   
+
     width: 200px; /* width of each table */
    height: 150px;
-    
+
   }
   .pricingdiv ul.theplan3{
-   
+
     width: 300px; /* width of each table */
    height: 300px;
-    
+
   }
-  
- 
+
+
 }
 @media only screen and (max-width: 450px) {
-	
+
   .pricingdiv ul.theplan3{
-   
+
     width: 250px; /* width of each table */
    height: 300px;
-    
+
   }
-  
- 
-  
+
+
+
 }
 
 @media only screen and (max-width: 400px) {
-	
+
   .pricingdiv ul.theplan3{
-   
+
     width: 200px; /* width of each table */
    height: 300px;
-    
+
   }
-  
- 
-  
+
+
+
 }
 
 
@@ -417,15 +417,15 @@ body {font-family: 'Playfair Display', serif;}
 .frow .col3 {
   width: 28.26%;
     }
-    
+
 .frow .col2 {
     width: 45%;
-}    
+}
 
 
 @media only screen and (max-width: 480px) {
-	.col {  margin: 1% 0 1% 0%;  margin-left: 0 !important;}
-	.frow .col2, .frow .col3, .frow .col4 { width: 100%; }
+    .col {  margin: 1% 0 1% 0%;  margin-left: 0 !important;}
+    .frow .col2, .frow .col3, .frow .col4 { width: 100%; }
 }
 
 
@@ -436,26 +436,26 @@ table {
     width: 100%;
     color: white;
     background-image: linear-gradient(90deg,#52bd58cc 0%, #1f4921 100%);
-  	background-image: -moz-linear-gradient(top, #52bd58cc 0%, #1f4921 100%);
-  	background-image: -webkit-linear-gradient(top, #52bd58cc 0%, #1f4921 100%);
+      background-image: -moz-linear-gradient(top, #52bd58cc 0%, #1f4921 100%);
+      background-image: -webkit-linear-gradient(top, #52bd58cc 0%, #1f4921 100%);
     background-image: linear-gradient(to bottom, #52bd58cc 0%, #1f4921 100%);
     border: rgba(0, 78, 39, 0.877) 2px solid;
   }
-  
+
   th, td {
     text-align: left;
-    padding: 8px;  
+    padding: 8px;
   }
 
-  
+
   tr:nth-child(even){
     background-image: linear-gradient(90deg,#da9e66e7 0%, #da9e66e7 100%);
-  	background-image: -moz-linear-gradient(top, #da9e66e7 0%, #da9e66e7 100%);
-  	background-image: -webkit-linear-gradient(top, #da9e66e7 0%, #da9e66e7 100%);
-  	background-image: linear-gradient(to bottom, #da9e66e7 0%, #da9e66e7 100%);
+      background-image: -moz-linear-gradient(top, #da9e66e7 0%, #da9e66e7 100%);
+      background-image: -webkit-linear-gradient(top, #da9e66e7 0%, #da9e66e7 100%);
+      background-image: linear-gradient(to bottom, #da9e66e7 0%, #da9e66e7 100%);
       border: rgba(0, 78, 39, 0.877) 2px solid;
-    } 
- 
+    }
+
 
 
  img{
@@ -477,8 +477,8 @@ table {
 }
 
 @media only screen and (max-width: 500px) {
-	
-  
+
+
   .tiempo{
     margin-top: -7.7%;
     margin-left: 0%;
@@ -490,7 +490,7 @@ table {
     color: white;
     text-align: center;
   }
-  
+
 }
 h1 {
   text-align: center;
@@ -517,9 +517,17 @@ h1 {
     height: 55vh;
     background-color: rgba(197, 206, 201, 0.877);
 }
+.map-container {
 
-agm-map{
-  width: 100%; /* width of each table */
+
+}
+
+.map-frame {
+  border: 2px solid black;
   height: 100%;
 }
 
+#map {
+  width: 55vw;
+  height: 60vh;
+}

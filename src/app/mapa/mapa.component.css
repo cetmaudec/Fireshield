@@ -1,9 +1,10 @@
-agm-map{
-    width: 90%;
-    height: 70vh;
-   
-  }
-  .mapa{
-    margin-top: 5%;
-    margin-left: 10%;
-  }
+.map-container {
+  margin-top: 5%;
+  margin-left: 10%;
+}
+
+
+#map {
+  width: 90%;
+  height: 70vh;
+}

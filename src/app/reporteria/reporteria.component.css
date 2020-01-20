@@ -6,9 +6,9 @@
   background-image: -moz-linear-gradient(top, #c49c48cc 0%, #806223 100%);
   background-image: -webkit-linear-gradient(top, #c49c48cc 0%, #806223 100%);
   background-image: linear-gradient(to bottom, #c49c48cc 0%, #806223 100%);
-  max-width: 80%;
-  margin-left: 10%;
-  margin-right: 10.45%;
+  max-width: 90%;
+  margin-left: 5%;
+ 
 }
 .tab button.tablinks span.badge {
 	
@@ -91,13 +91,13 @@
 
 /* Style the tab content */
 .tabcontent {
-  max-width: 78.55%;
-  margin-left: 10%;
+  max-width: 90%;
+  margin-left: 5%;
   margin-bottom: 10%;
 
-  margin-right: 10.45%;
+  
   display: none;
-  padding: 6px 12px;
+  padding: 6px 1px;
   -webkit-animation: fadeEffect 1s;
   animation: fadeEffect 1s;
   background-image: linear-gradient(90deg,#e4bc96cc 0%, #725a43 100%);

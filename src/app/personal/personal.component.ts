@@ -85,7 +85,6 @@ export class PersonalComponent implements OnInit {
       apellidoM: new FormControl('',Validators.required),
       rut: new FormControl('',[Validators.required, Validators.pattern('[0-9]+.+[0-9]+.+[0-9]+-[0-9kK]{1}$')]),
       correo: new FormControl('',[Validators.required, Validators.email]),
-      usuario: new FormControl('',Validators.required),
       pass: new FormControl('',Validators.required),
       cargo: new FormControl('',Validators.required),
       

@@ -50,6 +50,7 @@ export class CombateBrigComponent implements OnInit {
   */
   
   constructor(private http: HttpClient,private rutaActiva: ActivatedRoute,private router: Router) { 
+    
     this.id=this.rutaActiva.snapshot.paramMap.get('id');
     this.cargo=localStorage.getItem('cargo');
   }
@@ -58,7 +59,7 @@ export class CombateBrigComponent implements OnInit {
     En el OnInit se llaman los métodos necesarios para que se muestre correctamente la información
     del combate que se quiere conocer.
   */
-
+ 
   async ngOnInit() {
    
   /* 
@@ -73,6 +74,7 @@ export class CombateBrigComponent implements OnInit {
    this.getnBrigadas();
 
   }
+ 
 
   getCombates(){
     this.http.get('http://localhost:8000/combatesBrig'+this.id).subscribe(resp =>

@@ -67,8 +67,9 @@
                     <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
                     <td data-label="Hora Inicio:">{{comb.hora}}</td>
                     <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                    <button  class="button" (click)="generatePdfActivos(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,i,comb.nfatigaAlta, comb.nfatigaMedia)" >Descargar</button>
-                    
+                    <button  class="button" (click)="generatePdfActivos(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,i,comb.nfatigaAlta, comb.nfatigaMedia)" >PDF</button>
+                    <button  class="button" (click)="generateCsvActivos(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,i,comb.nfatigaAlta, comb.nfatigaMedia)" >CSV</button>
+
                   </tr>
                 </ng-container>
 
@@ -82,8 +83,9 @@
                       <td data-label="Hora Inicio:">{{comb.hora}}</td>
                       <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
                       
-                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)">Descargar</button>
-                      
+                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)">PDF</button>
+                      <button  class="button" (click)="generateCsv(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >CSV</button>
+
                     </tr>
                   </ng-container>
 
@@ -96,8 +98,9 @@
                       <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
                       <td data-label="Hora Inicio:">{{comb.hora}}</td>
                       <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >Descargar</button>
-                      
+                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >PDF</button>
+                      <button  class="button" (click)="generateCsv(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >CSV</button>
+
                     </tr>
                   </ng-container>
 
@@ -110,8 +113,9 @@
                       <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
                       <td data-label="Hora Inicio:">{{comb.hora}}</td>
                       <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >Descargar</button>
-                      
+                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >PDF</button>
+                      <button  class="button" (click)="generateCsv(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >CSV</button>
+
                     </tr>
                   </ng-container>
 
@@ -124,8 +128,9 @@
                       <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
                       <td data-label="Hora Inicio:">{{comb.hora}}</td>
                       <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >Descargar</button>
-                      
+                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >PDF</button>
+                      <button  class="button" (click)="generateCsv(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >CSV</button>
+
                     </tr>
                   </ng-container>
 
@@ -174,10 +179,8 @@
                 <th scope="col">Nombre Brigada</th>
                 <th scope="col">N° Brigada</th>
                 <th scope="col">ID Combate</th>
-                <th scope="col">N° Fatiga Media</th>
-                <th scope="col">N° Fatiga Alta</th>
-                <th scope="col">fecha inicio</th>
-                <th scope="col">fecha fin</th>
+                <th scope="col">Fecha Inicio</th>
+                <th scope="col">Hora Inicio</th>
                 <th scope="col">Tiempo en Combate</th>
                 <th scope="col">Estado</th>
                 
@@ -187,19 +190,19 @@
         <tbody>
         <ng-container *ngIf="eleccion2$ == 'Último Mes2'">
           <tr  *ngFor="let comb of combmes2$.data; let i = index ">
-              <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
+            <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
             <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
             <td data-label="ID Combate:">{{comb.id}}</td>
-            <td data-label="N° Fatiga Media:">{{comb.nMedia}}</td>
-            <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
-            <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
-            <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
-            <td data-label="tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
+            <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
+            <td data-label="Hora Inicio:">{{comb.hora}}</td>
+           
+            <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
             <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
             <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
             
-            <button  class="button" >Descargar</button>
-            
+            <button  class="button" (click)="generatePdfBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">PDF</button>
+            <button  class="button" (click)="generateCsvBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">CSV</button>
+
           </tr>
         </ng-container>
 
@@ -208,15 +211,16 @@
               <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
             <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
             <td data-label="ID Combate:">{{comb.id}}</td>
-            <td data-label="N° Fatiga Media:">{{comb.nMedia}}</td>
-            <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
-            <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
-            <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
-            <td data-label="tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
+            
+            <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
+            <td data-label="Hora Inicio:">{{comb.hora}}</td>
+            
+            <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
             <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
             <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
             
-            <button  class="button" >Descargar</button>
+            <button  class="button" (click)="generatePdfBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">PDF</button>
+            <button  class="button" (click)="generateCsvBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">CSV</button>
             
           </tr>
         </ng-container>
@@ -225,15 +229,16 @@
               <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
             <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
             <td data-label="ID Combate:">{{comb.id}}</td>
-            <td data-label="N° Fatiga Media:">{{comb.nMedia}}</td>
-            <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
-            <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
-            <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
-            <td data-label="tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
+            
+            <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
+            <td data-label="Hora Inicio:">{{comb.hora}}</td>
+          
+            <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
             <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
             <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
             
-            <button  class="button" >Descargar</button>
+            <button  class="button" (click)="generatePdfBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">PDF</button>
+            <button  class="button" (click)="generateCsvBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">CSV</button>
             
           </tr>
         </ng-container>
@@ -243,15 +248,16 @@
               <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
             <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
             <td data-label="ID Combate:">{{comb.id}}</td>
-            <td data-label="N° Fatiga Media:">{{comb.nMedia}}</td>
-            <td data-label="N° Fatiga Alta:">{{comb.nAlta}}</td>
-            <td data-label="fecha inicio:">{{comb.fecha}} : {{comb.hora}}</td>
-            <td data-label="fecha fin:">{{comb.fechafin}} : {{comb.horafin}}</td>
-            <td data-label="tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
+            
+            <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
+            <td data-label="Hora Inicio:">{{comb.hora}}</td>
+          
+            <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
             <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
             <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
             
-            <button  class="button" >Descargar</button>
+            <button  class="button" (click)="generatePdfBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">PDF</button>
+            <button  class="button" (click)="generateCsvBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">CSV</button>
             
           </tr>
         </ng-container>

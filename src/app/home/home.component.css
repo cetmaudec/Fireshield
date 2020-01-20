@@ -1,1 +1,11 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+.carousel-inner{
+    max-width: 75%;
+    margin-left: 12.5%;
+    max-height: 80vh;
+}
+
+.img-carousel{
+    width: 75%;
+    height: 80vh;
+   
+}

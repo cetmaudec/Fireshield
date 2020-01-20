@@ -13,12 +13,9 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { MatCarouselModule } from '@ngmodule/material-carousel';
-import {MatTabsModule} from '@angular/material/tabs';
-import {TabsModule} from 'ngx-tabset';
-import { IgxCarouselModule } from 'igniteui-angular';
-import {CarouselModule} from "ngx-carousel-lib";
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';  
+import { CarouselModule, WavesModule } from 'angular-bootstrap-md'
 
 
 //I keep the new line
@@ -97,21 +94,20 @@ export function tokenGetter() {
     ChartsModule,
     MatDialogModule,
     BrowserAnimationsModule,
-    IgxCarouselModule,
+    
     NgSelectModule,
     GoogleMapsModule,
     NgbModule,
   
-    MatCarouselModule.forRoot(),
-    MatTabsModule,
-    TabsModule,
+ 
     CarouselModule,
+    WavesModule,
     
     
 
 
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyAZooAkDjnn2bF4nrmvqrx3WrdlRBP38Ow',
+      
       libraries: ['places']
     }),
     JwtModule.forRoot({

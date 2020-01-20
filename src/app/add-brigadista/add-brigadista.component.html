@@ -32,6 +32,7 @@
                 <label for="rut"></label>
             <input type="text" formControlName="rut" placeholder="Rut"required><br>
             <div *ngIf="BrigadistaForm.get('rut').hasError('required')"><span>Rut requerido</span></div>
+            <div *ngIf="BrigadistaForm.get('rut').hasError('pattern')"><span>Formato de rut Incorrecto</span></div>
               </div>
             </div>
 
@@ -65,33 +66,7 @@
         <fieldset>
             <legend>Brigada</legend>
 
-            <div class="row">
-                
-                    <div class="column" >
-                        
-                            <select formControlName="nombre_brigada" (change)="onChange($event.target.value);">
-                                    <option value="" class="option">Nombre Brigada</option>
-                                    <option *ngFor="let nombre of nombresbrigadas$.data" value="{{nombre.nombre}}" class="option">{{nombre.nombre}} - {{nombre.region}}</option>           
-                            </select>
-                            <div *ngIf="BrigadistaForm.get('nombre_brigada').hasError('required')"><span>Nombre de brigada requerido</span></div>
-                        
-                                   
-                    </div>
-                    <div class="column" >
-                        <select formControlName="n_brigada">
-                            <option value="" class="option">N° de Brigada</option>
-                            <option *ngFor="let nombre of brigadas$.data" value="{{nombre.n_brigada}}" class="option">{{nombre.n_brigada}}</option>           
-                       </select>
-             
-                        <div *ngIf="BrigadistaForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
-                    
-                    
-                     </div>
             
-              
-            
-             
-            </div>
            
         <div class="row">
             <div class="column" >
@@ -101,7 +76,7 @@
                   <option value="" class="option" disabled hidden selected>ID de Pulsera</option>
                   <option *ngFor="let pulseras of pulserasNoUsadas$.data" class="option">{{pulseras.id}}</option>
                 </select>
-                <div *ngIf="BrigadistaForm.get('pulsera').hasError('required')"><span>ID de pulsera requerido</span></div>
+                <div *ngIf="BrigadistaForm.get('pulsera').hasError('required')"><span>ID de pulsera requerida</span></div>
               </div>
             <div class="column" >
            <label for="cargo"></label>
@@ -129,7 +104,7 @@
                 <div class="column" >
                     <label for="altura">Altura</label>
                     <input type="number" step="0.1" min="0"  max="9.9" formControlName="altura" required><br>
-                    <div *ngIf="BrigadistaForm.get('altura').hasError('required')"><span>Altura requerido</span></div>
+                    <div *ngIf="BrigadistaForm.get('altura').hasError('required')"><span>Altura requerida</span></div>
                 </div>
               </div>
               
@@ -137,7 +112,7 @@
             </fieldset>
             
             <div class="submit">
-                <input [disabled]="!BrigadistaForm.valid" type="submit" value="Registrar" id="form_button" />
+                <input  type="submit" value="Registrar" id="form_button" />
               </div>
              
            

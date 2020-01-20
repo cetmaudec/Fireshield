@@ -35,7 +35,7 @@ const routes: Routes = [
   {path: 'estadobrigadista/:rut', component: EstadobrigadistaComponent,canActivate: [AuthGuard]},
   {path: 'brigadas', component: BrigadasComponent,canActivate: [AuthGuard]},
   {path: 'brigadistas/:id/:id2', component: BrigadistasComponent,canActivate: [AuthGuard]},
-  {path: 'addBrigadista', component: AddBrigadistaComponent,canActivate: [AuthGuard]},
+  {path: 'addBrigadista/:id/:id2', component: AddBrigadistaComponent,canActivate: [AuthGuard]},
   {path: 'modBrigadista/:id', component: ModBrigadistaComponent,canActivate: [AuthGuard]},
   {path: 'combates', component: CombatesComponent,canActivate: [AuthGuard]},
   {path: 'addbrigada', component: AddBrigadaComponent,canActivate: [AuthGuard]},

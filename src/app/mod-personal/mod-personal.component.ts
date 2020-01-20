@@ -45,7 +45,6 @@ export class ModPersonalComponent implements OnInit {
       rut: new FormControl('',[Validators.required, Validators.pattern('[0-9]+.+[0-9]+.+[0-9]+-[0-9kK]{1}$')]),
       cargo: new FormControl('',Validators.required),
       correo: new FormControl('',[Validators.required, Validators.email]),
-      usuario: new FormControl('',Validators.required),
       pass: new FormControl('',Validators.required)
     });
 

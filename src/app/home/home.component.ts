@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';  
-
+// For MDB Angular Free
+import { CarouselModule, WavesModule } from 'angular-bootstrap-md'
+import * as $ from 'jquery';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -25,10 +27,13 @@ export class HomeComponent implements  OnInit  {
   constructor() {  
     this.cargo=localStorage.getItem('cargo');
   }  
-  ngOnInit() {  
+  ngOnInit() {    
     
-    
-  }  
+  }
+  
+  
+  
+
 
  
 }

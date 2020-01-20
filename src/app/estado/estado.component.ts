@@ -173,7 +173,7 @@ export class EstadoComponent implements OnInit {
 
     this.altos$=await this.getnFatigadosAlto();
 
-    this.setDatosRandom();
+   // this.setDatosRandom();
 
     // Método que crea cada uno de los gráficos con sus datos correspondientes.
 

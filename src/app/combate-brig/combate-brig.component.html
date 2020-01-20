@@ -7,9 +7,12 @@
 </ng-template>
 
 
-<body>
+<div class="tabcontent">
+        
+        <h1 class="animated rotateIn">&bull;Brigadas en Combate {{id}}&bull;</h1>
         <button class="btn" *ngIf="cargo == 'jefe_brigada' "[routerLink]="['/unirseCombate', id]" ><span>Unirse</span></button>
         &nbsp;
+
         <table>
                 <thead>
                   <tr>
@@ -18,6 +21,7 @@
                     <th scope="col">ID Combate</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Hora</th>
+                    
                     <th scope="col">Estado</th>
                     <th *ngIf="cargo == 'jefe_brigada' " scope="col">Acción</th>
                     
@@ -31,8 +35,8 @@
                     <td data-label="ID Combate:">{{comb.id}}</td>
                     <td data-label="Fecha:">{{comb.fecha}}</td>
                     <td data-label="Hora:">{{comb.hora}}</td>
-                    <td data-label="Estado:">{{comb.estado}}</td>
-                    
+                    <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
 
                     <div *ngFor=" let brig of brigadas$.data">
                         <ng-container *ngIf="brig.n_brigada == comb.n_brigada && brig.nombre == comb.nombre_brigada;">
@@ -48,5 +52,5 @@
                   </tr>
                 </tbody>
               </table>
-        
-        </body>
+            </div>
+    

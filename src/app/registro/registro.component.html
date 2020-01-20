@@ -55,18 +55,11 @@
         <fieldset>
             <legend>Datos Usuario</legend>
 
-            <div class="row">
-              <div class="column" >
-                <label for="usuario"></label>
-                <input type="text" formControlName="usuario" placeholder="Usuario" required><br>
-                <div *ngIf="RegistroForm.get('usuario').hasError('required')"><span>Usuario requerido</span></div>
-              </div>
-              <div class="column" >
+           
                 <label for="pass"></label>
                 <input type="password" formControlName="pass" placeholder="Contraseña"required><br>
                 <div *ngIf="RegistroForm.get('pass').hasError('required')"><span>Contraseña requerida</span></div>
-              </div>
-            </div>
+             
             
            
             <div class="submit">

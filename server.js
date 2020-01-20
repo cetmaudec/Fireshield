@@ -309,7 +309,7 @@ app.get('/brigadas', (req, res) => {
 app.put('/modUsuario/:id', (req, res) => {
     var id=req.params.id;
     console.log(id);
-    const upd_query = `UPDATE usuarios SET usuario='${req.body.usuario}', pass=AES_ENCRYPT('${req.body.pass}','encriptado'), correo='${req.body.correo}', rut='${req.body.rut}', nombre='${req.body.nombre}', apellidoP = '${req.body.apellidoP}', apellidoM='${req.body.apellidoM}', cargo='${req.body.cargo}' WHERE rut =?;`
+    const upd_query = `UPDATE usuarios SET pass=AES_ENCRYPT('${req.body.pass}','encriptado'), correo='${req.body.correo}', rut='${req.body.rut}', nombre='${req.body.nombre}', apellidoP = '${req.body.apellidoP}', apellidoM='${req.body.apellidoM}', cargo='${req.body.cargo}' WHERE rut =?;`
     console.log(upd_query);
     con.query(upd_query, id, (err, result) => {
      console.log(result);
@@ -344,7 +344,73 @@ app.get('/personal/:id', (req, res) => {
 app.get('/brigadasCombate/:id', (req, res) => {
     var id=req.params.id;
     console.log(id);
-    const select_query=`select n_brigada from combatesbrigada where id=?;`
+    const select_query=`select n_brigada, nombre_brigada from combatesbrigada where id=?;`
+    console.log(select_query)
+    con.query(select_query,id, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/brigadistasParticipando/:id', (req, res) => {
+    var id=req.params.id;
+    console.log(id);
+    const select_query=`SELECT count(*) as nbrigadistas
+    from brigadistas as b,(
+        select n_brigada, nombre_brigada, id from combatesbrigada where id=?) as aux,
+
+        (
+        SELECT distinct(rut)
+        from datos
+        where id=?
+
+        ) as d
+
+    where b.n_brigada = aux.n_brigada and b.nombre_brigada = aux.nombre_brigada  and b.rut = d.rut`
+    console.log(select_query)
+    con.query(select_query,[id,id], (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
+
+
+app.get('/alta/:id', (req, res) => {
+    var id=req.params.id;
+    console.log(id);
+    const select_query=`select distinct(hf.rut), b.* from historialfatiga as hf, brigadistas as b where hf.idcombate = ? and hf.fatiga = 2 and hf.rut = b.rut order by b.n_brigada ASC, b.nombre_brigada ASC;`
+    console.log(select_query)
+    con.query(select_query,id, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/media/:id', (req, res) => {
+    var id=req.params.id;
+    console.log(id);
+    const select_query=`select distinct(hf.rut), b.* from historialfatiga as hf, brigadistas as b where hf.idcombate = ? and hf.fatiga = 1 and hf.rut = b.rut order by b.n_brigada ASC, b.nombre_brigada ASC;`
     console.log(select_query)
     con.query(select_query,id, (err, result) => {
      console.log(result);
@@ -377,6 +443,43 @@ app.get('/combatesFin/:id', (req, res) => {
     });
 });
 
+
+
+app.get('/brigadaFatigadosMedia/:id', (req, res) => {
+    var id=req.params.id;
+    console.log(id);
+    const select_query=`select distinct(h.rut), nombre, apellidoP, apellidoM ,nombre_brigada, n_brigada from historialfatiga as h, brigadistas as b where idcombate=? and fatiga=1 and h.rut=b.rut;`
+    console.log(select_query)
+    con.query(select_query,id, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/brigadaFatigadosAlta/:id', (req, res) => {
+    var id=req.params.id;
+    console.log(id);
+    const select_query=`select distinct(h.rut), nombre, apellidoP, apellidoM , nombre_brigada, n_brigada from historialfatiga as h, brigadistas as b where idcombate=? and fatiga=2 and h.rut=b.rut;`
+    console.log(select_query)
+    con.query(select_query,id, (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
 app.get('/combates', (req, res) => {
 
     const select_query=`SELECT *,DATE_FORMAT(fecha, '%d/%m/%y') as fecha FROM Combate;`
@@ -553,6 +656,7 @@ app.get('/pulseraAct/:id',(req, res) => {
 });
 
 app.get('/brigadistas', (req, res) => {
+    console.log("LLEGUEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
     var id=req.param('n_brigada');
     var id2 = req.param('nombre');
 
@@ -572,6 +676,221 @@ app.get('/brigadistas', (req, res) => {
      }
     });
 });
+
+app.get('/brigadistasFatiga', (req, res) => {
+   
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+
+    console.log("Holaaaa: " + id);
+    console.log("Holaaaa2: " + id2);
+    const select_query=`SELECT b.rut, b.nombre, b.apellidoP, b.apellidoM, DATE_FORMAT(h.fecha, '%Y-%m-%d') as fecha,  h.hora, h.fatiga
+    FROM (SELECT *,
+        row_number() OVER (PARTITION BY rut ORDER BY fecha DESC, hora DESC) as row_num
+      FROM historialfatiga) as h , brigadistas as b
+    WHERE h.row_num = 1 AND b.n_brigada=? AND b.nombre_brigada=? AND b.rut=h.rut;`
+    con.query(select_query,[id,id2], (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+app.get('/rutAlta', (req, res) => {
+
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+    var id3 = req.param('idcombate');
+
+    console.log("Holaaaa: " + id);
+    console.log("Holaaaa2: " + id2);
+    const select_query=`select distinct(ff.rut)
+    from fatigafin as ff, brigadistas as b
+    where b.rut = ff.rut and b.n_brigada = ? and b.nombre_brigada=? and idcombate = ? and fatiga = 2
+    order by rut desc;`
+    con.query(select_query,[id,id2,id3], (err, result) => {
+     console.log(result);
+     if (err){
+         console.log(err);
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/fatigaFinAlta', (req, res) => {
+
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+    var id3 = req.param('idcombate');
+
+    console.log("Holaaaa: " + id);
+    console.log("Holaaaa2: " + id2);
+    const select_query=`select ff.rut, ff.idcombate, ff.fatiga, DATE_FORMAT(ff.fecha, '%Y-%m-%d') as fecha, ff.hora, DATE_FORMAT(ff.fechafin, '%Y-%m-%d') as fechafin, ff.horafin
+    from fatigafin as ff, brigadistas as b
+    where ff.rut = b.rut and b.n_brigada = ? and b.nombre_brigada=? and idcombate = ? and fatiga = 2
+    order by ff.rut desc, ff.fechafin desc, ff.horafin desc;`
+
+    con.query(select_query,[id,id2,id3], (err, result) => {
+     console.log(result);
+     console.log(select_query);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/rutMedia', (req, res) => {
+
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+    var id3 = req.param('idcombate');
+
+    console.log("Holaaaa: " + id);
+    console.log("Holaaaa2: " + id2);
+    const select_query=`select distinct(ff.rut)
+    from fatigafin as ff, brigadistas as b
+    where b.rut = ff.rut and b.n_brigada = ? and b.nombre_brigada=? and idcombate = ? and fatiga = 1
+    order by rut desc;`
+    con.query(select_query,[id,id2,id3], (err, result) => {
+     console.log(result);
+     if (err){
+         console.log(err);
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/fatigaFinMedia', (req, res) => {
+
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+    var id3 = req.param('idcombate');
+
+    console.log("Holaaaa: " + id);
+    console.log("Holaaaa2: " + id2);
+    const select_query=`select ff.rut, ff.idcombate, ff.fatiga, DATE_FORMAT(ff.fecha, '%Y-%m-%d') as fecha, ff.hora, DATE_FORMAT(ff.fechafin, '%Y-%m-%d') as fechafin, ff.horafin
+    from fatigafin as ff, brigadistas as b
+    where ff.rut = b.rut and b.n_brigada = ? and b.nombre_brigada=? and idcombate = ? and fatiga = 1
+    order by ff.rut desc, ff.fechafin desc, ff.horafin desc;`
+
+    con.query(select_query,[id,id2,id3], (err, result) => {
+     console.log(result);
+     console.log(select_query);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/brigadistasMedia', (req, res) => {
+   
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+
+    console.log("Holaaaa: " + id);
+    console.log("Holaaaa2: " + id2);
+    const select_query=`select distinct(h.rut), nombre, apellidoP, apellidoM 
+    from historialfatiga as h, brigadistas as b 
+    where b.rut=h.rut and b.n_brigada=? and b.nombre_brigada=? AND fatiga=1
+    order by b.rut desc;`
+    con.query(select_query,[id,id2], (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/brigadistasAlta', (req, res) => {
+   
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+
+    console.log("Holaaaa: " + id);
+    console.log("Holaaaa2: " + id2);
+    const select_query=`select distinct(h.rut), nombre, apellidoP, apellidoM 
+    from historialfatiga as h, brigadistas as b 
+    where b.rut=h.rut and  b.n_brigada=? and b.nombre_brigada=? AND fatiga=2
+    order by b.rut desc;`
+    con.query(select_query,[id,id2], (err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/brigadafin', (req, res) => {
+   
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+    var id3=req.param('id');
+    console.log("llegueeeeeeeeeeeeeeeeeeeeeeeeee")
+    console.log("Holaaaa: " + id);
+    console.log("Holaaaa2: " + id2);
+    console.log("Holaaaa3: " + id3);
+    const select_query=`select nombre_brigada, n_brigada,  DATE_FORMAT(fecha, '%Y-%m-%d') as fecha, hora, DATE_FORMAT(fecharetiro, '%Y-%m-%d') as fechafin, horaretiro as horafin
+    from combatesbrigadafin
+    where nombre_brigada=? and  n_brigada=? and id=?;`
+    con.query(select_query, [id2,id,id3],(err, result) => {
+     console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+
+
+
 
 app.get('/jefeBrigada', (req, res) => {
     var id=req.param('n_brigada');
@@ -697,7 +1016,59 @@ app.get('/combActivos',(req, res) => {
 
 
 app.get('/combMes',(req, res) => {
-    const select_query=`SELECT c.id, c.estado,c.hito,  DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha, c.hora,   DATE_FORMAT(cf.fechafin, '%Y-%m-%d') as fechafin, cf.horafin
+    var fechatotal = new Date();
+            var mes;
+            var dia;
+            let fechaAux = fechatotal.getMonth()+1;
+            if(fechaAux>=0 && fechaAux<=9){
+                //console.log("Entre aquí");
+                console.log(fechatotal.getMonth());
+                console.log(fechaAux);
+                console.log(fechaAux.toString());
+                mes = "0" + fechaAux;
+            }else{
+                mes = fechatotal.getMonth() + 1;
+            }
+            let diaAux = fechatotal.getDate();
+            if(diaAux>=0 && diaAux<=9){
+                dia = "0" + diaAux;
+            }else{
+                dia = fechatotal.getDate();
+            }
+            var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
+
+    var horatotal =  new Date();
+            var hora;
+            var minuto;
+            var segundo;
+            let horaAux = horatotal.getHours();
+            if(horaAux>=0 && horaAux<=9){
+                hora = "0" + horaAux;
+            }else{
+                hora = horatotal.getHours();
+            }
+
+            let minutoAux = horatotal.getMinutes();
+            if(minutoAux>=0 && minutoAux<=9){
+                minuto = "0" + minutoAux;
+            }else{
+                minuto = horatotal.getMinutes();
+            }
+
+            let segundoAux = horatotal.getSeconds();
+
+            if(segundoAux>=0 && segundoAux<=9){
+                segundo = "0" + segundoAux;
+            }else{
+                segundo = horatotal.getSeconds();
+            }
+
+            var horafinal = hora + ":" + minuto + ":" + segundo;
+
+            console.log("Fechaaaaa:" + fecha);
+            console.log("Hora fin:" + horafinal);
+
+    const select_query=`SELECT c.id, c.hito, c.estado,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin, c.nfatigaMedia,c.nfatigaAlta
     FROM(
         SELECT *
         FROM combate as c2
@@ -775,30 +1146,35 @@ app.get('/combMes2',(req, res) => {
             console.log("Hora fin:" + horafinal);
 
             
-    const select_query=`SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
-    FROM(
-        SELECT *
-        FROM combatesbrigada as c2, (	
-			select COUNT(f.n_brigada) as nMedia, f.id as idcombate
-			from (select br.rut, b.nombre, b.n_brigada, co.id, h.fatiga
-			from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-			where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
-			group by br.rut) as f
-			group by f.nombre, f.n_brigada, f.id
-		) as d, (	
-			select COUNT(f.n_brigada) as nAlta, f.id as idcombate2
-			from (select br.rut, b.nombre, b.n_brigada, co.id, h.fatiga
-			from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-			where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
-			group by br.rut) as f
-			group by f.nombre, f.n_brigada, f.id
-		) as d2
-       WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 1 MONTH) AND c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
-    ) as c
-    LEFT JOIN combatesbrigadafin as cf
-    ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora;
+    const select_query=`select IFNULL(tabla.nombre_brigada, cb.nombre_brigada) as nombre_brigada,IFNULL(tabla.n_brigada, cb.n_brigada) as n_brigada, IFNULL(tabla.id, cb.id) as id, IFNULL(tabla.estado, cb.estado) as estado, DATE_FORMAT(IFNULL(tabla.fecha, cb.fecha), '%Y-%m-%d') as fecha , IFNULL(tabla.hora, cb.hora) as hora, IFNULL(tabla.fechafin, '${fecha}') as fechafin ,IFNULL(tabla.horafin, '${horafinal}')  as horafin, IFNULL(tabla.nMedia, 0) as nMedia, IFNULL(tabla.nAlta, 0) as nAlta,tabla.idcombate
+    FROM (
+        SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
+            FROM(
+                SELECT *
+                FROM combatesbrigada as c2, (
+                    select COUNT(f.n_brigada) as nMedia, f.id as idcombate, f.nombre
+                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
+                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
+                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
+                    ) as f
+                    group by f.nombre, f.n_brigada, f.id
+                ) as d, (
+                    select COUNT(f.n_brigada) as nAlta, f.id as idcombate2,f.nombre as nombre2
+                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
+                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
+                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
+                    ) as f
+                    group by f.nombre, f.n_brigada, f.id
+                ) as d2
+               WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 1 MONTH) AND c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
+               and c2.nombre_brigada=d.nombre and c2.nombre_brigada=d2.nombre2 and d.nombre=d2.nombre2
     
-    `
+            ) as c
+            LEFT JOIN combatesbrigadafin as cf
+            ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora
+        ) as tabla
+    right JOIN (select * from combatesbrigada as cb2 where cb2.fecha <= now() AND cb2.fecha > DATE_SUB(now(), INTERVAL 1 MONTH)) as cb
+    ON  tabla.id = cb.id  and tabla.nombre_brigada=cb.nombre_brigada and tabla.n_brigada=cb.n_brigada `
     
     con.query(select_query, (err, result) => {
         if(err){
@@ -869,7 +1245,7 @@ app.get('/comb6Mes',(req, res) => {
 
             console.log("Fechaaaaa:" + fecha);
             console.log("Hora fin:" + horafinal);
-    const select_query=`SELECT c.id, c.hito, c.estado, DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin
+    const select_query=`SELECT c.id, c.hito, c.estado,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin, c.nfatigaMedia,c.nfatigaAlta
     FROM(
         SELECT *
         FROM combate as c2
@@ -946,30 +1322,35 @@ app.get('/comb6Mes2',(req, res) => {
 
             console.log("Fechaaaaa:" + fecha);
             console.log("Hora fin:" + horafinal);
-    const select_query=`SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
-    FROM(
-        SELECT *
-        FROM combatesbrigada as c2, (	
-			select COUNT(f.n_brigada) as nMedia, f.id as idcombate
-			from (select br.rut, b.nombre, b.n_brigada, co.id, h.fatiga
-			from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-			where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
-			group by br.rut) as f
-			group by f.nombre, f.n_brigada, f.id
-		) as d, (	
-			select COUNT(f.n_brigada) as nAlta, f.id as idcombate2
-			from (select br.rut, b.nombre, b.n_brigada, co.id, h.fatiga
-			from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-			where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
-			group by br.rut) as f
-			group by f.nombre, f.n_brigada, f.id
-		) as d2
-       WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 6 MONTH) AND c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
-    ) as c
-    LEFT JOIN combatesbrigadafin as cf
-    ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora;
+    const select_query=`select IFNULL(tabla.nombre_brigada, cb.nombre_brigada) as nombre_brigada,IFNULL(tabla.n_brigada, cb.n_brigada) as n_brigada, IFNULL(tabla.id, cb.id) as id, IFNULL(tabla.estado, cb.estado) as estado, DATE_FORMAT(IFNULL(tabla.fecha, cb.fecha), '%Y-%m-%d') as fecha , IFNULL(tabla.hora, cb.hora) as hora, IFNULL(tabla.fechafin, '${fecha}') as fechafin ,IFNULL(tabla.horafin, '${horafinal}')  as horafin, IFNULL(tabla.nMedia, 0) as nMedia, IFNULL(tabla.nAlta, 0) as nAlta,tabla.idcombate
+    FROM (
+        SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
+            FROM(
+                SELECT *
+                FROM combatesbrigada as c2, (
+                    select COUNT(f.n_brigada) as nMedia, f.id as idcombate, f.nombre
+                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
+                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
+                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
+                    ) as f
+                    group by f.nombre, f.n_brigada, f.id
+                ) as d, (
+                    select COUNT(f.n_brigada) as nAlta, f.id as idcombate2,f.nombre as nombre2
+                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
+                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
+                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
+                    ) as f
+                    group by f.nombre, f.n_brigada, f.id
+                ) as d2
+               WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 6 MONTH) AND c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
+               and c2.nombre_brigada=d.nombre and c2.nombre_brigada=d2.nombre2 and d.nombre=d2.nombre2
     
-    `
+            ) as c
+            LEFT JOIN combatesbrigadafin as cf
+            ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora
+        ) as tabla
+    right JOIN (select * from combatesbrigada as cb2 where cb2.fecha <= now() AND cb2.fecha > DATE_SUB(now(), INTERVAL 6 MONTH)) as cb
+    ON  tabla.id = cb.id  and tabla.nombre_brigada=cb.nombre_brigada and tabla.n_brigada=cb.n_brigada `
 
     
     con.query(select_query, (err, result) => {
@@ -1043,7 +1424,7 @@ app.get('/combAnyo',(req, res) => {
 
             console.log("Fechaaaaa:" + fecha);
             console.log("Hora fin:" + horafinal);
-    const select_query=`SELECT c.id, c.hito, c.estado,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin
+    const select_query=`SELECT c.id, c.hito, c.estado,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin, c.nfatigaMedia,c.nfatigaAlta
     FROM(
         SELECT *
         FROM combate as c2
@@ -1120,30 +1501,35 @@ app.get('/combAnyo2',(req, res) => {
 
             console.log("Fechaaaaa:" + fecha);
             console.log("Hora fin:" + horafinal);
-    const select_query=`SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
-    FROM(
-        SELECT *
-        FROM combatesbrigada as c2, (	
-			select COUNT(f.n_brigada) as nMedia, f.id as idcombate
-			from (select br.rut, b.nombre, b.n_brigada, co.id, h.fatiga
-			from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-			where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
-			group by br.rut) as f
-			group by f.nombre, f.n_brigada, f.id
-		) as d, (	
-			select COUNT(f.n_brigada) as nAlta, f.id as idcombate2
-			from (select br.rut, b.nombre, b.n_brigada, co.id, h.fatiga
-			from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-			where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
-			group by br.rut) as f
-			group by f.nombre, f.n_brigada, f.id
-		) as d2
-       WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 12 MONTH) AND c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
-    ) as c
-    LEFT JOIN combatesbrigadafin as cf
-    ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora;
+    const select_query=`select IFNULL(tabla.nombre_brigada, cb.nombre_brigada) as nombre_brigada,IFNULL(tabla.n_brigada, cb.n_brigada) as n_brigada, IFNULL(tabla.id, cb.id) as id, IFNULL(tabla.estado, cb.estado) as estado, DATE_FORMAT(IFNULL(tabla.fecha, cb.fecha), '%Y-%m-%d') as fecha , IFNULL(tabla.hora, cb.hora) as hora, IFNULL(tabla.fechafin, '${fecha}') as fechafin ,IFNULL(tabla.horafin, '${horafinal}')  as horafin, IFNULL(tabla.nMedia, 0) as nMedia, IFNULL(tabla.nAlta, 0) as nAlta,tabla.idcombate
+    FROM (
+        SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
+            FROM(
+                SELECT *
+                FROM combatesbrigada as c2, (
+                    select COUNT(f.n_brigada) as nMedia, f.id as idcombate, f.nombre
+                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
+                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
+                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
+                    ) as f
+                    group by f.nombre, f.n_brigada, f.id
+                ) as d, (
+                    select COUNT(f.n_brigada) as nAlta, f.id as idcombate2,f.nombre as nombre2
+                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
+                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
+                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
+                    ) as f
+                    group by f.nombre, f.n_brigada, f.id
+                ) as d2
+               WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 12 MONTH) AND c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
+               and c2.nombre_brigada=d.nombre and c2.nombre_brigada=d2.nombre2 and d.nombre=d2.nombre2
     
-    `
+            ) as c
+            LEFT JOIN combatesbrigadafin as cf
+            ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora
+        ) as tabla
+    right JOIN (select * from combatesbrigada as cb2 where cb2.fecha <= now() AND cb2.fecha > DATE_SUB(now(), INTERVAL 12 MONTH)) as cb
+    ON  tabla.id = cb.id  and tabla.nombre_brigada=cb.nombre_brigada and tabla.n_brigada=cb.n_brigada `
     con.query(select_query, (err, result) => {
         if(err){
             return res.send(err);
@@ -1213,11 +1599,11 @@ app.get('/combTodos',(req, res) => {
 
             console.log("Fechaaaaa:" + fecha);
             console.log("Hora fin:" + horafinal);
-    const select_query=`SELECT c.id, c.hito,c.estado, DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin,IFNULL(cf.horafin, '${horafinal}')  as horafin
+    const select_query=`SELECT c.id, c.hito, c.estado,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin, c.nfatigaMedia,c.nfatigaAlta
     FROM(
         SELECT *
         FROM combate as c2
-        
+       
     ) as c
     LEFT JOIN combatefin as cf
     ON c.id = cf.id;`
@@ -1291,30 +1677,35 @@ app.get('/combTodos2',(req, res) => {
 
             console.log("Fechaaaaa:" + fecha);
             console.log("Hora fin:" + horafinal);
-    const select_query=`SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
-    FROM(
-        SELECT *
-        FROM combatesbrigada as c2, (	
-			select COUNT(f.n_brigada) as nMedia, f.id as idcombate
-			from (select br.rut, b.nombre, b.n_brigada, co.id, h.fatiga
-			from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-			where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
-			group by br.rut) as f
-			group by f.nombre, f.n_brigada, f.id
-		) as d, (	
-			select COUNT(f.n_brigada) as nAlta, f.id as idcombate2
-			from (select br.rut, b.nombre, b.n_brigada, co.id, h.fatiga
-			from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-			where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
-			group by br.rut) as f
-			group by f.nombre, f.n_brigada, f.id
-		) as d2
-       WHERE  c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
-    ) as c
-    LEFT JOIN combatesbrigadafin as cf
-    ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora;
+    const select_query=`select IFNULL(tabla.nombre_brigada, cb.nombre_brigada) as nombre_brigada,IFNULL(tabla.n_brigada, cb.n_brigada) as n_brigada, IFNULL(tabla.id, cb.id) as id, IFNULL(tabla.estado, cb.estado) as estado, DATE_FORMAT(IFNULL(tabla.fecha, cb.fecha), '%Y-%m-%d') as fecha , IFNULL(tabla.hora, cb.hora) as hora, IFNULL(tabla.fechafin, '${fecha}') as fechafin ,IFNULL(tabla.horafin, '${horafinal}')  as horafin, IFNULL(tabla.nMedia, 0) as nMedia, IFNULL(tabla.nAlta, 0) as nAlta,tabla.idcombate
+    FROM (
+        SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
+            FROM(
+                SELECT *
+                FROM combatesbrigada as c2, (
+                    select COUNT(f.n_brigada) as nMedia, f.id as idcombate, f.nombre
+                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
+                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
+                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
+                    ) as f
+                    group by f.nombre, f.n_brigada, f.id
+                ) as d, (
+                    select COUNT(f.n_brigada) as nAlta, f.id as idcombate2,f.nombre as nombre2
+                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
+                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
+                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
+                    ) as f
+                    group by f.nombre, f.n_brigada, f.id
+                ) as d2
+               WHERE  c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
+               and c2.nombre_brigada=d.nombre and c2.nombre_brigada=d2.nombre2 and d.nombre=d2.nombre2
     
-    `
+            ) as c
+            LEFT JOIN combatesbrigadafin as cf
+            ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora
+        ) as tabla
+    right JOIN (select * from combatesbrigada as cb2 ) as cb
+    ON  tabla.id = cb.id  and tabla.nombre_brigada=cb.nombre_brigada and tabla.n_brigada=cb.n_brigada `
     con.query(select_query, (err, result) => {
         if(err){
             return res.send(err);
@@ -1349,6 +1740,8 @@ app.get('/combFin', (req, res) => {
      }
     });
 });
+
+
 
 
 
@@ -1413,7 +1806,7 @@ app.put('/modCombate/:id', bodyParser.json(), (req, res, next) => {
 })
 
 app.post('/addUsuario', bodyParser.json(), (req, res, next) => {
-    const INSERT_TIPO_QUERY = `INSERT INTO espera (nombre, apellidoP, apellidoM, rut, cargo, correo, usuario, pass) VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}','${req.body.usuario}', AES_ENCRYPT ('${req.body.pass}','encriptado'))`;
+    const INSERT_TIPO_QUERY = `INSERT INTO espera (nombre, apellidoP, apellidoM, rut, cargo, correo, pass) VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}', AES_ENCRYPT ('${req.body.pass}','encriptado'))`;
     con.query(INSERT_TIPO_QUERY, (err, resultados) => {
 
     if(err) {
@@ -1428,7 +1821,7 @@ app.post('/addUsuario', bodyParser.json(), (req, res, next) => {
 
 app.post('/addPersonal', bodyParser.json(), (req, res, next) => {
     console.log("legueeeeee")
-    const INSERT_TIPO_QUERY = `INSERT INTO usuarios (nombre, apellidoP, apellidoM, rut, cargo, correo, usuario, pass)  VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}','${req.body.usuario}', AES_ENCRYPT ('${req.body.pass}','encriptado'))`;
+    const INSERT_TIPO_QUERY = `INSERT INTO usuarios (nombre, apellidoP, apellidoM, rut, cargo, correo, pass)  VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}', AES_ENCRYPT ('${req.body.pass}','encriptado'))`;
     con.query(INSERT_TIPO_QUERY, (err, resultados) => {
 
     if(err) {
@@ -1460,8 +1853,12 @@ app.post('/addEsperaPersonal', bodyParser.json(), (req, res, next) => {
 });
 
 app.post('/addBrigadista', bodyParser.json(), (req, res, next) => {
-    const INSERT_TIPO_QUERY = `INSERT INTO brigadistas VALUES('${req.body.rut}','${req.body.correo}','${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.f_nacimiento}',${req.body.n_brigada},'${req.body.cargo}',${req.body.peso},${req.body.altura},'0',${req.body.pulsera},'${req.body.nombre_brigada}');`
-    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre_brigada');
+    console.log(id);
+    console.log(id2)
+    const INSERT_TIPO_QUERY = `INSERT INTO brigadistas VALUES('${req.body.rut}','${req.body.correo}','${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.f_nacimiento}',?,'${req.body.cargo}',${req.body.peso},${req.body.altura},'0',${req.body.pulsera},?);`
+    con.query(INSERT_TIPO_QUERY,[id,id2], (err, resultados) => {
 
         if(err) {
             res.status(500).send('Error al añadir nuevo brigadista');
@@ -1982,7 +2379,7 @@ app.get('/datosRandom', (req, res) => {
             VALUES (`+con.escape(result[i].rut)+`, `+con.escape(result[i].id)+`,`+con.escape(latitud)+`,`+con.escape(longitud)+
             `,`+con.escape(acelX)+`,`+con.escape(acelY)+`,`+con.escape(acelZ)+`,`+con.escape(altura)+`,`
             +con.escape(t_corporal)+`,`+con.escape(t_ambiental)+`,`+con.escape(pulsaciones)+`,`+con.escape(fecha)
-            +`,`+con.escape(horafinal)+`);`;
+            +`,`+con.escape(horafinal)+`, 0.00);`;
             console.log(sql);
 
             con.query(sql, function (err, result2) {
@@ -2031,7 +2428,7 @@ app.get('/estadobrigadistas', (req, res) => {
 app.get('/datosestadoactualbrigadistas/:rut', (req, res) => {
     var rut=req.params.rut;
     console.log(rut);
-    const select_query=`SELECT  b.rut, b.nombre, b.apellidoP, b.apellidoM, d.id, TIMESTAMPDIFF(YEAR,b.f_nacimiento,CURDATE()) AS edad, d.t_ambiental, d.t_corporal, d.pulsaciones,d.latidud, d.longitud, b.fatigado
+    const select_query=`SELECT  b.rut, b.nombre, b.apellidoP, b.apellidoM, d.id, TIMESTAMPDIFF(YEAR,b.f_nacimiento,CURDATE()) AS edad, d.t_ambiental, d.t_corporal, d.pulsaciones,d.latidud, d.longitud, b.fatigado, d.saturacion
     FROM
         (SELECT id, fecha
         FROM combatesbrigada as cb, brigadistas as b
@@ -2067,7 +2464,76 @@ app.get('/datosestadoactualbrigadistas/:rut', (req, res) => {
     });
 });
 
+app.get('/combatesbrigadabrig/:rut', (req, res) => {
+    var rut=req.params.rut;
+    console.log(rut);
+    const select_query=`SELECT cb.n_brigada, cb.nombre_brigada, cb.id, cb.estado, DATE_FORMAT(cb.fecha, '%Y-%m-%d') as fecha, cb.hora
+    FROM combatesbrigada as cb,
+        (
+            SELECT n_brigada, nombre_brigada
+            FROM brigadistas
+            where rut = ?
 
+        ) as aux
+    where aux.n_brigada = cb.n_brigada and aux.nombre_brigada = cb.nombre_brigada and estado = 1;`
+    console.log(select_query);
+    con.query(select_query, rut, (err, result) => {
+     //console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+
+
+            //result[0].hora
+
+            return res.json({
+
+                data: result
+
+            })
+
+     }
+    });
+});
+
+
+
+
+app.get('/ultimassaturaciones/:rut', (req, res) => {
+    var rut=req.params.rut;
+    console.log(rut);
+    const select_query=`SELECT d.rut, d.id, d.saturacion, d.fecha, d.hora
+    FROM
+        (SELECT id, fecha
+        FROM combatesbrigada as cb, brigadistas as b
+        WHERE b.rut = ? AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
+        ORDER BY cb.fecha DESC , cb.hora DESC
+        LIMIT 1)
+     as c, datos as d,(SELECT max(fecha) as fecha, rut
+        FROM datos 
+       group by rut) as x
+    
+    WHERE
+        d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut
+     
+    ORDER BY d.fecha DESC, d.hora DESC LIMIT 20;`
+    
+    console.log(select_query);
+    con.query(select_query,[rut,rut,rut], (err, result) => {
+     //console.log(result);
+     if (err){
+           return res.send(err)
+        }else{
+
+            return res.json({
+
+                data: result
+
+            })
+
+     }
+    });
+});
 app.get('/ultimastemperaturasambientales/:rut', (req, res) => {
     var rut=req.params.rut;
     console.log(rut);

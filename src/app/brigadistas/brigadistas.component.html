@@ -15,7 +15,7 @@
     
     </head>
 
-    <button class="btn" routerLink="/addBrigadista" *ngIf="cargo == 'administrador' ||cargo=='super_admin';"><span>Añadir Brigadista</span></button>
+    <button class="btn" [routerLink]="['/addBrigadista',n_brigada,nombre_brigada]" *ngIf="cargo == 'administrador' ||cargo=='super_admin';"><span>Añadir Brigadista</span></button>
 
     <div class="pricingdiv">
             <div *ngFor="let brigadista of brigadistas$.data">

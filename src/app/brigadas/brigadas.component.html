@@ -34,7 +34,7 @@
             <ng-template #second>
                   <ul class="theplan" *ngIf=" rut_jefe == brigada.rut_jefe ;" >
                         <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"><br/><b>Jefe Brigada:</b> <br />{{brigada.nombre}} {{brigada.apellidoP}} {{brigada.apellidoM}}</li>       
-                        <li class="title2">Brigada N° {{brigada.n_brigada}}</li>
+                        <li class="title2">Brigada {{brigada.nombre_brigada}} - {{brigada.n_brigada}}</li>
                         <li>
                               <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada, brigada.nombre_brigada]">Seleccionar</button>
                               

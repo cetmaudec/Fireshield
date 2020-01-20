@@ -43,7 +43,7 @@ export class NavbarComponent implements OnInit {
     
     // Método que obtiene el número de personas que están en la lista de espera para ser aceptados como usuarios.
 
-    this.getData();/*
+    this.getData();
 
     // Actualizar la información del navbar cada cierto tiempo.
 
@@ -51,7 +51,7 @@ export class NavbarComponent implements OnInit {
       this._changeDetectorRef.markForCheck();
       //console.log("entro");
       this.getData();
-    }, 5000);*/
+    }, 60000);
     
     
   }
