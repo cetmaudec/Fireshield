@@ -55,7 +55,7 @@ export class RegistroComponent implements OnInit {
 
   onSubmit(){
     if(this.RegistroForm.value!=null){
-      this.http.post('http://localhost:8000/addUsuario', this.RegistroForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.post('http://3.13.114.248:8000/addUsuario', this.RegistroForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Solicitud enviada con éxito.').then(() => {

@@ -567,7 +567,7 @@ export class EstadobrigadistaComponent implements OnInit, AfterViewInit {
 }
 
   async getDatoActual(){
-    this.datoActual2$ = await this.http.get('http://localhost:8000/datosestadoactualbrigadistas/'+this.rut).toPromise();
+    this.datoActual2$ = await this.http.get('http://3.13.114.248:8000/datosestadoactualbrigadistas/'+this.rut).toPromise();
 
 
    return this.datoActual2$.data;
@@ -575,12 +575,12 @@ export class EstadobrigadistaComponent implements OnInit, AfterViewInit {
   }
 
   async getCombatesBrigadaBrig(){
-    return await this.http.get('http://localhost:8000/combatesbrigadabrig/'+this.rut).toPromise();
+    return await this.http.get('http://3.13.114.248:8000/combatesbrigadabrig/'+this.rut).toPromise();
   }
 
 
   async getUltimasPosiciones(){
-   this.ultimasPosiciones2$ = await this.http.get('http://localhost:8000/ultimasPosiciones/'+this.rut).toPromise();
+   this.ultimasPosiciones2$ = await this.http.get('http://3.13.114.248:8000/ultimasPosiciones/'+this.rut).toPromise();
 
 
    return this.ultimasPosiciones2$.data;
@@ -590,7 +590,7 @@ export class EstadobrigadistaComponent implements OnInit, AfterViewInit {
   // Algo que destacar de este método, es que añade las pulsaciones en la gráfica.
 
   async getUltimasPulsaciones(){
-    this.ultimasPulsaciones$ = await this.http.get('http://localhost:8000/ultimaspulsaciones/'+this.rut).toPromise();
+    this.ultimasPulsaciones$ = await this.http.get('http://3.13.114.248:8000/ultimaspulsaciones/'+this.rut).toPromise();
     let tam = this.ultimasPulsaciones$.data.length;
     let tam2 = this.ultimasPulsaciones$.data.length;
 
@@ -606,7 +606,7 @@ export class EstadobrigadistaComponent implements OnInit, AfterViewInit {
   // Algo que destacar de este método, es que añade las temperaturas ambientales en la gráfica.
 
   async getUltimasTemperaturasAmbientales(){
-    this.ultimasTemperaturasAmbientales$ = await this.http.get('http://localhost:8000/ultimastemperaturasambientales/'+this.rut).toPromise();
+    this.ultimasTemperaturasAmbientales$ = await this.http.get('http://3.13.114.248:8000/ultimastemperaturasambientales/'+this.rut).toPromise();
 
     let tam = this.ultimasTemperaturasAmbientales$.data.length;
     let tam2 = this.ultimasTemperaturasAmbientales$.data.length;
@@ -621,7 +621,7 @@ export class EstadobrigadistaComponent implements OnInit, AfterViewInit {
   // Algo que destacar de este método, es que añade las temperaturas corporales en la gráfica.
 
   async getUltimasTemperaturasCorporales(){
-    this.ultimasTemperaturasCorporales$ = await this.http.get('http://localhost:8000/ultimastemperaturascorporales/'+this.rut).toPromise();
+    this.ultimasTemperaturasCorporales$ = await this.http.get('http://3.13.114.248:8000/ultimastemperaturascorporales/'+this.rut).toPromise();
 
     let tam = this.ultimasTemperaturasCorporales$.data.length;
     let tam2 = this.ultimasTemperaturasCorporales$.data.length;
@@ -634,7 +634,7 @@ export class EstadobrigadistaComponent implements OnInit, AfterViewInit {
   }
 
   async getUltimasSaturaciones(){
-    this.ultimasSaturaciones$ = await this.http.get('http://localhost:8000/ultimassaturaciones/'+this.rut).toPromise();
+    this.ultimasSaturaciones$ = await this.http.get('http://3.13.114.248:8000/ultimassaturaciones/'+this.rut).toPromise();
 
     let tam = this.ultimasSaturaciones$.data.length;
     let tam2 = this.ultimasSaturaciones$.data.length;
@@ -649,7 +649,7 @@ export class EstadobrigadistaComponent implements OnInit, AfterViewInit {
 
 
   async getUltimasFechasYHoras(){
-    this.ultimasFechasYHoras$ = await this.http.get('http://localhost:8000/ultimasfechasyhoras/'+this.rut).toPromise();
+    this.ultimasFechasYHoras$ = await this.http.get('http://3.13.114.248:8000/ultimasfechasyhoras/'+this.rut).toPromise();
     let tam = this.ultimasFechasYHoras$.data.length;
     for(let i=0;i<this.ultimasFechasYHoras$.data.length;i++){
       this.lineChartLabels[i] = this.ultimasFechasYHoras$.data[tam-1].fecha +"-" + this.ultimasFechasYHoras$.data[tam-1].hora;

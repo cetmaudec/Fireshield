@@ -72,18 +72,18 @@
                     <ul class="theplan">
                         <div class="col col2" *ngFor="let brigadista of datoActual$;">
                             <ng-container *ngIf="brigadista.fatigado == 0;else second">
-                                <li class="title"><img   src="src=../../assets/images/brigadistaverde.png"/></li>
+                                <li class="title"><img   src="src=./assets/images/brigadistaverde.png"/></li>
                             </ng-container>
 
                             <ng-template #second>
                                 <ng-container *ngIf="brigadista.fatigado == 1;else third">
-                                    <li class="title"><img  src="../../assets/images/brigadistaamarillo.png"/></li>
+                                    <li class="title"><img  src="./assets/images/brigadistaamarillo.png"/></li>
                                 </ng-container>
                             </ng-template>
 
                             <ng-template #third>
                                 <ng-container *ngIf="brigadista.fatigado == 2;">
-                                    <li class="title"><img src="../../assets/images/brigadistarojo.png"/></li>
+                                    <li class="title"><img src="./assets/images/brigadistarojo.png"/></li>
                                 </ng-container>
                             </ng-template>
                                 <li>

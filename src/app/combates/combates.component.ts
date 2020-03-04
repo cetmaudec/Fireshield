@@ -82,7 +82,7 @@ export class CombatesComponent implements OnInit {
     this.getMaxCombat();
   }
   getCombates(){
-    this.http.get('http://localhost:8000/combates').subscribe(resp =>
+    this.http.get('http://3.13.114.248:8000/combates').subscribe(resp =>
       this.combates$ = resp as []
   
     )
@@ -100,7 +100,7 @@ export class CombatesComponent implements OnInit {
     if(confirm("¿Estás seguro de querer finalizar el combate "+id+"?")) {
 
     
-      this.http.put('http://localhost:8000/finCombate/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.put('http://3.13.114.248:8000/finCombate/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             swal.fire('Combate finalizado exitosamente').then(() => {
               location.reload();
@@ -143,7 +143,7 @@ export class CombatesComponent implements OnInit {
   onSubmit(){
     console.log("entre");
     if(this.CombateForm.value!=null){
-      this.http.post('http://localhost:8000/addCombate', this.CombateForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.post('http://3.13.114.248:8000/addCombate', this.CombateForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Registro exitoso de combate').then(() => {
@@ -168,7 +168,7 @@ export class CombatesComponent implements OnInit {
 
   async getMaxCombat(){
 
-    this.Combat$ = await this.http.get('http://localhost:8000/maxCombat').toPromise();
+    this.Combat$ = await this.http.get('http://3.13.114.248:8000/maxCombat').toPromise();
     console.log(this.Combat$.data[0].combate);
     this.Combat$.data[0].combate++;
 

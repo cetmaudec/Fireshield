@@ -107,7 +107,7 @@ export class MapaComponent implements AfterViewInit, OnInit {
 
     let params = new HttpParams().set("n_brigada", this.n_brigada).set("nombre",this.nombre_brigada);
 
-    this.brigadistas$ = await this.http.get('http://localhost:8000/estadobrigadistas',{ headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).toPromise();
+    this.brigadistas$ = await this.http.get('http://3.13.114.248:8000/estadobrigadistas',{ headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).toPromise();
 
 
 

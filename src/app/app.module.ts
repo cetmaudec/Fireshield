@@ -12,7 +12,7 @@ import { ChartsModule } from 'ng2-charts';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
-import { GoogleMapsModule } from '@angular/google-maps';
+
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';  
 import { CarouselModule, WavesModule } from 'angular-bootstrap-md'
@@ -96,7 +96,6 @@ export function tokenGetter() {
     BrowserAnimationsModule,
     
     NgSelectModule,
-    GoogleMapsModule,
     NgbModule,
   
  
@@ -113,8 +112,8 @@ export function tokenGetter() {
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        whitelistedDomains: ['localhost:8000'],
-        blacklistedRoutes: ['localhost:8000/auth']
+        whitelistedDomains: ['3.13.114.248:8000'],
+        blacklistedRoutes: ['3.13.114.248:8000/auth']
       }
     })
   ],

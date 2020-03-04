@@ -8,7 +8,7 @@ body {
   
   .topnav {
 	overflow: hidden;
-	max-width: 1400px;
+	width: 100%;
 	font-family: 'Playfair Display', serif;
 	margin: 0 auto;
 	margin-top: 10px;

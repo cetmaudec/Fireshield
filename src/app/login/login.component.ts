@@ -14,7 +14,6 @@ export class LoginComponent implements OnInit {
 
   /*
     Variables utilizadas para que el usuario pueda logearse correctamente. 
-
   */
 
   // Variable de tipo FormGroup que permite trabajar el formulario de login.
@@ -40,7 +39,6 @@ export class LoginComponent implements OnInit {
   */
    
   ngOnInit() {
-    this.auth.logout();
     
   }
 

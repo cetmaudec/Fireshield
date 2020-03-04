@@ -78,11 +78,11 @@ export class AddBrigadaComponent implements OnInit {
   }
 
   async getBrigadas(){
-    this.nombresbrigadas$= await this.http.get('http://localhost:8000/nombresbrigadas').toPromise();    
+    this.nombresbrigadas$= await this.http.get('http://3.13.114.248:8000/nombresbrigadas').toPromise();    
   }
 
   async getnBrigadas(nombre){
-    this.brigadas$= await this.http.get('http://localhost:8000/maxbrigada' + nombre).toPromise();
+    this.brigadas$= await this.http.get('http://3.13.114.248:8000/maxbrigada' + nombre).toPromise();
    
   }
 
@@ -97,7 +97,7 @@ export class AddBrigadaComponent implements OnInit {
   onSubmit(){
     console.log("entre");
     if(this.BrigadaForm.value!=null){
-      this.http.post('http://localhost:8000/addBrigada', this.BrigadaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.post('http://3.13.114.248:8000/addBrigada', this.BrigadaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Registro exitoso de brigada').then(() => {
@@ -124,7 +124,7 @@ export class AddBrigadaComponent implements OnInit {
 
  
 async getJefes(){
-  this.jefes$=await this.http.get('http://localhost:8000/jefes').toPromise();
+  this.jefes$=await this.http.get('http://3.13.114.248:8000/jefes').toPromise();
 
   
 }

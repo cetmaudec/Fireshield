@@ -72,7 +72,7 @@ export class UnirseCombateComponent implements OnInit {
 
   }
   async getnBrigadas(){
-    this.brigadas$ = await this.http.get('http://localhost:8000/nbrigadas'+localStorage.getItem('user')).toPromise();
+    this.brigadas$ = await this.http.get('http://3.13.114.248:8000/nbrigadas'+localStorage.getItem('user')).toPromise();
       
   }
 
@@ -88,7 +88,7 @@ export class UnirseCombateComponent implements OnInit {
     console.log("llegueee")
     if(this.unirseForm.value!=null){
       console.log(this.unirseForm.value)
-      this.http.post('http://localhost:8000/unirseCombate2', this.unirseForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.post('http://3.13.114.248:8000/unirseCombate2', this.unirseForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             console.log("responseeee"+response);
             swal.fire('Brigada unida a combate correctamente').then(() => {

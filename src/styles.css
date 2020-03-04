@@ -7,6 +7,6 @@ body{
     background-attachment: fixed;
     background-size: cover;
     background-color: #464646;
-
+    min-height: 500px;
 }
 

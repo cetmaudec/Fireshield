@@ -60,7 +60,7 @@ export class NavbarComponent implements OnInit {
   }
 
   async getNumEspera(){
-    this.espera$= await this.http.get('http://localhost:8000/nEspera').toPromise();
+    this.espera$= await this.http.get('http://3.13.114.248:8000/nEspera').toPromise();
     return this.espera$.data[0].numero;
 
   }

@@ -85,7 +85,7 @@ export class BrigadistasComponent implements OnInit {
     let params = new HttpParams().set("n_brigada", this.n_brigada).set("nombre",this.nombre_brigada);
     
 
-    this.http.get('http://localhost:8000/brigadistas',{headers: new HttpHeaders({
+    this.http.get('http://3.13.114.248:8000/brigadistas',{headers: new HttpHeaders({
       'Content-Type':'application/json'
       }), params: params}).subscribe(resp =>
       this.brigadistas$ = resp as []
@@ -108,7 +108,7 @@ export class BrigadistasComponent implements OnInit {
     if(confirm("¿Estás seguro de querer borrar al brigadista "+id+"?")) {
 
     
-    this.http.delete('http://localhost:8000/delBrigadista/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+    this.http.delete('http://3.13.114.248:8000/delBrigadista/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             swal.fire('Borrado de brigadista completo').then(
               function(){ 

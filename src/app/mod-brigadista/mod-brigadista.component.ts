@@ -109,7 +109,7 @@ export class ModBrigadistaComponent implements OnInit {
   }
 
   async getNombresBrigadas(){
-    this.nombresbrigadas2$= await this.http.get('http://localhost:8000/nombresbrigadas').toPromise();
+    this.nombresbrigadas2$= await this.http.get('http://3.13.114.248:8000/nombresbrigadas').toPromise();
     return this.nombresbrigadas2$.data;
   }
 
@@ -129,12 +129,12 @@ export class ModBrigadistaComponent implements OnInit {
   // Método que obtiene el máximo número de brigada asociado a un nombre de brigada en particular.
 
   async getnBrigadas(nombre){
-    this.brigadas$= await this.http.get('http://localhost:8000/brigadasPorNombre' + nombre).toPromise();
+    this.brigadas$= await this.http.get('http://3.13.114.248:8000/brigadasPorNombre' + nombre).toPromise();
    
   }
 
   async getBrigadista(){
-    this.brigadista$ = await this.http.get('http://localhost:8000/brigadista/'+this.rut).toPromise();
+    this.brigadista$ = await this.http.get('http://3.13.114.248:8000/brigadista/'+this.rut).toPromise();
     return this.brigadista$.data[0]
   }
 
@@ -147,7 +147,7 @@ export class ModBrigadistaComponent implements OnInit {
   */
   onSubmit(){
     if(this.modBrigForm.value!=null){
-      this.http.put('http://localhost:8000/modBrigadista/'+this.rut, this.modBrigForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.put('http://3.13.114.248:8000/modBrigadista/'+this.rut, this.modBrigForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Modificación exitosa de brigadista').then(() => {
@@ -172,12 +172,12 @@ export class ModBrigadistaComponent implements OnInit {
   // Método que obtiene la pulsera actual del brigadista
   
     async getPulseraActual(){
-      this.act$ = await this.http.get('http://localhost:8000/pulseraAct/'+this.rut).toPromise();
+      this.act$ = await this.http.get('http://3.13.114.248:8000/pulseraAct/'+this.rut).toPromise();
       return this.act$;
     }
   
   async getPulserasNoUsadas(){
-    this.pulserasNoUsadas$ = await this.http.get('http://localhost:8000/pulserasnousadas').toPromise();
+    this.pulserasNoUsadas$ = await this.http.get('http://3.13.114.248:8000/pulserasnousadas').toPromise();
     return this.pulserasNoUsadas$;
   }
 

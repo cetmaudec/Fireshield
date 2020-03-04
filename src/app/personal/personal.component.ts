@@ -120,14 +120,14 @@ export class PersonalComponent implements OnInit {
   // Método que obtiene el número de personas que están en la lista de espera.
 
   async getNumEspera(){
-    this.espera$= await this.http.get('http://localhost:8000/nEspera').toPromise();
+    this.espera$= await this.http.get('http://3.13.114.248:8000/nEspera').toPromise();
     return this.espera$.data[0].numero;
   }
 
   // Método que obtiene la información de los miembros del personal que están en la lista de espera.
 
   async getListaEspera(){
-    this.espera2$= await this.http.get('http://localhost:8000/listaEspera').toPromise();
+    this.espera2$= await this.http.get('http://3.13.114.248:8000/listaEspera').toPromise();
     return this.espera2$.data
 
   }
@@ -142,7 +142,7 @@ export class PersonalComponent implements OnInit {
 
   onSubmit(){
     if(this.PersonalForm.value!=null){
-      this.http.post('http://localhost:8000/addPersonal', this.PersonalForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.post('http://3.13.114.248:8000/addPersonal', this.PersonalForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Registro exitoso de Personal').then(() => {
@@ -177,7 +177,7 @@ export class PersonalComponent implements OnInit {
 
   addPersonal(id:string, i:number){
 
-    this.http.post('http://localhost:8000/addEsperaPersonal', this.listaEspera$[i], { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+    this.http.post('http://3.13.114.248:8000/addEsperaPersonal', this.listaEspera$[i], { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
         (response ) => {
           swal.fire('Registro exitoso de Personal').then(() => {
               this.router.navigate(['/personal']);
@@ -206,7 +206,7 @@ export class PersonalComponent implements OnInit {
 
   rmPersonal(id:string){
     if(confirm("¿Estás seguro de querer rechazar a este personal "+id+"?")) {
-      this.http.delete('http://localhost:8000/rmEsperaPersonal/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.delete('http://3.13.114.248:8000/rmEsperaPersonal/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             swal.fire('Solicitud rechazada con éxito').then(() => {
               location.reload();
@@ -231,7 +231,7 @@ export class PersonalComponent implements OnInit {
       console.log(id);
       console.log("Implement delete functionality here");
     
-      this.http.delete('http://localhost:8000/delPersonal/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.delete('http://3.13.114.248:8000/delPersonal/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             swal.fire('Borrado de personal completo').then(() => {
               location.reload();
@@ -269,13 +269,13 @@ export class PersonalComponent implements OnInit {
   
 
   async getAdmin(){
-    this.result$= await this.http.get('http://localhost:8000/admin').toPromise();
+    this.result$= await this.http.get('http://3.13.114.248:8000/admin').toPromise();
     
     return this.result$.data;
   }
 
   async getJefes(){
-    this.result2$= await this.http.get('http://localhost:8000/jefes').toPromise();
+    this.result2$= await this.http.get('http://3.13.114.248:8000/jefes').toPromise();
     
     return this.result2$.data;
   }

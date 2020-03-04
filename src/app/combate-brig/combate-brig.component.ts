@@ -77,14 +77,14 @@ export class CombateBrigComponent implements OnInit {
  
 
   getCombates(){
-    this.http.get('http://localhost:8000/combatesBrig'+this.id).subscribe(resp =>
+    this.http.get('http://3.13.114.248:8000/combatesBrig'+this.id).subscribe(resp =>
       this.combatesBrig$ = resp as []
   
     )
 
   }
    getnBrigadas(){
-    this.http.get('http://localhost:8000/nbrigadas'+localStorage.getItem('user')).subscribe(resp =>
+    this.http.get('http://3.13.114.248:8000/nbrigadas'+localStorage.getItem('user')).subscribe(resp =>
       this.brigadas$ = resp as []
     )
   }
@@ -105,7 +105,7 @@ export class CombateBrigComponent implements OnInit {
       let params = new HttpParams().set("n_brigada",n_brigada).set("id", this.id).set("nombre_brigada",nombre);
       
       
-      this.http.delete('http://localhost:8000/updCombateBrig', { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
+      this.http.delete('http://3.13.114.248:8000/updCombateBrig', { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
           (response ) => {
             swal.fire('Brigada retirada de combate correctamente').then(
               function(){ 
@@ -139,7 +139,7 @@ export class CombateBrigComponent implements OnInit {
       id: id,
       nombre_brigada: nombre,
     };
-      this.http.post('http://localhost:8000/unirseCombate',data, {headers: new HttpHeaders({'Content-Type':'application/json'})}).subscribe(
+      this.http.post('http://3.13.114.248:8000/unirseCombate',data, {headers: new HttpHeaders({'Content-Type':'application/json'})}).subscribe(
           (response ) => {
           
             swal.fire('Brigada unida a combate correctamente').then(() => {

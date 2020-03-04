@@ -74,7 +74,7 @@ export class ModCombateComponent implements OnInit {
   onSubmit(){
     console.log("entre");
     if(this.CombateForm.value!=null){
-      this.http.put('http://localhost:8000/modCombate/'+this.idcombate, this.CombateForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.put('http://3.13.114.248:8000/modCombate/'+this.idcombate, this.CombateForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Modificación exitosa de combate').then(() => {
@@ -100,7 +100,7 @@ export class ModCombateComponent implements OnInit {
   // Método que obtiene el hito actual del combate en cuestión.
 
   async getHito(){
-    this.hito = await this.http.get('http://localhost:8000/hito/'+this.idcombate).toPromise();
+    this.hito = await this.http.get('http://3.13.114.248:8000/hito/'+this.idcombate).toPromise();
     return this.hito.data[0]
   }
 

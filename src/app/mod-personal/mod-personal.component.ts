@@ -67,7 +67,6 @@ export class ModPersonalComponent implements OnInit {
       apellidoM:result1.apellidoM,
       rut:result1.rut,
       correo:result1.correo,
-      usuario:result1.usuario,
       pass:result1.pass,
       cargo:result1.cargo
     });
@@ -87,7 +86,7 @@ export class ModPersonalComponent implements OnInit {
   onSubmit(){
     if(this.ModPersonalForm.value!=null){
       
-      this.http.put('http://localhost:8000/modUsuario/'+this.rut, this.ModPersonalForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+      this.http.put('http://3.13.114.248:8000/modUsuario/'+this.rut, this.ModPersonalForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Modificado con éxito.').then(() => {
@@ -113,7 +112,8 @@ export class ModPersonalComponent implements OnInit {
 
 
   async getPersonal(){
-    this.personal$ = await this.http.get('http://localhost:8000/personal/'+this.rut).toPromise();
+    this.personal$ = await this.http.get('http://3.13.114.248:8000/personal/'+this.rut).toPromise();
+    console.log(this.personal$)
     return this.personal$.data[0];
   }
 

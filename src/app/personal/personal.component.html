@@ -15,7 +15,7 @@
     <div class="pricingdiv">
         <div *ngFor="let admin of admin$">
             <ul class="theplan" >
-                <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"> <img style="float: right;" width="5px" height=" " *ngIf="rut == admin.rut;" src="../../assets/images/estrella.png"><br/><b>Administrador:</b> <br /></li>       
+                <li class="title"><img  width="100px" height=" " src="./assets/images/brigada.png"> <img style="float: right;" width="5px" height=" " *ngIf="rut == admin.rut;" src="./assets/images/estrella.png"><br/><b>Administrador:</b> <br /></li>       
                 <li class="title2">{{admin.nombre}} {{admin.apellidoP}} {{admin.apellidoM}} <br/>{{admin.rut}}</li>
                 <li>
                   <button class="button" (click)="modPersonal(admin.rut)" >Modificar</button>
@@ -32,7 +32,7 @@
     <div class="pricingdiv">
         <div *ngFor="let jefe of jefes$">
             <ul class="theplan" >
-                <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"><img  width="40px" height=" " *ngIf="rut == jefe.rut;" src="../../assets/images/estrella.png"><br/><b>Jefe Brigada:</b> <br /></li>       
+                <li class="title"><img  width="100px" height=" " src="./assets/images/brigada.png"><img  width="40px" height=" " *ngIf="rut == jefe.rut;" src="./assets/images/estrella.png"><br/><b>Jefe Brigada:</b> <br /></li>       
                 <li class="title2">{{jefe.nombre}} {{jefe.apellidoP}} {{jefe.apellidoM}}<br/>{{jefe.rut}}</li>
                 
                 <li>
@@ -132,7 +132,7 @@
   <div class="pricingdiv">
     <div *ngFor="let espera of listaEspera$; let i= index;">
         <ul class="theplan" >
-            <li class="title"><img  width="100px" height=" " src="../../assets/images/brigada.png"><br/><b>{{espera.cargo}}</b> <br /></li>       
+            <li class="title"><img  width="100px" height=" " src="./assets/images/brigada.png"><br/><b>{{espera.cargo}}</b> <br /></li>       
             <li class="title2">{{espera.nombre}} {{espera.apellidoP}} {{espera.apellidoM}} <br/>Rut: {{espera.rut}} <br/>
               Usuario: {{espera.usuario}}
             </li>

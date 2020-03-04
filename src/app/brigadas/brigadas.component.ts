@@ -58,7 +58,7 @@ export class BrigadasComponent implements OnInit {
   }
 
   getBrigadas(){
-    this.http.get('http://localhost:8000/brigadas').subscribe(resp =>
+    this.http.get('http://3.13.114.248:8000/brigadas').subscribe(resp =>
       this.brigadas$ = resp as []
   
     )
@@ -78,7 +78,7 @@ export class BrigadasComponent implements OnInit {
       let params = new HttpParams().set("n_brigada", id).set("nombre",id2);
       console.log("Implement delete functionality here");
     
-    this.http.delete('http://localhost:8000/delBrigada', { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
+    this.http.delete('http://3.13.114.248:8000/delBrigada', { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
           (response ) => {
             swal.fire('Borrado de brigada completa').then(() => {
               location.reload();

@@ -145,7 +145,7 @@ export class ReporteriaComponent implements OnInit {
   }
 
   async getCombActivos(){
-    this.combactivos$= await this.http.get('http://localhost:8000/combActivos').toPromise();
+    this.combactivos$= await this.http.get('http://3.13.114.248:8000/combActivos').toPromise();
     console.log(this.combactivos$);
     this.getTiempo(this.combactivos$);
     console.log(this.tiempo);
@@ -362,7 +362,7 @@ export class ReporteriaComponent implements OnInit {
 
 
   async getCombMes(){
-    this.combmes$= await this.http.get('http://localhost:8000/combMes').toPromise();
+    this.combmes$= await this.http.get('http://3.13.114.248:8000/combMes').toPromise();
 
     console.log(this.combmes$)
     this.getTiempo(this.combmes$);
@@ -371,21 +371,21 @@ export class ReporteriaComponent implements OnInit {
 
   }
   async getComb6Mes(){
-    this.comb6mes$= await this.http.get('http://localhost:8000/comb6Mes').toPromise();
+    this.comb6mes$= await this.http.get('http://3.13.114.248:8000/comb6Mes').toPromise();
 
     this.getTiempo(this.comb6mes$);
     console.log(this.comb6mes$)
   }
 
   async getCombAnyo(){
-    this.combanyo$= await this.http.get('http://localhost:8000/combAnyo').toPromise();
+    this.combanyo$= await this.http.get('http://3.13.114.248:8000/combAnyo').toPromise();
 
     this.getTiempo(this.combanyo$);
    
   }
 
   async getCombTodos(){
-    this.combtodos$= await this.http.get('http://localhost:8000/combTodos').toPromise();
+    this.combtodos$= await this.http.get('http://3.13.114.248:8000/combTodos').toPromise();
     this.getTiempo(this.combtodos$);
    
   }
@@ -469,8 +469,8 @@ export class ReporteriaComponent implements OnInit {
 
   async getCombMes2(){
     console.log("hola")
-    this.combmes2$= await this.http.get('http://localhost:8000/combMes2').toPromise();
-    this.combmes2fin$ = await this.http.get('http://localhost:8000/combFin').toPromise();
+    this.combmes2$= await this.http.get('http://3.13.114.248:8000/combMes2').toPromise();
+    this.combmes2fin$ = await this.http.get('http://3.13.114.248:8000/combFin').toPromise();
 
     let tam = this.combmes2$.data.length;
 
@@ -540,9 +540,9 @@ export class ReporteriaComponent implements OnInit {
 
   }
   async getComb6Mes2(){
-    this.comb6mes2$= await this.http.get('http://localhost:8000/comb6Mes2').toPromise();
+    this.comb6mes2$= await this.http.get('http://3.13.114.248:8000/comb6Mes2').toPromise();
 
-    this.comb6mes2fin$= await this.http.get('http://localhost:8000/combFin').toPromise();
+    this.comb6mes2fin$= await this.http.get('http://3.13.114.248:8000/combFin').toPromise();
 
     let tam = this.comb6mes2$.data.length;
 
@@ -618,10 +618,10 @@ export class ReporteriaComponent implements OnInit {
   }
 
   async getCombAnyo2(){
-    this.combanyo2$= await this.http.get('http://localhost:8000/combAnyo2').toPromise();
+    this.combanyo2$= await this.http.get('http://3.13.114.248:8000/combAnyo2').toPromise();
 
     
-    this.combanyo2fin$= await this.http.get('http://localhost:8000/combFin').toPromise();
+    this.combanyo2fin$= await this.http.get('http://3.13.114.248:8000/combFin').toPromise();
 
     let tam = this.combanyo2$.data.length;
 
@@ -693,9 +693,9 @@ export class ReporteriaComponent implements OnInit {
   }
 
   async getCombTodos2(){
-    this.combtodos2$= await this.http.get('http://localhost:8000/combTodos2').toPromise();
+    this.combtodos2$= await this.http.get('http://3.13.114.248:8000/combTodos2').toPromise();
 
-    this.combtodos2fin$= await this.http.get('http://localhost:8000/combFin').toPromise();
+    this.combtodos2fin$= await this.http.get('http://3.13.114.248:8000/combFin').toPromise();
 
     let tam = this.combtodos2$.data.length;
 
@@ -796,9 +796,9 @@ export class ReporteriaComponent implements OnInit {
     
     this.array=[];
 
-    this.brigadasCombate$= await this.http.get('http://localhost:8000/brigadasCombate/'+idcombate).toPromise();
+    this.brigadasCombate$= await this.http.get('http://3.13.114.248:8000/brigadasCombate/'+idcombate).toPromise();
    
-    this.brigadistasParticipando$ = await this.http.get('http://localhost:8000/brigadistasParticipando/'+idcombate).toPromise();
+    this.brigadistasParticipando$ = await this.http.get('http://3.13.114.248:8000/brigadistasParticipando/'+idcombate).toPromise();
 
     var porcentajeAlta = 0.00;
     var porcentajeAlta2 = [];
@@ -814,7 +814,7 @@ export class ReporteriaComponent implements OnInit {
 
     console.log(this.brigadasCombate$.data)
     this.array2=[];
-    this.combatesfin$=await this.http.get('http://localhost:8000/combatesFin/'+idcombate).toPromise();
+    this.combatesfin$=await this.http.get('http://3.13.114.248:8000/combatesFin/'+idcombate).toPromise();
 
     
 
@@ -896,7 +896,7 @@ export class ReporteriaComponent implements OnInit {
     excel.push(['Nombre Brigada', 'N° Brigada', 'Rut', 'Nombre', 'Apellido Paterno', 'Apellido Materno']);
     var alta: any=[];
 
-    alta=await this.http.get('http://localhost:8000/alta/'+idcombate).toPromise();
+    alta=await this.http.get('http://3.13.114.248:8000/alta/'+idcombate).toPromise();
     var tam = alta.data.length;
     var arrayaux = [];
 
@@ -953,7 +953,7 @@ export class ReporteriaComponent implements OnInit {
     excel.push(['Nombre Brigada', 'N° Brigada', 'Rut', 'Nombre', 'Apellido Paterno', 'Apellido Materno']);
     var media: any=[];
 
-    media=await this.http.get('http://localhost:8000/media/'+idcombate).toPromise();
+    media=await this.http.get('http://3.13.114.248:8000/media/'+idcombate).toPromise();
     var tam2 = media.data.length;
     var arrayaux2 = [];
 
@@ -1243,9 +1243,9 @@ export class ReporteriaComponent implements OnInit {
     
     this.array=[];
 
-    this.brigadasCombate$= await this.http.get('http://localhost:8000/brigadasCombate/'+idcombate).toPromise();
+    this.brigadasCombate$= await this.http.get('http://3.13.114.248:8000/brigadasCombate/'+idcombate).toPromise();
    
-    this.brigadistasParticipando$ = await this.http.get('http://localhost:8000/brigadistasParticipando/'+idcombate).toPromise();
+    this.brigadistasParticipando$ = await this.http.get('http://3.13.114.248:8000/brigadistasParticipando/'+idcombate).toPromise();
 
     var porcentajeAlta = 0.00;
     var porcentajeAlta2 = [];
@@ -1261,7 +1261,7 @@ export class ReporteriaComponent implements OnInit {
 
     console.log(this.brigadasCombate$.data)
     this.array2=[];
-    this.combatesfin$=await this.http.get('http://localhost:8000/combatesFin/'+idcombate).toPromise();
+    this.combatesfin$=await this.http.get('http://3.13.114.248:8000/combatesFin/'+idcombate).toPromise();
 
     
 
@@ -1343,7 +1343,7 @@ export class ReporteriaComponent implements OnInit {
     excel.push(['Nombre Brigada', 'N° Brigada', 'Rut', 'Nombre', 'Apellido Paterno', 'Apellido Materno']);
     var alta: any=[];
 
-    alta=await this.http.get('http://localhost:8000/alta/'+idcombate).toPromise();
+    alta=await this.http.get('http://3.13.114.248:8000/alta/'+idcombate).toPromise();
     var tam = alta.data.length;
     var arrayaux = [];
 
@@ -1400,7 +1400,7 @@ export class ReporteriaComponent implements OnInit {
     excel.push(['Nombre Brigada', 'N° Brigada', 'Rut', 'Nombre', 'Apellido Paterno', 'Apellido Materno']);
     var media: any=[];
 
-    media=await this.http.get('http://localhost:8000/media/'+idcombate).toPromise();
+    media=await this.http.get('http://3.13.114.248:8000/media/'+idcombate).toPromise();
     var tam2 = media.data.length;
     var arrayaux2 = [];
 
@@ -1509,12 +1509,12 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
     }
     
     this.array=[];
-    this.brigadasCombate$= await this.http.get('http://localhost:8000/brigadasCombate/'+idcombate).toPromise();
+    this.brigadasCombate$= await this.http.get('http://3.13.114.248:8000/brigadasCombate/'+idcombate).toPromise();
     console.log(this.brigadasCombate$.data)
     
     this.array2=[];
-    this.combatesfin$=await this.http.get('http://localhost:8000/combatesFin/'+idcombate).toPromise();
-    this.brigadistasParticipando$ = await this.http.get('http://localhost:8000/brigadistasParticipando/'+idcombate).toPromise();
+    this.combatesfin$=await this.http.get('http://3.13.114.248:8000/combatesFin/'+idcombate).toPromise();
+    this.brigadistasParticipando$ = await this.http.get('http://3.13.114.248:8000/brigadistasParticipando/'+idcombate).toPromise();
 
     var porcentajeAlta = 0.00;
     var porcentajeAlta2 = [];
@@ -1612,7 +1612,7 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
     excel.push(['Nombre Brigada', 'N° Brigada', 'Rut', 'Nombre', 'Apellido Paterno', 'Apellido Materno']);
     var alta: any=[];
 
-    alta=await this.http.get('http://localhost:8000/alta/'+idcombate).toPromise();
+    alta=await this.http.get('http://3.13.114.248:8000/alta/'+idcombate).toPromise();
     var tam = alta.data.length;
     var arrayaux = [];
 
@@ -1669,7 +1669,7 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
     
     var media: any=[];
 
-    media=await this.http.get('http://localhost:8000/media/'+idcombate).toPromise();
+    media=await this.http.get('http://3.13.114.248:8000/media/'+idcombate).toPromise();
     var tam2 = media.data.length;
     var arrayaux2 = [];
 
@@ -1959,12 +1959,12 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
       }
       
       this.array=[];
-      this.brigadasCombate$= await this.http.get('http://localhost:8000/brigadasCombate/'+idcombate).toPromise();
+      this.brigadasCombate$= await this.http.get('http://3.13.114.248:8000/brigadasCombate/'+idcombate).toPromise();
       console.log(this.brigadasCombate$.data)
       
       this.array2=[];
-      this.combatesfin$=await this.http.get('http://localhost:8000/combatesFin/'+idcombate).toPromise();
-      this.brigadistasParticipando$ = await this.http.get('http://localhost:8000/brigadistasParticipando/'+idcombate).toPromise();
+      this.combatesfin$=await this.http.get('http://3.13.114.248:8000/combatesFin/'+idcombate).toPromise();
+      this.brigadistasParticipando$ = await this.http.get('http://3.13.114.248:8000/brigadistasParticipando/'+idcombate).toPromise();
   
       var porcentajeAlta = 0.00;
       var porcentajeAlta2 = [];
@@ -2062,7 +2062,7 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
       excel.push(['Nombre Brigada', 'N° Brigada', 'Rut', 'Nombre', 'Apellido Paterno', 'Apellido Materno']);
       var alta: any=[];
   
-      alta=await this.http.get('http://localhost:8000/alta/'+idcombate).toPromise();
+      alta=await this.http.get('http://3.13.114.248:8000/alta/'+idcombate).toPromise();
       var tam = alta.data.length;
       var arrayaux = [];
   
@@ -2119,7 +2119,7 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
       
       var media: any=[];
   
-      media=await this.http.get('http://localhost:8000/media/'+idcombate).toPromise();
+      media=await this.http.get('http://3.13.114.248:8000/media/'+idcombate).toPromise();
       var tam2 = media.data.length;
       var arrayaux2 = [];
   
@@ -2209,16 +2209,15 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
     let params = new HttpParams().set("n_brigada", n_brigada).set("nombre",nombre_brigada);
 
 
-    this.brigadistas$=await this.http.get('http://localhost:8000/brigadistasFatiga',{headers: new HttpHeaders({
+    this.brigadistas$=await this.http.get('http://3.13.114.248:8000/brigadistasFatiga',{headers: new HttpHeaders({
       'Content-Type':'application/json'
       }), params: params}).toPromise();
 
 
-    console.log(this.brigadistas$.data)
-
     var titulos = new Array( 'Nombre ', 'Apellido Paterno', 'Apellido Materno', 'Rut', 'Última Fatiga', 'Fecha', 'Hora');
     excel.push(['Brigadistas Actuales']);
     excel.push(titulos);
+    console.log(this.brigadistas$);
     this.array[0]=titulos
     for (let i = 1; i<this.brigadistas$.data.length+1;i++){
 
@@ -2246,11 +2245,11 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
 
     this.array2=[];
 
-    this.brigadistasMedia$=await this.http.get('http://localhost:8000/brigadistasMedia',{headers: new HttpHeaders({
+    this.brigadistasMedia$=await this.http.get('http://3.13.114.248:8000/brigadistasMedia',{headers: new HttpHeaders({
       'Content-Type':'application/json'
       }), params: params}).toPromise();
     this.array3=[];
-    this.brigadistasAlta$=await this.http.get('http://localhost:8000/brigadistasAlta',{headers: new HttpHeaders({
+    this.brigadistasAlta$=await this.http.get('http://3.13.114.248:8000/brigadistasAlta',{headers: new HttpHeaders({
       'Content-Type':'application/json'
       }), params: params}).toPromise();
       console.log(this.brigadistasMedia$.data)
@@ -2259,12 +2258,12 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
       let params2 = new HttpParams().set("n_brigada", n_brigada).set("nombre",nombre_brigada).set("idcombate",idcombate);
 
 
-      this.rutMedia$=await this.http.get('http://localhost:8000/rutMedia',{headers: new HttpHeaders({
+      this.rutMedia$=await this.http.get('http://3.13.114.248:8000/rutMedia',{headers: new HttpHeaders({
         'Content-Type':'application/json'
         }), params: params2}).toPromise();
 
 
-      this.fatigaMedia$=await this.http.get('http://localhost:8000/fatigaFinMedia',{headers: new HttpHeaders({
+      this.fatigaMedia$=await this.http.get('http://3.13.114.248:8000/fatigaFinMedia',{headers: new HttpHeaders({
           'Content-Type':'application/json'
       }), params: params2}).toPromise();
 
@@ -2360,12 +2359,12 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
 
 
 
-    this.rutAlta$=await this.http.get('http://localhost:8000/rutAlta',{headers: new HttpHeaders({
+    this.rutAlta$=await this.http.get('http://3.13.114.248:8000/rutAlta',{headers: new HttpHeaders({
       'Content-Type':'application/json'
       }), params: params2}).toPromise();
 
 
-    this.fatigaAlta$=await this.http.get('http://localhost:8000/fatigaFinAlta',{headers: new HttpHeaders({
+    this.fatigaAlta$=await this.http.get('http://3.13.114.248:8000/fatigaFinAlta',{headers: new HttpHeaders({
         'Content-Type':'application/json'
     }), params: params2}).toPromise();
 
@@ -2468,7 +2467,7 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
     this.array4=[];
     
     params = new HttpParams().set("n_brigada", n_brigada).set("nombre",nombre_brigada).set("id",idcombate);
-    this.combatesbrigada$=await this.http.get('http://localhost:8000/brigadafin',{headers: new HttpHeaders({
+    this.combatesbrigada$=await this.http.get('http://3.13.114.248:8000/brigadafin',{headers: new HttpHeaders({
       'Content-Type':'application/json'
       }), params: params}).toPromise();
     
@@ -2819,7 +2818,7 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
     let params = new HttpParams().set("n_brigada", n_brigada).set("nombre",nombre_brigada);
 
 
-    this.brigadistas$=await this.http.get('http://localhost:8000/brigadistasFatiga',{headers: new HttpHeaders({
+    this.brigadistas$=await this.http.get('http://3.13.114.248:8000/brigadistasFatiga',{headers: new HttpHeaders({
       'Content-Type':'application/json'
       }), params: params}).toPromise();
 
@@ -2856,11 +2855,11 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
 
     this.array2=[];
 
-    this.brigadistasMedia$=await this.http.get('http://localhost:8000/brigadistasMedia',{headers: new HttpHeaders({
+    this.brigadistasMedia$=await this.http.get('http://3.13.114.248:8000/brigadistasMedia',{headers: new HttpHeaders({
       'Content-Type':'application/json'
       }), params: params}).toPromise();
     this.array3=[];
-    this.brigadistasAlta$=await this.http.get('http://localhost:8000/brigadistasAlta',{headers: new HttpHeaders({
+    this.brigadistasAlta$=await this.http.get('http://3.13.114.248:8000/brigadistasAlta',{headers: new HttpHeaders({
       'Content-Type':'application/json'
       }), params: params}).toPromise();
       console.log(this.brigadistasMedia$.data)
@@ -2869,12 +2868,12 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
       let params2 = new HttpParams().set("n_brigada", n_brigada).set("nombre",nombre_brigada).set("idcombate",idcombate);
 
 
-      this.rutMedia$=await this.http.get('http://localhost:8000/rutMedia',{headers: new HttpHeaders({
+      this.rutMedia$=await this.http.get('http://3.13.114.248:8000/rutMedia',{headers: new HttpHeaders({
         'Content-Type':'application/json'
         }), params: params2}).toPromise();
 
 
-      this.fatigaMedia$=await this.http.get('http://localhost:8000/fatigaFinMedia',{headers: new HttpHeaders({
+      this.fatigaMedia$=await this.http.get('http://3.13.114.248:8000/fatigaFinMedia',{headers: new HttpHeaders({
           'Content-Type':'application/json'
       }), params: params2}).toPromise();
 
@@ -2970,12 +2969,12 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
 
 
 
-    this.rutAlta$=await this.http.get('http://localhost:8000/rutAlta',{headers: new HttpHeaders({
+    this.rutAlta$=await this.http.get('http://3.13.114.248:8000/rutAlta',{headers: new HttpHeaders({
       'Content-Type':'application/json'
       }), params: params2}).toPromise();
 
 
-    this.fatigaAlta$=await this.http.get('http://localhost:8000/fatigaFinAlta',{headers: new HttpHeaders({
+    this.fatigaAlta$=await this.http.get('http://3.13.114.248:8000/fatigaFinAlta',{headers: new HttpHeaders({
         'Content-Type':'application/json'
     }), params: params2}).toPromise();
 
@@ -3078,7 +3077,7 @@ async generatePdf(estado,idcombate, hito, fecha, hora,fechafin,horafin,i,nalta,n
     this.array4=[];
     
     params = new HttpParams().set("n_brigada", n_brigada).set("nombre",nombre_brigada).set("id",idcombate);
-    this.combatesbrigada$=await this.http.get('http://localhost:8000/brigadafin',{headers: new HttpHeaders({
+    this.combatesbrigada$=await this.http.get('http://3.13.114.248:8000/brigadafin',{headers: new HttpHeaders({
       'Content-Type':'application/json'
       }), params: params}).toPromise();
     

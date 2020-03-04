@@ -89,7 +89,7 @@ export class ModBrigadaComponent implements OnInit {
 
   async getJefeBrigada(){
     let params = new HttpParams().set("n_brigada", this.brig).set("nombre",this.brig2);
-    this.brigada$ = await this.http.get('http://localhost:8000/jefeBrigada',{headers: new HttpHeaders({
+    this.brigada$ = await this.http.get('http://3.13.114.248:8000/jefeBrigada',{headers: new HttpHeaders({
     'Content-Type':'application/json'
     }), params: params}).toPromise();
     return this.brigada$.data[0].rut_jefe;
@@ -108,7 +108,7 @@ export class ModBrigadaComponent implements OnInit {
   onSubmit(){
     if(this.modBrigadaForm.value!=null){
       let params = new HttpParams().set("n_brigada", this.brig).set("nombre",this.brig2);
-      this.http.put('http://localhost:8000/modBrigada/', this.modBrigadaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
+      this.http.put('http://3.13.114.248:8000/modBrigada/', this.modBrigadaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Modificación exitosa de brigada').then(() => {
@@ -131,7 +131,7 @@ export class ModBrigadaComponent implements OnInit {
   }
   
   async getJefes(){
-    this.jefes$ = await this.http.get('http://localhost:8000/jefes').toPromise();
+    this.jefes$ = await this.http.get('http://3.13.114.248:8000/jefes').toPromise();
     return this.jefes$;
   }
 

@@ -177,28 +177,28 @@ export class EstadoComponent implements OnInit {
 
     // Método que crea cada uno de los gráficos con sus datos correspondientes.
 
-    this.createChartsData()
+    this.createChartsData();
    
   }
 
 
 
   async getnBrigadas(){
-    this.nbrigadas$= await this.http.get('http://localhost:8000/nbrigadas').toPromise();
+    this.nbrigadas$= await this.http.get('http://3.13.114.248:8000/nbrigadas').toPromise();
     return this.nbrigadas$.data[0].numero;
   }
 
   
 
   async getDatosEstado() {
-    this.estadoBrig$= await this.http.get('http://localhost:8000/estadoBrigadas').toPromise();
+    this.estadoBrig$= await this.http.get('http://3.13.114.248:8000/estadoBrigadas').toPromise();
 
     return this.estadoBrig$.data;
   
   }
 
   async getnFatigadosBajo(){
-    this.fatigaBaja$= await this.http.get('http://localhost:8000/FatigaBajaBrigadas').toPromise();
+    this.fatigaBaja$= await this.http.get('http://3.13.114.248:8000/FatigaBajaBrigadas').toPromise();
 
     
    
@@ -211,7 +211,7 @@ export class EstadoComponent implements OnInit {
   }
 
   async getnFatigadosMedio(){
-    this.fatigaMedia$ = await this.http.get('http://localhost:8000/FatigaMediaBrigadas').toPromise();
+    this.fatigaMedia$ = await this.http.get('http://3.13.114.248:8000/FatigaMediaBrigadas').toPromise();
     console.log(this.fatigaMedia$)
    
     this.chart.forEach((child) => {
@@ -221,7 +221,7 @@ export class EstadoComponent implements OnInit {
   }
 
   async getnFatigadosAlto(){
-    this.fatigaAlta$= await this.http.get('http://localhost:8000/FatigaAltaBrigadas').toPromise();
+    this.fatigaAlta$= await this.http.get('http://3.13.114.248:8000/FatigaAltaBrigadas').toPromise();
     console.log(this.fatigaAlta$)
 
     
@@ -236,7 +236,7 @@ export class EstadoComponent implements OnInit {
 
 
   setDatosRandom(){
-    this.http.get('http://localhost:8000/datosRandom').subscribe(resp2 =>
+    this.http.get('http://3.13.114.248:8000/datosRandom').subscribe(resp2 =>
     this.datosEstado$ = resp2 as []
     )
   }

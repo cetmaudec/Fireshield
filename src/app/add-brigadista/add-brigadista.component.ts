@@ -98,7 +98,7 @@ export class AddBrigadistaComponent implements OnInit {
   }
 
   async getBrigadas(){
-    this.nombresbrigadas$= await this.http.get('http://localhost:8000/nombresbrigadas').toPromise();
+    this.nombresbrigadas$= await this.http.get('http://3.13.114.248:8000/nombresbrigadas').toPromise();
   }
 
   /*
@@ -113,7 +113,7 @@ export class AddBrigadistaComponent implements OnInit {
   }
 
   async getnBrigadas(nombre){
-    this.brigadas$= await this.http.get('http://localhost:8000/brigadasPorNombre' + nombre).toPromise();
+    this.brigadas$= await this.http.get('http://3.13.114.248:8000/brigadasPorNombre' + nombre).toPromise();
   }
 
   /*
@@ -131,7 +131,7 @@ export class AddBrigadistaComponent implements OnInit {
     if(this.BrigadistaForm.value!=null){
       console.log(this.n_brigada, this.nombre_brigada)
       let params = new HttpParams().set("n_brigada", this.n_brigada).set("nombre_brigada",this.nombre_brigada);
-      this.http.post('http://localhost:8000/addBrigadista', this.BrigadistaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params:params}).subscribe(
+      this.http.post('http://3.13.114.248:8000/addBrigadista', this.BrigadistaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params:params}).subscribe(
           (response ) => {
             console.log(response);
             swal.fire('Registro exitoso de brigadista').then(() => {
@@ -154,7 +154,7 @@ export class AddBrigadistaComponent implements OnInit {
 
   
   getPulserasNoUsadas(){
-    this.http.get('http://localhost:8000/pulserasnousadas').subscribe(resp =>
+    this.http.get('http://3.13.114.248:8000/pulserasnousadas').subscribe(resp =>
       this.pulserasNoUsadas$ = resp as []
   
     )
