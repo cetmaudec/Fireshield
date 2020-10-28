@@ -1,4 +1,50 @@
-<ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+</head>
+
+
+<body>
+  <app-navbar></app-navbar>
+  <div class="limiter">
+       <h1>&bull;Añadir Brigada &bull;</h1>
+        <div class="underline">
+        </div>
+        <form [formGroup]="unirseForm">
+            <fieldset>
+                <legend>
+                    <img src="./assets/images/icons/firefighter-helmet.svg"> Brigada del Rut: {{rut}}
+                </legend>
+                <div class="form-input">
+                    <div class="row">
+                        <div class="col-7" >
+                            <label>Nombre Brigada
+                                <span *ngIf="unirseForm.get('n_brigada').hasError('required')">(*)requerido</span>
+                            </label>
+                            <select formControlName="n_brigada">
+                                <option value=""class="option">Elija su brigada</option>
+                                <option (click)= "selectBrigada($event)" *ngFor="let brigada of brigadas$.data" [ngValue]="{'numero':brigada.n_brigada,'nombre':brigada.nombre}" class="option"> {{brigada.nombre}} - {{brigada.n_brigada}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="btn-submit">
+                <button [disabled]="!unirseForm.valid" class="button" (click)="onSubmit()">Unirse</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+
+<!--<ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
         <app-navbar></app-navbar>
     </ng-container>
     
@@ -34,5 +80,6 @@
                 <div class="submit">
                         <input [disabled]="!unirseForm.valid" type="submit" value="Modificar" id="form_button" />
                       </div>
-            </form><!-- // End form -->
-          </div><!-- // End #container -->
+            </form>
+          </div> 
+-->

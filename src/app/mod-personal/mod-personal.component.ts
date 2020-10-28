@@ -2,15 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators,ReactiveFormsModule } from '@angular/forms';
 import { HttpClient , HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
-import swal from'sweetalert2';
+import Swal from'sweetalert2';
 import { ActivatedRoute } from '@angular/router';
+
+import { environment } from '../environment';
 
 @Component({
   selector: 'app-mod-personal',
   templateUrl: './mod-personal.component.html',
   styleUrls: ['./mod-personal.component.css']
 })
-export class ModPersonalComponent implements OnInit {
+export class ModPersonalComponent implements OnInit{
 
   /*
     Variables utilizadas para poder modificar correctamente a un miembro del personal. 
@@ -27,7 +29,13 @@ export class ModPersonalComponent implements OnInit {
   // Variable que almacena toda la información personal del miembro del personal que se desea modificar.
 
   personal$:any;
-  
+  edit_brigada: Boolean = false;
+  edit_user: Boolean = false;
+
+  password: any;
+  confirmPassword: any;
+  confirm = false;
+
    /*
     En el constructor se obtiene el rut del miembro del personal a través de la ruta, además de inicializar el formulario 
     con valores vacíos. Por otro lado, se declaran variables que serán útiles para realizar consultas a la 
@@ -39,12 +47,7 @@ export class ModPersonalComponent implements OnInit {
   constructor(private rutaActiva: ActivatedRoute, private formBuilder: FormBuilder,private http: HttpClient,private router: Router) { 
     this.rut=this.rutaActiva.snapshot.paramMap.get('id');
     this.ModPersonalForm =  this.formBuilder.group({
-      nombre: new FormControl('',Validators.required),
-      apellidoP: new FormControl('',Validators.required),
-      apellidoM: new FormControl('',Validators.required),
-      rut: new FormControl('',[Validators.required, Validators.pattern('[0-9]+.+[0-9]+.+[0-9]+-[0-9kK]{1}$')]),
       cargo: new FormControl('',Validators.required),
-      correo: new FormControl('',[Validators.required, Validators.email]),
       pass: new FormControl('',Validators.required)
     });
 
@@ -54,67 +57,94 @@ export class ModPersonalComponent implements OnInit {
     En el OnInit se llaman los métodos necesarios para que al iniciar el formulario, este conozca todos los datos
     actuales del personal. Además, se rellenan los campos con estos datos. 
   */
-
-
   async ngOnInit() {
-    
-    // Se obtienen los datos actuales del mimebro del personal, para luego rellenar los campos con eso.
-
-    const result1 =  await this.getPersonal();
-    this.ModPersonalForm.patchValue({
-      nombre:result1.nombre,
-      apellidoP:result1.apellidoP,
-      apellidoM:result1.apellidoM,
-      rut:result1.rut,
-      correo:result1.correo,
-      pass:result1.pass,
-      cargo:result1.cargo
-    });
-
-    
-
+    this.personal$ = this.getPersonal();
+    console.log(this.personal$);
   }
 
-   /*
-    Método que es llamado cuando se oprime el botón de modificar personal. Se realiza un put en el server y de
-    acuerdo a la respuesta que este mismo entrege, se despliega una pop-up en la pantalla. Si el server indica
-    que se realizó correctamente la modificación, se desplegará el mensaje "Modificado con éxito", en caso
-    contrario, se despliega el mensaje "Error en la modificación de los datos del usuario". Además, se redirige al usuario a
-    la pantalla en donde se muestran todos los miembros del personal.
-  */
-
-  onSubmit(){
-    if(this.ModPersonalForm.value!=null){
-      
-      this.http.put('http://3.13.114.248:8000/modUsuario/'+this.rut, this.ModPersonalForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
-          (response ) => {
-            console.log(response);
-            swal.fire('Modificado con éxito.').then(() => {
-              this.router.navigate(['/personal']);
-                
-              }
-            );
-           
-          },
-          (error)=>{
-            swal.fire('Error en la modificación de los datos del usuario.', error).then(() => {
-              this.router.navigate(['/personal']);
-              
-              }
-            );
-          
-          });
-          this.ngOnInit();  
-          
+  EditUsuario(){
+    const data_usuario = { 
+      'password': this.ModPersonalForm.get('pass').value
     }
-      
+    if(this.ModPersonalForm!=null){
+      this.http.put(environment.urlAddress+'update/usuario/set/password/'+this.rut, data_usuario, { 
+        headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Modificación exitosa de su contraseña!',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                  if (result.value) {
+                    this.router.navigate(['/personal']); 
+                  }
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          })
+      );  
+    }
   }
 
+  EditBrigada(){
+    const data_brigada = { 
+      'cargo': this.ModPersonalForm.get('cargo').value
+    }
+    if(this.ModPersonalForm.value!=null){
+      this.http.put(environment.urlAddress+'update/usuario/set/cargo/'+this.rut, data_brigada, { 
+        headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Modificación exitosa del cargo de personal!',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                  if (result.value) {
+                    this.router.navigate(['/personal']);
+                  }
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          })
+      );  
+    }
+  }
 
   async getPersonal(){
-    this.personal$ = await this.http.get('http://3.13.114.248:8000/personal/'+this.rut).toPromise();
-    console.log(this.personal$)
-    return this.personal$.data[0];
+    this.personal$ = await this.http.get(environment.urlAddress+'select/usuario/personal/'+this.rut).toPromise();
+    return this.personal$;
+  }
+
+
+  EditInfo(group: any){
+    console.log(group);
+    if(group == 'brigada'){
+      this.edit_brigada = true;
+      console.log(this.edit_brigada);
+    }else if(group == 'usuario'){
+      this.edit_user = true;
+      console.log(this.edit_user);
+    }else{
+      this.edit_brigada = false;
+      this.edit_user = false;
+    }
+  }
+
+  getPassword(event: Event){
+    this.password = (event.target as HTMLInputElement).value;
+    console.log(this.password);
+  }
+
+  getconfirmPassword(event: Event){
+    this.confirmPassword = (event.target as HTMLInputElement).value;
+    console.log(this.password +" = "+this.confirmPassword);
+    if(this.confirmPassword==this.password){
+      this.confirm=true;
+    }else{
+      this.confirm=false;
+    }
   }
 
 }

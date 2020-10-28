@@ -2,7 +2,8 @@ import { Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient , HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
-import swal from'sweetalert2';
+import Swal from'sweetalert2';
+import { environment } from '../environment';
 
 @Component({
   selector: 'app-registro',
@@ -19,6 +20,13 @@ export class RegistroComponent implements OnInit {
 
   RegistroForm: FormGroup;
   
+  password: any;
+  confirmPassword: any;
+  confirm = false;
+  userExist = false;
+
+  users : any = [];
+
   /*
     En el constructor se inicializa el formulario con valores vacíos. Por otro lado, se declaran variables que 
     serán útiles para realizar consultas a la base de datos a través del server (HttpClient) y 
@@ -33,16 +41,22 @@ export class RegistroComponent implements OnInit {
       rut: new FormControl('',[Validators.required, Validators.pattern('[0-9]+.+[0-9]+.+[0-9]+-[0-9kK]{1}$')]),
       cargo: new FormControl('',Validators.required),
       correo: new FormControl('',[Validators.required, Validators.email]),
-      pass: new FormControl('',Validators.required)
+      password: new FormControl('',Validators.required)
     });
 
   }
 
-  ngOnInit() {
-
-    
+  async ngOnInit() {
+    this.users = await this.getUsuario();
+    console.log(this.users);
 
   }
+
+
+  async getUsuario(){
+      this.users = await this.http.get(environment.urlAddress+'select/usuario/rut').toPromise();
+      return this.users;
+    }
 
   
   /*
@@ -54,29 +68,58 @@ export class RegistroComponent implements OnInit {
   */
 
   onSubmit(){
-    if(this.RegistroForm.value!=null){
-      this.http.post('http://3.13.114.248:8000/addUsuario', this.RegistroForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
-          (response ) => {
-            console.log(response);
-            swal.fire('Solicitud enviada con éxito.').then(() => {
-                this.router.navigate(['']);
-                
-              }
-            );
-           
-          },
-          (error)=>{
-            swal.fire('Error en el envío de la solicitud de registro.',error).then(() => {
-              this.router.navigate(['']);
-              
-              }
-            );
-          
-          });
-          this.ngOnInit();  
-          
+    if(this.userExist==true){
+      Swal.fire({
+        icon: 'warning',
+        title:'Usuario ya existente!',
+        confirmButtonText: 'Ok!'
+        });
+    }else if(this.RegistroForm.value!=null){
+      console.log(this.RegistroForm.value);
+      this.http.post(environment.urlAddress+'insert/usuario', this.RegistroForm.value, { 
+        headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title:'Solicitud de usuario enviada!',
+                text: 'Espere a que su solicitud sea aceptada.',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                  if (result.value) {
+                    this.router.navigate(['']);
+                    }
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+            })
+      );       
+    }       
+  }
+
+  verificarUsuario(event: Event){
+    this.userExist = false;
+      var newUser = (event.target as HTMLInputElement).value;
+      for(let user of this.users.data){                                                                                                                                                                                                                                                                                             
+        if(newUser == user.rut){
+          this.userExist = true;
+        } 
+      }
     }
-         
+
+  getPassword(event: Event){
+    this.password = (event.target as HTMLInputElement).value;
+    console.log(this.password);
+  }
+
+  getconfirmPassword(event: Event){
+    this.confirmPassword = (event.target as HTMLInputElement).value;
+    console.log(this.password +" = "+this.confirmPassword);
+    if(this.confirmPassword==this.password){
+      this.confirm=true;
+    }else{
+      this.confirm=false;
+    }
   }
 
 

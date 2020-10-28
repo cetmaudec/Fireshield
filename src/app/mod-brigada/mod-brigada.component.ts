@@ -5,6 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import {Router} from '@angular/router';
 import swal from'sweetalert2';
 
+import Swal from'sweetalert2';
+import { environment } from '../environment';
+
 
 @Component({
   selector: 'app-mod-brigada',
@@ -40,6 +43,7 @@ export class ModBrigadaComponent implements OnInit {
   // Variable que almacena tanto el nombre como el numero de la brigada que se desea modificar.
 
   datos: any;
+  edit_brigada: Boolean = false;
 
   /*
     En el constructor se inicializa el formulario de la brigada que se quiere modificar con valores vacíos. 
@@ -49,9 +53,7 @@ export class ModBrigadaComponent implements OnInit {
 
   constructor(private rutaActiva: ActivatedRoute,private formBuilder: FormBuilder,private http: HttpClient,private router: Router) {
       this.brig=this.rutaActiva.snapshot.paramMap.get('id');
-      console.log(this.brig);
       this.brig2 = this.rutaActiva.snapshot.paramMap.get('id2');
-    
       this.datos =
         {
           "numero" : this.brig,
@@ -59,9 +61,9 @@ export class ModBrigadaComponent implements OnInit {
         }
        
       this.modBrigadaForm =  this.formBuilder.group({
-
         rut: new FormControl('',Validators.required),    
       });
+      this.edit_brigada= false;
   }
   
   /*
@@ -70,29 +72,22 @@ export class ModBrigadaComponent implements OnInit {
   */
 
   async ngOnInit() {
-    
-    // Se obtiene el actual jefe de brigada de la brigada en cuestión.
-    const result1 =  await this.getJefeBrigada();
-
-    // Se rellena el campo del rut de jefe de brigada, con el actual jefe de brigada.
-
-    this.modBrigadaForm = this.formBuilder.group({
-      rut: [result1]
-    });
-        
+    console.log("init");
     // Se obtienen todos los jefes de brigadas disponibles.
-
-    this.getJefes();
-
+    this.jefes$ = this.getJefes();
+    console.log(this.jefes$);
+    // Se obtiene el actual jefe de brigada de la brigada en cuestión.
+    this.brigada$ = this.getJefeBrigada();
+    console.log(this.brigada$);
+    
 
   }
 
   async getJefeBrigada(){
     let params = new HttpParams().set("n_brigada", this.brig).set("nombre",this.brig2);
-    this.brigada$ = await this.http.get('http://3.13.114.248:8000/jefeBrigada',{headers: new HttpHeaders({
-    'Content-Type':'application/json'
-    }), params: params}).toPromise();
-    return this.brigada$.data[0].rut_jefe;
+    this.brigada$ = await this.http.get(environment.urlAddress+'select/jefebrigada',{headers: new HttpHeaders({
+    'Content-Type':'application/json'}), params: params}).toPromise();
+    return this.brigada$;
     
   }
 
@@ -105,34 +100,42 @@ export class ModBrigadaComponent implements OnInit {
     la pantalla en donde se muestran todas las brigadas existentes.
   */
 
-  onSubmit(){
+  EditBrigada(){
     if(this.modBrigadaForm.value!=null){
       let params = new HttpParams().set("n_brigada", this.brig).set("nombre",this.brig2);
-      this.http.put('http://3.13.114.248:8000/modBrigada/', this.modBrigadaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
-          (response ) => {
-            console.log(response);
-            swal.fire('Modificación exitosa de brigada').then(() => {
-                this.router.navigate(['/brigadas']);
-                
-              }
-            );
-           
-          },
-          (error)=>{
-            swal.fire('Error en modificación de brigada',error).then(() => {
-              this.router.navigate(['/brigadas']);
-              
-              }
-            );
-          
-          });
-          this.ngOnInit();
-        }
+      this.http.put(environment.urlAddress+'update/brigada/set/jefe', this.modBrigadaForm.value, { 
+        headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Modificación exitosa de brigada!',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                  if (result.value) {
+                    this.router.navigate(['/brigadas']);
+                  }
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          }));
+      }
   }
   
   async getJefes(){
-    this.jefes$ = await this.http.get('http://3.13.114.248:8000/jefes').toPromise();
+    this.jefes$ = await this.http.get(environment.urlAddress+'select/usuario/jefe').toPromise();
     return this.jefes$;
   }
+
+  EditInfo(group: any){
+    console.log(group);
+    if(group == 'brigada'){
+      this.edit_brigada = true;
+      console.log(this.edit_brigada);
+    }else{
+      this.edit_brigada = false;
+    }
+  }
+
 
 }

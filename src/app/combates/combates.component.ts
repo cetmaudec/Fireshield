@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient ,HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
-import swal from'sweetalert2';
+import Swal from'sweetalert2';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { environment } from '../environment';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class CombatesComponent implements OnInit {
   */
 
   combates$: any = [];
+  combatesActivos$: any = [];
 
   /*
     Variable que almacena el cargo que posee el actual usuario que está en la sesión actual. Esto sirve para que se
@@ -34,17 +36,8 @@ export class CombatesComponent implements OnInit {
   // Variable de tipo FormGroup que permite trabajar el formulario para añadir un nuevo combate.
 
   CombateForm: FormGroup;
+  brigada_Activa: any = [];
 
-  // Variable que contiene el id del último combate añadido. 
-
-  Combat$: any = [];
-
-  /*
-    Variable que almacena el id que se recomienda que el usuario debe utilizar para registrar el nuevo combate.
-    Corresponde al valor que contiene Combat$ + 1. 
-  */
-
-  maxCombat: any;
 
   /*
     En el constructor obtiene el cargo del usuario actual, además de inicializar el formulario con valores vacíos. 
@@ -55,9 +48,9 @@ export class CombatesComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,private http: HttpClient,private router: Router) {
     this.cargo=localStorage.getItem('cargo');
     this.CombateForm =  this.formBuilder.group({
-      id: new FormControl('',Validators.required),
       hito: new FormControl('',Validators.required),
-      
+      fecha: new FormControl('', Validators.required),
+      hora: new FormControl('',Validators.required)
     });
     
    }
@@ -68,54 +61,25 @@ export class CombatesComponent implements OnInit {
     En este caso, solo se necesita saber el id recomendado a utilizar para el próximo combate.
   */ 
 
-  ngOnInit() {
+  async ngOnInit() {
     document.getElementById("defaultOpen").click();
 
     // Método que obtiene la información actual de todos los combates.
 
-    this.getCombates();
-
-    this.maxCombat = 0;
-
-    // Método que calcula el id recomendado para agregar el nuevo combate.
-
-    this.getMaxCombat();
-  }
-  getCombates(){
-    this.http.get('http://3.13.114.248:8000/combates').subscribe(resp =>
-      this.combates$ = resp as []
-  
-    )
-
+    this.combates$ = await this.getCombates();
+    this.combatesActivos$ = await this.getCombatesActivos();
   }
 
-  /*
-    Método que permite finalizar un combate. Se realiza un put en el server y de
-    acuerdo a la respuesta que este mismo entrege, se despliega una pop-up en la pantalla. Si el server indica
-    que se realizó correctamente la modificación del estado del combate, se desplegará el mensaje 
-    "Combate finalizado exitosamente", en caso contrario, se despliega el mensaje "Error al finalizar combate".
-  */
-
-  delCombate(id:string){
-    if(confirm("¿Estás seguro de querer finalizar el combate "+id+"?")) {
-
-    
-      this.http.put('http://3.13.114.248:8000/finCombate/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
-          (response ) => {
-            swal.fire('Combate finalizado exitosamente').then(() => {
-              location.reload();
-              
-            }
-          );
-
-          },
-          (error)=>{
-            swal.fire('Error al finalizar combate', error, 'success');
- 
-          });
-  
-    }
+  async getCombates(){
+    this.combates$ = await this.http.get(environment.urlAddress+'combates').toPromise();
+    return this.combates$;
   }
+
+  async getCombatesActivos(){
+    this.combatesActivos$ = await this.http.get(environment.urlAddress+'combates/activos').toPromise();
+    return this.combatesActivos$;
+  }
+
 
   // Método que permite que el usuario pueda acceder a las diferentes opciones del menú de combate (Activos, Todos y Añadir).
 
@@ -141,40 +105,99 @@ export class CombatesComponent implements OnInit {
   */
 
   onSubmit(){
-    console.log("entre");
     if(this.CombateForm.value!=null){
-      this.http.post('http://3.13.114.248:8000/addCombate', this.CombateForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
-          (response ) => {
-            console.log(response);
-            swal.fire('Registro exitoso de combate').then(() => {
-                this.router.navigate(['/combates']);
-                
-              }
-            );
-           
-          },
-          (error)=>{
-            swal.fire('Error en el registro de combate',error).then(() => {
-              this.router.navigate(['/combates']);
-              
-              }
-            );
-          
-          });
-          this.ngOnInit();
-        }
+      this.http.post(environment.urlAddress+'insert/combate', this.CombateForm.value, { 
+        headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Registro de nuevo combate existoso!',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                   this.ngOnInit();
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          })
+        );  
+    }
   }
 
 
-  async getMaxCombat(){
 
-    this.Combat$ = await this.http.get('http://3.13.114.248:8000/maxCombat').toPromise();
-    console.log(this.Combat$.data[0].combate);
-    this.Combat$.data[0].combate++;
+  /*
+    Método que permite finalizar un combate. Se realiza un put en el server y de
+    acuerdo a la respuesta que este mismo entrege, se despliega una pop-up en la pantalla. Si el server indica
+    que se realizó correctamente la modificación del estado del combate, se desplegará el mensaje 
+    "Combate finalizado exitosamente", en caso contrario, se despliega el mensaje "Error al finalizar combate".
+  */
 
-    this.maxCombat = this.Combat$.data[0].combate + 1;
-    
-    
+  delCombate(id:string){
+    Swal.fire({
+      icon: 'warning',
+      title: '¿Estás seguro de querer finalizar el combate'+id+'?',
+      showCancelButton: true,
+      confirmButtonText: `Aceptar`,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+     if (result.value) {
+        this.http.put(environment.urlAddress+'combate/fin/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  
+            this.finalizaTodo(id),
+          err => 
+            console.log(err)
+        );  
+      }
+    });
   }
 
+
+  async getCombateBrigadaActiva(idCombate:string){
+    this.brigada_Activa  = await this.http.get(environment.urlAddress+'select/combatebrigada/activa/'+idCombate).toPromise();
+    return this.brigada_Activa;
+  }
+
+
+
+  async finalizaTodo(id:any){
+    this.brigada_Activa = await this.getCombateBrigadaActiva(id);
+    console.log(this.brigada_Activa.data);
+
+    for(let activa of this.brigada_Activa.data){
+      console.log(activa);
+      this.retirar(activa.n_brigada, activa.nombre_brigada, id);
+    }
+    
+    Swal.fire({
+      icon: 'success',
+      title: 'Brigada retirada de combate correctamente!',
+      confirmButtonText: 'Ok!'
+      }).then((result) => {
+        location.reload();
+      })
+  }
+
+
+
+  retirar(n_brigada:string, nombre:string, id:any){
+    this.http.put(environment.urlAddress+'update/combate/brigada/retiro', {'n_brigada': n_brigada, 'id':id,'nombre_brigada':nombre}, { 
+        headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  
+            this.update_fatiga(n_brigada, nombre, id),
+          err => 
+            console.log(err)
+
+    );
+  }
+
+  update_fatiga(n_brigada:string,nombre:string, id:any){
+    this.http.put(environment.urlAddress+'update/fatigaretiro', {'n_brigada': n_brigada, 'id':id,'nombre_brigada':nombre}, { 
+        headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(      
+          response => console.log(response),
+          err => console.log(err) 
+        );
+  }
 }

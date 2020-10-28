@@ -1,12 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~leaflet/dist/leaflet.css";
-body{
-    background-image: url(src/assets/images/tree.jpg);
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    background-color: #464646;
-    min-height: 500px;
+/* You can add global styles to this file, and also import other style files */
+
+html, body { 
+	height: 100%; 
+	background-color: #f9f9f9;
 }
 
+body { 
+	margin: 0; 
+	font-family: Roboto, "Helvetica Neue", sans-serif; 
+	background-color: #f9f9f9;
+}

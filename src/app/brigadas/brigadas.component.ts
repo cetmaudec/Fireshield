@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient ,HttpParams ,HttpHeaders} from '@angular/common/http';
-import swal from'sweetalert2';
+import Swal from'sweetalert2';
+import { environment } from '../environment';
+
+
 @Component({
   selector: 'app-brigadas',
   templateUrl: './brigadas.component.html',
@@ -19,6 +22,7 @@ export class BrigadasComponent implements OnInit {
   */
 
   brigadas$: any = [];
+  brigadasJefe$: any = [];
   
   /*
     Variable que almacena el cargo que posee el actual usuario que está en la sesión actual. Esto sirve para que se
@@ -42,6 +46,7 @@ export class BrigadasComponent implements OnInit {
   constructor(private http: HttpClient) { 
     this.cargo=localStorage.getItem('cargo');
     this.rut_jefe=localStorage.getItem('user');
+    console.log(this.cargo);
   }
 
   /*
@@ -49,19 +54,20 @@ export class BrigadasComponent implements OnInit {
     todas las brigadas con sus respectivos jefes de brigada.
   */
   
-  ngOnInit() {
-
+  async ngOnInit() {
     // Método que devuelve los jefes de brigada con sus brigadas asociadas.
-
-    this.getBrigadas();
-
+    this.brigadas$ = await this.getBrigadas();
+    this.brigadasJefe$ = await this.getBrigadasJefe();
   }
 
-  getBrigadas(){
-    this.http.get('http://3.13.114.248:8000/brigadas').subscribe(resp =>
-      this.brigadas$ = resp as []
-  
-    )
+  async getBrigadas(){
+    this.brigadas$ = await this.http.get(environment.urlAddress+'select/brigadas/usuario').toPromise();
+    return this.brigadas$;
+  }
+
+  async getBrigadasJefe(){
+    this.brigadasJefe$ = await this.http.get(environment.urlAddress+'select/brigada/'+this.rut_jefe).toPromise();
+    return this.brigadasJefe$;
   }
 
   /*
@@ -73,25 +79,49 @@ export class BrigadasComponent implements OnInit {
     , en caso contrario, se despliega el mensaje "Error en el borrado de brigada".
   */
   delBrigada(id:string, id2:string){
-    
-    if(confirm("¿Estás seguro de querer borrar la brigada "+id2 + "-" + id+"?")) {
+    Swal.fire({
+      icon: 'warning',
+      title: '¿Estás seguro de querer borrar la brigada '+id2 + '-' + id+'?',
+      showCancelButton: true,
+      confirmButtonText: `Aceptar`,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
       let params = new HttpParams().set("n_brigada", id).set("nombre",id2);
-      console.log("Implement delete functionality here");
-    
-    this.http.delete('http://3.13.114.248:8000/delBrigada', { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
-          (response ) => {
-            swal.fire('Borrado de brigada completa').then(() => {
-              location.reload();
-              
-            }
-          );
-          console.log('response from post data is ', response);
-          },
-          (error)=>{
-            swal.fire('Error en el borrado de brigada', error, 'success');
-            console.log('error during post is ', error)
-          });
-  
-    }
+      console.log(result);
+    /* Read more about isConfirmed, isDenied below */
+     if (result.value) {
+        this.http.delete(environment.urlAddress+'delete/brigada', { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params: params}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Brigada borrada exitosamente!',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                   location.reload();
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          })
+        );  
+      }
+    });
   }
+
+
+  // Método que permite que el usuario pueda acceder a las diferentes opciones del menú de combate (Activos, Todos y Añadir).
+  openCity(cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+  }
+
 }

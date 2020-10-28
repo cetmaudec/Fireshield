@@ -1,56 +1,128 @@
-<div id="container">
-    <h1>&bull;Solicitud de Registro &bull;</h1>
-    <div class="underline">
-    </div>
-    <form [formGroup]="RegistroForm" (ngSubmit)="onSubmit()">
-        <fieldset>
-            <legend>Datos Personales</legend>
-            <div class="row">
-              <div class="column" >
-                <label for="nombre" ></label>
-            <input type="text" formControlName="nombre" placeholder="Nombre" requiered><br>
-            <div *ngIf="RegistroForm.get('nombre').hasError('required')" ><span>Nombre requerido</span></div>
-              </div>
-              <div class="column" >
-                <label for="apellidoP"></label>
-            <input type="text" formControlName="apellidoP" placeholder="Apellido Paterno"required><br>
-            <div *ngIf="RegistroForm.get('apellidoP').hasError('required')"><span>Apellido Paterno requerido</span></div>
-              </div>
-            </div>
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
 
-            <div class="row">
-              <div class="column" >
-                <label for="apellidoM"></label>
-                <input type="text" formControlName="apellidoM" placeholder="Apellido Materno" required><br>
-                <div *ngIf="RegistroForm.get('apellidoM').hasError('required')"><span>Apellido Materno requerido</span></div>
-              </div>
-              <div class="column">
-                <label for="rut"></label>
-                <input type="text" formControlName="rut" placeholder="Rut"required><br>
-                <div *ngIf="RegistroForm.get('rut').hasError('required')"><span>Rut requerido</span></div>
-                <div *ngIf="RegistroForm.get('rut').hasError('pattern')"><span>Formato incorrecto de rut.</span></div>
+<body>
+  <div class="navbar-register navbar-expand-lg">
+    <a class="navbar-brand" routerLink="/">
+      <img src="../assets/images/Safeteamlogopng.png" alt="logo">
+    </a>
+    <h1>&bull;Solicitud de Registro &bull;</h1>
+  </div>
+
+  <div class="limiter">
+     <form [formGroup]="RegistroForm" (ngSubmit)="onSubmit()">
+      <fieldset>
+        <legend> 
+          <img src="./assets/images/icons/id.svg"> Datos Personales
+        </legend>
+        <div class="form-input">
+          <div class="row">
+            <div class="col-4">
+              <label for="nombre" >Nombre
+                <span *ngIf="RegistroForm.get('nombre').hasError('required')">(*)requerido</span>
+              </label>
+              <input type="text" formControlName="nombre" placeholder="Nombre" requiered><br>
+            </div>
+            <div class="col-4">
+              <label for="apellidoP">Apellido Paterno
+                <span *ngIf="RegistroForm.get('apellidoP').hasError('required')">(*)requerido</span>
+              </label>
+              <input type="text" formControlName="apellidoP" placeholder="Apellido Paterno"required><br>
+            </div>
+            <div class="col-4">
+              <label for="apellidoM">Apellido Materno
+                <span *ngIf="RegistroForm.get('apellidoM').hasError('required')">(*)requerido</span>
+              </label>
+              <input type="text" formControlName="apellidoM" placeholder="Apellido Materno" required><br>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-4">
+              <label for="rut">Rut
+                <span *ngIf="RegistroForm.get('rut').hasError('required')">(*)requerido</span>
+              </label>
+              <input (keyup)= "verificarUsuario($event)" type="text" formControlName="rut" placeholder="xx.xxx.xxx-x"required><br>
+              <div *ngIf="RegistroForm.get('rut').hasError('pattern')">
+                <span>Formato de rut Incorrecto</span>
               </div>
             </div>
-          
-            <div class="row">
-              <div class="column" >
-                <label for="cargo"></label>     
-                <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
-                  <option value="" class="option" disabled hidden selected>Cargo</option>
-                  <option class="option">Administrador</option>
-                  <option class="option">Jefe Brigada</option>
-                </select>
-                <div *ngIf="RegistroForm.get('cargo').hasError('required')"><span>Cargo requerido</span></div>
-              </div>
-              <div class="column" >
-                <label for="correo"></label>
-                <input type="text" formControlName="correo" placeholder="Correo" required><br>
-                <div *ngIf="RegistroForm.get('correo').hasError('required')"><span>Correo requerido</span></div>
-                <div *ngIf="RegistroForm.get('correo').hasError('email')"><span>Formato de correo Incorrecto</span></div>
+          </div>
+           
+          <div class="row">
+            <div class="col-6" >
+              <label for="correo">Correo
+                 <span *ngIf="RegistroForm.get('correo').hasError('required')">(*)requerido</span>
+               </label>
+              <input type="text" formControlName="correo" placeholder="ejemplo@gmail.com" required><br>
+              <div *ngIf="RegistroForm.get('correo').hasError('email')">
+                <span>Formato de correo Incorrecto</span>
               </div>
             </div>
-         
-        </fieldset>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>
+          <img src="./assets/images/icons/firefighter-helmet.svg"> Brigada
+        </legend>
+        <div class="form-input">
+          <div class="row">
+            <div class="col-6" >
+              <label for="cargo">Cargo
+                <span *ngIf="RegistroForm.get('cargo').hasError('required')">(*)requerido</span>
+              </label>
+              <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
+                <option value="" class="option" disabled hidden selected>Cargo</option>
+                <option class="option">Administrador</option>
+                <option class="option">Jefe Brigada</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>
+          <img src="./assets/images/icons/user.svg">Datos de Usuario
+        </legend>
+        <div class="form-input">
+          <div class="row">
+            <div class="col-4" >
+              <label for="password">Contraseña
+                <span *ngIf="RegistroForm.get('password').hasError('required')">(*)requerido</span>
+              </label>
+              <input type="password" formControlName="password" (keyup)= "getPassword($event)" placeholder="Contraseña"  minlength="8" required>
+            </div>
+            <div class="col-4" >
+              <label for="confirm">Confirme contraseña</label>
+              <input type="password" (keyup)="getconfirmPassword($event)" placeholder="Confirme su contraseña" minlength="8" required>
+            </div>
+            <div class="col-2" *ngIf="!confirm">
+              <img src="/assets/images/icons/asterisk.svg" alt="" width="20" height="20" title="Bootstrap">
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="btn-submit">
+        <button class="button"> Registrar</button>
+      </div>
+    </form>
+  </div>
+</body>
+
+
+
+<!--
+
 
         <fieldset>
             <legend>Datos Usuario</legend>
@@ -70,8 +142,8 @@
      
              
            
-    </form><!-- // End form -->
-  </div><!-- // End #container -->
+    </form>
+  </div>
        
 
-<app-footer></app-footer>
+<app-footer></app-footer>-->

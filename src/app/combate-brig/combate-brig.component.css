@@ -1,21 +1,32 @@
-@import url(https://fonts.googleapis.com/css?family=Playfair+Display&display=swap);
+html, body{
+  background-color: #f9f9f9;;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
-@import url(https://fonts.googleapis.com/css?family=Playfair+Display&display=swap);
+app-navbar{
+  display: block;
+  height: auto;
+}
+
+.limiter {
+  background-color: #f9f9f9;
+  position: relative;
+  min-width: 100%;
+  width: auto;    
+  height: 100%;
+  text-align: center;
+  display: block;
+}
+
 .tab {
   overflow: hidden;
   border: 1px solid #ccc;
-  background-image: linear-gradient(90deg,#c49c48cc 0%, #806223 100%);
-  background-image: -moz-linear-gradient(top, #c49c48cc 0%, #806223 100%);
-  background-image: -webkit-linear-gradient(top, #c49c48cc 0%, #806223 100%);
-  background-image: linear-gradient(to bottom, #c49c48cc 0%, #806223 100%);
+  background-color: transparent;
   max-width: 90%;
   margin-left: 5%;
  
 }
 .tab button.tablinks span.badge {
-	
-	
-	
 	padding: 2px 8px;
 	border-radius: 80%;
 	background-color: red;
@@ -58,9 +69,6 @@
     
   }
   .tab2 button.tablinks span.badge {
-      
-      
-      
       padding: 2px 8px;
       border-radius: 80%;
       background-color: red;
@@ -96,16 +104,14 @@
   max-width: 90%;
   margin-left: 5%;
   margin-bottom: 10%;
-
-  
-  
   padding: 6px 1px;
   -webkit-animation: fadeEffect 1s;
   animation: fadeEffect 1s;
-  background-image: linear-gradient(90deg,#e4bc96cc 0%, #725a43 100%);
+  background-color: transparent;
+  /*background-image: linear-gradient(90deg,#e4bc96cc 0%, #725a43 100%);
   	background-image: -moz-linear-gradient(top, #e4bc96cc 0%, #725a43 100%);
   	background-image: -webkit-linear-gradient(top, #e4bc96cc 0%, #725a43 100%);
-  	background-image: linear-gradient(to bottom, #e4bc96cc 0%, #725a43 100%);
+  	background-image: linear-gradient(to bottom, #e4bc96cc 0%, #725a43 100%);*/
 }
 
 /* Fade in tabs */
@@ -123,71 +129,62 @@
 	float: none;
 	display: inline-block;
 }
+
 h1 {
   margin-top: 5px;
-  margin-bottom: 10px;
-  
+  margin-bottom: 10px;  
   text-align: center;
-  color: #fff;
+  color: #565656;
   font-weight: 600;
   font-size: 2.5em;
   letter-spacing: 0px;
   text-shadow: 1px 1px rgba(0, 0, 0, 0.02), 2px 2px rgba(0, 0, 0, 0.02), 3px 3px rgba(0, 0, 0, 0.02), 4px 4px rgba(0, 0, 0, 0.02), 5px 5px rgba(0, 0, 0, 0.02), 6px 6px rgba(0, 0, 0, 0.02), 7px 7px rgba(0, 0, 0, 0.02);
 }
-body {
-  font-family: 'Playfair Display', serif;
-      line-height: 1.25;
-  }
   
-  table {
-    border: 1px solid #ccc;
-    border-collapse: collapse;
-    margin: 0;
-    padding: 0;
-    margin-left: 7.5%;
-    width: 85%;
-    table-layout: fixed;
-    font-family: 'Playfair Display', serif;
-        color: azure;
-        
+table{
+  border-collapse: collapse;
+  border-radius: 1em;
+  overflow: hidden;
+  width: 85%;
+  margin: 0;
+  padding: 0;
+  margin-left: 7.5%;
+}
 
-  }
-  
-  table caption {
-    font-size: 1.5em;
-    margin: .5em 0 .75em;
-  }
-  table th {
+thead{
+  background-color: #c4242c;
+  color: #f4f4f4;
+  text-align: center;
+  border-radius: 20px
 
-    background-image: linear-gradient(90deg,#42cf3db7 0%, #155513b7 100%);
-    background-image: -moz-linear-gradient(top, #42cf3db7 0%, #155513b7 100%);
-    background-image: -webkit-linear-gradient(top, #42cf3db7 0%, #155513b7 100%);
-    background-image: linear-gradient(to bottom, #42cf3db7 0%, #155513b7 100%);
-    color: white;
-  }
-  table tr {
-    border: 1px solid rgb(202, 202, 202);
-		background-color:#b1b1b1f1 ;
-    padding: .35em;
-    font-size: 1em;
-    color: black;
-    
-  }
-  
-  table th,
+}
+
+th{
+  background-color: #c4242c;
+  text-align: center;
+  color: #f4f4f4;
+  letter-spacing: .1em;
+}
+
+td{
+  text-align: center;
+  letter-spacing: .1em;
+  border-bottom-color: #e47926;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+
+table tbody{
+  background: linear-gradient(to top, #eda97c,#d89e97);
+}
+
+table th,
   table td {
     padding: .625em;
     text-align: center;
     font-size: 18px;
   }
-  
-  table th {
-    font-family: 'Playfair Display', serif;
-        font-size: 1em;
-    letter-spacing: .1em;
-    
-  }
-  
+
   .btn {
     display: inline-block;
     border-radius: 10px;
@@ -230,17 +227,16 @@ body {
     background-color: #9c83aa;/* Green */
     border: none;
     color: white;
-    padding: 1em 1.5em;
-    margin-left: 10%;
+    padding: 10%;
     text-align: center;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 10px;
     cursor: pointer;
     display: block;
-    font-weight: bold;
+    font-weight: normal;
     text-transform: uppercase;
-    width: 70%;
-    margin-left: 15%;
+    width: 90%;
+    
     margin-top: 5%;
     margin-bottom: 5%;
     cursor: pointer;
@@ -248,65 +244,16 @@ body {
     transition-duration: 0.4s;
     border-radius: 10px;
   }
+
+  .button:disabled{
+    background-color: #b0a4b6; 
+  }
   
-  .button:hover {
+  .button:hover:enabled {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
     background-image: -moz-linear-gradient(left, #ec915c 0%, #bb2c3d 100%);
   background-image: -webkit-linear-gradient(left, #ec915c 0%, #bb2c3d 100%);
   background-image: linear-gradient(to right, #ec915c 0%, #bb2c3d 100%);
   }
   
-  
-  
-  @media screen and (max-width: 950px) {
-   
-    table {
-      border: 0;
-    }
-  
-    table caption {
-      font-size: 1.3em;
-    }
-    
-    table thead {
-      border: none;
-      clip: rect(0 0 0 0);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
-    }
-    table th {
-        background-color: #4CAF50;
-        color: white;
-    }
-    table tr {
-      border-bottom: 3px solid #ddd;
-      display: block;
-      margin-bottom: .625em;
-    }
-    
-    table td {
-      border-bottom: 1px solid #ddd;
-      display: block;
-      font-size: .8em;
-      text-align: right;
-    }
-    
-    table td::before {
-      /*
-      * aria-label has no advantage, it won't be read inside a table
-      content: attr(aria-label);
-      */
-      content: attr(data-label);
-      float: left;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    
-    table td:last-child {
-      border-bottom: 0;
-    }
-  }
+

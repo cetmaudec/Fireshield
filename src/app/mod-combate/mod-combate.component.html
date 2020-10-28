@@ -1,26 +1,37 @@
-<app-navbar></app-navbar>
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
 
-
-    
-      <div id="container">
-            <h1>&bull;Modificar Combate {{idcombate}}&bull;</h1>
-            <div class="underline">
-            </div>
-            <form [formGroup]="CombateForm" (ngSubmit)="onSubmit()">
-                <fieldset>
-                        <legend>Combate</legend>
-                        
-                        <div class="message">
-                                <label for="message"></label>
-                                <textarea name="message" placeholder="Hito" id="message_input" formControlName="hito" cols="30" rows="5" required></textarea>
-                              </div>
-                            <div *ngIf="CombateForm.get('hito').hasError('required')"><span>Hito requerido</span></div>
-  
-                        
-                </fieldset>  
-                <div class="submit">
-                        <input [disabled]="!CombateForm.valid" type="submit" value="Modificar" id="form_button" />
+<body>
+    <app-navbar></app-navbar>
+    <div class="limiter">
+        <h1>&bull;Modificar Combate &bull;</h1>
+        <form [formGroup]="CombateForm">      
+            <fieldset>
+                <legend>
+                  <img src="./assets/images/icons/firefighter-helmet.svg"> Combate
+                </legend>
+                <div class="form-input">
+                    <div class="row">
+                        <div class="col" >
+                            <label for="message">Hito
+                                <div *ngIf="CombateForm.get('hito').hasError('required')">
+                                    <span>(*) requerido</span>
+                                </div>
+                            </label>
+                            <textarea name="message" placeholder="Hito" id="message_input" formControlName="hito" cols="30" rows="5" required></textarea>
+                        </div>
+                    </div>
                 </div>
-                     
-            </form><!-- // End form -->
-          </div><!-- // End #container -->
+            </fieldset>
+            <div class="btn-submit">
+                <button class="button" (click)="onSubmit(CombateForm)">Modificar</button>
+            </div>
+        </form>
+    </div>
+</body>

@@ -1,56 +1,57 @@
-<ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
+
+
+<body>
   <app-navbar></app-navbar>
-</ng-container>
-
-<ng-template #second>
-  <app-navbar2></app-navbar2>
-</ng-template>
-
-
-<div class="tabcontent">
-        
-        <h1 class="animated rotateIn">&bull;Brigadas en Combate {{id}}&bull;</h1>
-        <button class="btn" *ngIf="cargo == 'jefe_brigada' "[routerLink]="['/unirseCombate', id]" ><span>Unirse</span></button>
-        &nbsp;
-
-        <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Nombre Brigada</th>
-                    <th scope="col">N° Brigada</th>
-                    <th scope="col">ID Combate</th>
-                    <th scope="col">Fecha</th>
-                    <th scope="col">Hora</th>
-                    
-                    <th scope="col">Estado</th>
-                    <th *ngIf="cargo == 'jefe_brigada' " scope="col">Acción</th>
-                    
-                  </tr>
-                </thead>
-                <tbody>
-                    
-                  <tr *ngFor="let comb of combatesBrig$.data ">
-                      <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
-                    <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
-                    <td data-label="ID Combate:">{{comb.id}}</td>
-                    <td data-label="Fecha:">{{comb.fecha}}</td>
-                    <td data-label="Hora:">{{comb.hora}}</td>
-                    <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
-                    <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
-
-                    <div *ngFor=" let brig of brigadas$.data">
-                        <ng-container *ngIf="brig.n_brigada == comb.n_brigada && brig.nombre == comb.nombre_brigada;">
-                            <ng-container *ngIf="comb.estado==0">
-                                <button  class="button" (click)="unir(comb.id, comb.n_brigada, comb.nombre_brigada)">Unirse</button>
-                            </ng-container>
-                            <ng-container *ngIf="comb.estado==1">
-                              <button  class="button" (click)="retirar(comb.n_brigada,comb.nombre_brigada)">Retirarse</button>
-                            </ng-container>
-                        </ng-container>
-                    </div>
-                    
-                  </tr>
-                </tbody>
-              </table>
+  <div class="limiter">
+    <div class="tabcontent">
+      <h1 class="animated rotateIn">&bull;Brigadas en Combate {{id}}&bull;</h1>
+      <button class="btn" *ngIf="cargo == 'Jefe Brigada' "[routerLink]="['/unirse/combate', id]" >
+        <span>Unirse</span>
+      </button>
+      &nbsp;
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Nombre Brigada</th>
+            <th scope="col">N° Brigada</th>
+            <th scope="col">ID Combate</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Hora</th>
+            <th scope="col">Estado</th>
+            <th *ngIf="cargo == 'Jefe Brigada' " scope="col-3">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let comb of combatesBrig$.data">
+            <td [routerLink]="['/brigadistas/',comb.n_brigada,comb.nombre_brigada]" data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
+            <td [routerLink]="['/brigadistas/',comb.n_brigada,comb.nombre_brigada]" data-label="N° Brigada:">{{comb.n_brigada}}</td>
+            <td [routerLink]="['/brigadistas/',comb.n_brigada,comb.nombre_brigada]" data-label="ID Combate:">{{comb.id}}</td>
+            <td [routerLink]="['/brigadistas/',comb.n_brigada,comb.nombre_brigada]" data-label="Fecha:">{{comb.fecha}}</td>
+            <td [routerLink]="['/brigadistas/',comb.n_brigada,comb.nombre_brigada]" data-label="Hora:">{{comb.hora}}</td>
+            <td [routerLink]="['/brigadistas/',comb.n_brigada,comb.nombre_brigada]" data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+            <td [routerLink]="['/brigadistas/',comb.n_brigada,comb.nombre_brigada]" data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+            <div *ngFor=" let brig of brigadas$.data">
+              <ng-container *ngIf="brig.n_brigada == comb.n_brigada && brig.nombre == comb.nombre_brigada;">
+               <ng-container *ngIf="comb.estado==0">
+                  <button  class="button" disabled>Retira</button>
+                </ng-container>
+                <ng-container *ngIf="comb.estado==1">
+                  <button  class="button" (click)="retirar(comb.n_brigada,comb.nombre_brigada)">Retirarse</button>
+                </ng-container>
+              </ng-container>
             </div>
-    
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+

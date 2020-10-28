@@ -1,87 +1,145 @@
-<app-navbar></app-navbar>
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
 
+<body>
+  <app-navbar></app-navbar>
+  <div class="limiter">
+    <h1>&bull;Modificar Personal &bull;</h1>
+    <form [formGroup]="ModPersonalForm">
+      <div *ngFor="let brig of personal$.data">
+        <fieldset>
+        <legend> 
+          <img src="./assets/images/icons/id.svg"> Datos Personales
+        </legend>
+        <div class="form-input">
+          <div class="row">
+            <div class="col-4">
+              <label for="nombre">Nombre</label>
+              <br>
+              <h2>{{brig.nombre}}</h2>
+              <br>
+            </div>
+            <div class="col-4">
+              <label for="apellidoP">Apellido Paterno</label>
+              <br>
+              <h2>{{brig.apellidoP}}</h2>
+              <br>
+            </div>
+            <div class="col-4">
+              <label for="apellidoM">Apellido Materno</label>
+              <br>
+              <h2>{{brig.apellidoM}}</h2>
+              <br>
+            </div>
+          </div>
 
+          <div class="row">
+            <div class="col-6">
+              <label for="rut">Rut</label>
+              <br>
+              <h2>{{brig.rut}}</h2>
+              <br>            
+            </div>
+          </div>
+           
+          <div class="row">
+            <div class="col-6" >
+              <label for="correo">Correo</label>
+              <br>
+              <h2>{{brig.correo}}</h2>
+              <br>
+            </div>
+          </div>
+        </div>
+        </fieldset>
 
+        <fieldset>
+        <legend>
+          <img src="./assets/images/icons/firefighter-helmet.svg"> Brigada
+        </legend>
+        <div class="form-input" >
+          <div class="row" *ngIf="!edit_brigada">
+            <div class="col-4" >
+              <label for="cargo"></label>
+              <br>
+              <h2>{{brig.cargo}}</h2>
+              <br>
+            </div>
+            <div class="col-2">
+              <button class="button_img" (click)="EditInfo('brigada')">
+                <img src="./assets/images/icons/edit.svg">
+              </button>
+            </div>
+          </div>
 
-<div id="container">
-  <h1>&bull;Modificar Personal &bull;</h1>
-  <div class="underline">
+          <div class="row" *ngIf="edit_brigada">
+            <div class="col-4" >
+              <label for="cargo"></label>
+              <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
+                <option value="" class="option" disabled hidden selected>Cargo</option>
+                <option class="option" value="Administrador">Administrador</option>
+                <option class="option" value="Jefe Brigada">Jefe de Brigada</option>
+              </select>
+            </div>
+            <div class="col-2">
+              <button class="button" (click)="EditBrigada()">
+               Modificar
+              </button>
+            </div>
+          </div>
+        </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>
+             <img src="./assets/images/icons/user.svg">Datos de Usuario
+          </legend>
+          <div class="form-input">
+            <div class="row" *ngIf="!edit_user">
+              <div class="col-4">
+                <label>Contraseña</label>
+                <br>
+                <h2>***************</h2>
+                <br>
+              </div>
+              <div class="col-2">
+                <button class="button_img" (click)="EditInfo('usuario')">
+                  <img src="./assets/images/icons/edit.svg">
+                </button>
+              </div>
+            </div>
+  
+            <div class="row" *ngIf="edit_user">
+              <div class="col-4" >
+                <label for="password">Contraseña
+                  <span *ngIf="ModPersonalForm.get('pass').hasError('required')">(*)requerido</span>
+                </label>
+                <input type="password" formControlName="pass" (keyup)= "getPassword($event)" placeholder="Contraseña"  minlength="8" required>
+              </div>
+              <div class="col-4" >
+                <label for="confirm">Confirme contraseña</label>
+                <input type="password" (keyup)="getconfirmPassword($event)" placeholder="Confirme su contraseña" minlength="8" required>
+              </div>
+              <div class="col-2" *ngIf="!confirm">
+                <img src="/assets/images/icons/asterisk.svg" alt="" width="20" height="20" title="Bootstrap">
+              </div>
+              <div class="col-2">
+                <button class="button" (click)="EditUsuario()">
+                  Modificar
+                </button>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </form>
   </div>
-  <form [formGroup]="ModPersonalForm" (ngSubmit)="onSubmit()">
-      <fieldset>
-          <legend>Datos Personales</legend>
-          <div class="row">
-              <div class="column" >
-                  <label for="nombre" >Nombre</label>
-                  <input type="text" formControlName="nombre" placeholder="Nombre" requiered><br>
-                  <div *ngIf="ModPersonalForm.get('nombre').hasError('required')"><span>Nombre requerido</span></div>
-              </div>
-              <div class="column" >
-                  <label for="apellidoP">Apellido Paterno</label>
-                  <input type="text" formControlName="apellidoP" placeholder="Apellido Paterno"required><br>
-                  <div *ngIf="ModPersonalForm.get('apellidoP').hasError('required')"><span>Apellido Paterno requerido</span></div>
-              </div>
-            </div>
-            <div class="row">
-                <div class="column" >
-                    <label for="apellidoM">Apellido Materno</label>
-                    <input type="text" formControlName="apellidoM" placeholder="Apellido Materno" required><br>
-                    <div *ngIf="ModPersonalForm.get('apellidoM').hasError('required')"><span>Apellido Materno requerido</span></div>
-                </div>
-                <div class="column" >
-                    <label for="rut">Rut</label>
-                    <input type="text" formControlName="rut" placeholder="Rut"required><br>
-                    <div *ngIf="ModPersonalForm.get('rut').hasError('required')"><span>Rut requerido</span></div>
-                    <div *ngIf="ModPersonalForm.get('rut').hasError('pattern')"><span>Formato de rut Incorrecto</span></div>
+</body>
 
-                </div>
-              </div>
-            <div class="row">
-                  <div class="column2" >
-                    <label for="correo">Correo</label>
-                    <input type="text" formControlName="correo" placeholder="Correo" required><br>
-                    <div *ngIf="ModPersonalForm.get('correo').hasError('required')"><span>Correo requerido</span></div>
-                    <div *ngIf="ModPersonalForm.get('correo').hasError('email')"><span>Formato de correo Incorrecto</span></div>
-                  </div>
-                  
-            </div>
-            <div class="row">
-                
-                <div class="column2" >
-                    <label for="pass">Contraseña</label>
-                    <input type="password" formControlName="pass" placeholder="Contraseña"required>
-                    
-                    <div *ngIf="ModPersonalForm.get('pass').hasError('required')"><span>Contraseña requerida</span></div>
-                </div>
-              </div>
-            
-        
-      </fieldset>
-     
-     
-      <fieldset>
-          <div class="row">
-              <div class="column2" >
-                  <label for="cargo">Cargo</label>
-         
-                  <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
-                    <option value="" class="option" disabled hidden selected>Cargo</option>
-                    <option class="option">Administrador</option>
-                    <option class="option">Jefe Brigada</option>
-                    
-                  </select>
-                  <div *ngIf="ModPersonalForm.get('cargo').hasError('required')"><span>Cargo requerido</span></div>
-              </div>
-              
-            </div>
-      
-      </fieldset>
-      
-          
-          <div class="submit">
-              <input [disabled]="!ModPersonalForm.valid" type="submit" value="Modificar" id="form_button" />
-            </div>
-                 
-               
-    </form><!-- // End form -->
-</div><!-- // End #container -->
+

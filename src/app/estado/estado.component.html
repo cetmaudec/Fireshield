@@ -1,31 +1,53 @@
-<ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
-        <app-navbar></app-navbar>
-</ng-container>
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
-<ng-template #second>
-        <app-navbar2></app-navbar2>
-</ng-template>
+</head>
 
 
-<div class="pricingdiv">
-    
+<body>
+  <app-navbar></app-navbar>
+  <div class="limiter">
+    <div class="pricingdiv">
+      <div class="card" *ngFor="let brig of brigadas.data; let i = index">
         
-        <div *ngFor="let chart of charts; let i = index">
-            <ul class="theplan">
-                <li class="title"><img  width="80px" height=" " src="./assets/images/equipo.png"><img  width="60px" height=" " *ngIf="rut_jefe == brigadas[i].rut_jefe;" src="./assets/images/estrella.png"> <br /><b>{{brigadas[i].nombre}} - {{brigadas[i].n_brigada}}</b><br/>Combate {{brigadas[i].id}}</li>    
-                <li class="pie"><canvas  id="mychart{{i}}" #mycharts>{{charts.chart}}</canvas></li>
-                <li >
-                    <button class="button" href="http://ergonomictrends.com/best-ergonomic-office-chairs-under-200-reviews/"  [routerLink]="['/estadobrigadistasbrigada', brigadas[i].n_brigada,brigadas[i].nombre]" rel="nofollow" ><span class="icon-tag"></span> Ver Estado</button><br/>
-                    <button class="button" href="http://ergonomictrends.com/best-ergonomic-office-chairs-under-200-reviews/"  [routerLink]="['/mapa', brigadas[i].n_brigada,brigadas[i].nombre]" rel="nofollow" ><span class="icon-tag"></span> Ver Mapa</button></li>
-            </ul>
+        <div class="card-header">
+          <div class="card-img-header">
+            <img src="./assets/images/icons/fire-rescue-group.png">
+            <div class="card-header-star">
+              <img *ngIf="rut_jefe == brig.rut_jefe;" src="./assets/images/icons/star.png">
+            </div>
+          </div>
+          <br><br>
+          <h1>{{brig.nombre}} - {{brig.n_brigada}}</h1>
+          <h3>Combate {{brig.id}}</h3>
         </div>
-        
-    
-    
-   
-</div>
+
+        <div class="card-body">
+          <div class="pie">
+            <canvas  id="mychart{{i}}" #mycharts>{{charts[i]}}</canvas>
+          </div>
+          <div class="button-group">
+            <button class="button" [routerLink]="['/estado/brigada', brig.n_brigada,brig.nombre]" rel="nofollow" >
+              <span class="icon-tag"></span> Ver Estado
+            </button>
+            <br>
+            <button class="button" [routerLink]="['/mapa', brig.n_brigada,brig.nombre]" rel="nofollow" >
+              <span class="icon-tag"></span> Ver Mapa
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
 
 
-           
+
+
     
  

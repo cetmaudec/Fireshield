@@ -2,7 +2,9 @@ import { Component, OnInit ,ViewChild, ViewChildren, QueryList, ElementRef,After
 import { HttpClient ,HttpParams ,HttpHeaders} from '@angular/common/http';
 import { FormBuilder, FormGroup, FormControl, Validators,ReactiveFormsModule } from '@angular/forms';
 import {Router} from '@angular/router';
-import swal from'sweetalert2';
+import Swal from'sweetalert2';
+import { environment } from '../environment';
+
 
 @Component({
   selector: 'app-personal',
@@ -67,6 +69,10 @@ export class PersonalComponent implements OnInit {
 
   intervalHolder: any;
 
+  password: any;
+  confirmPassword: any;
+  confirm = false;
+
    /*
     En el constructor se obtiene el rut y el cargo del usuario actual, además de inicializar el formulario 
     de personal con valores vacíos. Por otro lado, se declaran variables que serán útiles para realizar 
@@ -79,13 +85,14 @@ export class PersonalComponent implements OnInit {
   constructor( private formBuilder: FormBuilder,private http: HttpClient,private router: Router, private _changeDetectorRef: ChangeDetectorRef) {
     this.rut=localStorage.getItem('user');
     this.cargo=localStorage.getItem('cargo');
+    
     this.PersonalForm =  this.formBuilder.group({
       nombre: new FormControl('',Validators.required),
       apellidoP: new FormControl('',Validators.required),
       apellidoM: new FormControl('',Validators.required),
       rut: new FormControl('',[Validators.required, Validators.pattern('[0-9]+.+[0-9]+.+[0-9]+-[0-9kK]{1}$')]),
       correo: new FormControl('',[Validators.required, Validators.email]),
-      pass: new FormControl('',Validators.required),
+      password: new FormControl('',Validators.required),
       cargo: new FormControl('',Validators.required),
       
     });
@@ -99,37 +106,27 @@ export class PersonalComponent implements OnInit {
 
   async ngOnInit() {
     document.getElementById("defaultOpen").click();
-    this.getData();
-    this.intervalHolder =  setInterval(()=>{
-      this._changeDetectorRef.markForCheck();
-      //console.log("entro");
-      this.getData();
-    }, 5000);  
-    
+    this.admin$ = await this.getAdmin();
+    this.jefes$ = await this.getJefes();
+    this.listaEspera$ = await this.getListaEspera();
+    this.num = this.listaEspera$.data.length;
   }
 
-  // Método que obtiene toda la información mencionada anteriormente.
-
-  async getData(){
-    this.admin$=await this.getAdmin();
-    this.jefes$=await this.getJefes();
-    this.num=await this.getNumEspera();
-    this.listaEspera$=await this.getListaEspera();
-  }
-
-  // Método que obtiene el número de personas que están en la lista de espera.
-
-  async getNumEspera(){
-    this.espera$= await this.http.get('http://3.13.114.248:8000/nEspera').toPromise();
-    return this.espera$.data[0].numero;
-  }
 
   // Método que obtiene la información de los miembros del personal que están en la lista de espera.
-
   async getListaEspera(){
-    this.espera2$= await this.http.get('http://3.13.114.248:8000/listaEspera').toPromise();
-    return this.espera2$.data
+    this.listaEspera$ = await this.http.get(environment.urlAddress+'select/usuario/espera').toPromise();
+    return this.listaEspera$;
+  }
 
+  async getAdmin(){
+    this.admin$= await this.http.get(environment.urlAddress+'select/usuario/admin').toPromise();
+    return this.admin$;
+  }
+
+  async getJefes(){
+    this.jefes$ = await this.http.get(environment.urlAddress+'select/usuario/jefe').toPromise();
+    return this.jefes$;
   }
 
   /*
@@ -141,33 +138,29 @@ export class PersonalComponent implements OnInit {
   */
 
   onSubmit(){
-    if(this.PersonalForm.value!=null){
-      this.http.post('http://3.13.114.248:8000/addPersonal', this.PersonalForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
-          (response ) => {
-            console.log(response);
-            swal.fire('Registro exitoso de Personal').then(() => {
-                this.router.navigate(['/personal']);
-                
-              }
-            );
-           
-          },
-          (error)=>{
-            swal.fire('Error en el registro de Personal',error).then(() => {
-              this.router.navigate(['/personal']);
-              
-              }
-            );
-          
-          });
-          this.ngOnInit();
+    if(this.PersonalForm.value!=null && this.confirm==true){
+      this.http.post(environment.urlAddress+'insert/usuario/activo', this.PersonalForm.value, { 
+        headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Registro exitoso de Personal!',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                   this.router.navigate(['/personal']);
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          })
+      );  
     }
   }
 
   // Método que al oprimir en un personal, permite ir a la pantalla que permite modificar a ese mismo personal.
   
   modPersonal(id:string){
-    this.router.navigate(['/modPersonal',id]);
+    this.router.navigate(['/edit/usuario',id]);
   }
   
   /*
@@ -176,28 +169,34 @@ export class PersonalComponent implements OnInit {
   */
 
   addPersonal(id:string, i:number){
+    Swal.fire({
+      icon: 'warning',
+      title: '¿Desea aceptar la solicitud?',
+      showCancelButton: true,
+      confirmButtonText: `Aceptar`,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+     if (result.value) {
 
-    this.http.post('http://3.13.114.248:8000/addEsperaPersonal', this.listaEspera$[i], { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
-        (response ) => {
-          swal.fire('Registro exitoso de Personal').then(() => {
-              this.router.navigate(['/personal']);
-              
-            }
-          );
-         
-        },
-        (error)=>{
-          swal.fire('Error en el registro de Personal',error).then(() => {
-            this.router.navigate(['/personal']);
-            
-            }
-          );
-        
-        });
-        this.ngOnInit();
-  
-
-}
+      this.http.post(environment.urlAddress+'update/usuario/set/estado/activo', this.listaEspera$.data[i], { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Solicitud aceptada exitosamente!',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                  location.reload();
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          })
+        );  
+      }
+    });
+  }
 
   /*
     Método que permite rechazar una solicitud de registro. Esto realiza una petición de delete al server, que elimina de la lista
@@ -205,21 +204,32 @@ export class PersonalComponent implements OnInit {
   */
 
   rmPersonal(id:string){
-    if(confirm("¿Estás seguro de querer rechazar a este personal "+id+"?")) {
-      this.http.delete('http://3.13.114.248:8000/rmEsperaPersonal/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
-          (response ) => {
-            swal.fire('Solicitud rechazada con éxito').then(() => {
-              location.reload();
-              
-            }
-          );
-          },
-          (error)=>{
-            swal.fire('Error al rechazar solicitud', error, 'success');
-          });
-  
-    }
-
+    Swal.fire({
+      icon: 'warning',
+      title: '¿Estás seguro de querer rechazar a este personal '+id+'?',
+      showCancelButton: true,
+      confirmButtonText: `Aceptar`,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+     if (result.value) {
+      this.http.delete(environment.urlAddress+'delete/usuario/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Solicitud rechazada con éxito',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                   location.reload();
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          })
+        );  
+      }
+    });
   }
 
   /*
@@ -227,26 +237,33 @@ export class PersonalComponent implements OnInit {
   */
 
   delPersonal(id:string){
-    if(confirm("¿Estás seguro de querer borrar este personal "+id+"?")) {
-      console.log(id);
-      console.log("Implement delete functionality here");
-    
-      this.http.delete('http://3.13.114.248:8000/delPersonal/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
-          (response ) => {
-            swal.fire('Borrado de personal completo').then(() => {
-              location.reload();
-              
-            }
-          );
-          console.log('response from post data is ', response);
-          },
-          (error)=>{
-            swal.fire('Error en el borrado de personal', error, 'success');
-            console.log('error during post is ', error)
-          });
-  
-    }
-  }    
+    Swal.fire({
+      icon: 'warning',
+      title: '¿Estás seguro de querer borrar este personal '+id+'?',
+      showCancelButton: true,
+      confirmButtonText: `Aceptar`,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+     if (result.value) {
+      this.http.delete(environment.urlAddress+'delete/usuario/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Personal borrado exitosamente!',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                   location.reload();
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          })
+        );  
+      }
+    });
+  }   
 
   /*
     Método que permite que el usuario pueda acceder a las diferentes opciones del menú (Administradores, Jefes de Brigada,
@@ -266,18 +283,19 @@ export class PersonalComponent implements OnInit {
     document.getElementById(cityName).style.display = "block";
   }
 
-  
-
-  async getAdmin(){
-    this.result$= await this.http.get('http://3.13.114.248:8000/admin').toPromise();
-    
-    return this.result$.data;
+  getPassword(event: Event){
+    this.password = (event.target as HTMLInputElement).value;
+    console.log(this.password);
   }
 
-  async getJefes(){
-    this.result2$= await this.http.get('http://3.13.114.248:8000/jefes').toPromise();
-    
-    return this.result2$.data;
+  getconfirmPassword(event: Event){
+    this.confirmPassword = (event.target as HTMLInputElement).value;
+    console.log(this.password +" = "+this.confirmPassword);
+    if(this.confirmPassword==this.password){
+      this.confirm=true;
+    }else{
+      this.confirm=false;
+    }
   }
 
 }

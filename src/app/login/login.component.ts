@@ -1,9 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import {Router} from '@angular/router';
-import swal from'sweetalert2'
+import Swal from'sweetalert2'
 import { AuthService } from '../auth.service';
 import { first } from 'rxjs/operators';
+
+
+
+
+/*   import { environment } from '../environment';
+
+ this.http.put(environment.urlAddress+'cliente/correo/update', dataCorreo, {responseType: 'text'}) */
 
 @Component({
   selector: 'app-login',
@@ -47,16 +54,30 @@ export class LoginComponent implements OnInit {
     home, en caso contrario se dirá que el usuario y/o contraseña son incorrectos.
   */
 
-  public onSubmit() {
-    console.log(this.LoginForm.value.password);
-    this.auth.login(this.LoginForm.value.username, this.LoginForm.value.password)
-      .pipe(first())
-      .subscribe( 
-        result => this.router.navigate(['/home']),
-        err => swal.fire('Usuario y/o Contraseña Incorrecta')
-  
-      );
-
+  async loginUser(){
+    this.auth.login(this.LoginForm.value.username, this.LoginForm.value.password).pipe(first()).subscribe( 
+      (response ) => {
+            if(response=='Activo'){
+              this.router.navigate(['/estado']);
+            }else{
+              Swal.fire({
+                icon: 'warning',
+                title: 'Usuario en espera',
+                text: 'Tu solicitud de registro aún no ha sido aceptada'
+              })
+            }
+          },
+      (error)=>{
+            Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Usuario y/o Contraseña Incorrecta'
+          })
+      });   
   }
   
+  register(){
+    this.router.navigate(['/registro'])
+  }
 }
+

@@ -12,18 +12,14 @@ import { ChartsModule } from 'ng2-charts';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
-
-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';  
 import { CarouselModule, WavesModule } from 'angular-bootstrap-md'
-
 
 //I keep the new line
 import { LoginComponent } from './login/login.component';
 import { FooterComponent } from './footer/footer.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { RegistroComponent } from './registro/registro.component';
-import { HomeComponent } from './home/home.component';
 import { EstadoComponent } from './estado/estado.component';
 import { ContactoComponent } from './contacto/contacto.component';
 import * as $ from 'jquery';
@@ -40,10 +36,12 @@ import { UnirseCombateComponent } from './unirse-combate/unirse-combate.componen
 import { CombateBrigComponent } from './combate-brig/combate-brig.component';
 import { ModCombateComponent } from './mod-combate/mod-combate.component';
 import { MapaComponent } from './mapa/mapa.component';
-import { Navbar2Component } from './navbar2/navbar2.component';
 import { PersonalComponent } from './personal/personal.component';
 import { ModPersonalComponent } from './mod-personal/mod-personal.component';
 import { ReporteriaComponent } from './reporteria/reporteria.component';
+import { GraphComponent } from './graph/graph.component';
+import { GeneralDataComponent } from './general-data/general-data.component';
+import { MapUnitComponent } from './map-unit/map-unit.component';
 // For MDB Angular Free
 
 export function tokenGetter() {
@@ -57,7 +55,6 @@ export function tokenGetter() {
     LoginComponent,
     FooterComponent,
     RegistroComponent,
-    HomeComponent,
     EstadoComponent,
     ContactoComponent,
     BrigadasComponent,
@@ -73,10 +70,12 @@ export function tokenGetter() {
     CombateBrigComponent,
     ModCombateComponent,
     MapaComponent,
-    Navbar2Component,
     PersonalComponent,
     ModPersonalComponent,
-    ReporteriaComponent
+    ReporteriaComponent,
+    GraphComponent,
+    GeneralDataComponent,
+    MapUnitComponent
 
     //I keep the new line
   ],
@@ -93,18 +92,11 @@ export function tokenGetter() {
     MatIconModule,
     ChartsModule,
     MatDialogModule,
-    BrowserAnimationsModule,
-    
+    BrowserAnimationsModule,  
     NgSelectModule,
     NgbModule,
-  
- 
     CarouselModule,
     WavesModule,
-    
-    
-
-
     AgmCoreModule.forRoot({
       
       libraries: ['places']

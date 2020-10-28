@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient , HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
-import swal from'sweetalert2';
+import Swal from'sweetalert2';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from '../environment';
 
 @Component({
   selector: 'app-mod-combate',
@@ -56,9 +57,6 @@ export class ModCombateComponent implements OnInit {
       id: this.idcombate,
       hito: result1.hito
     });
-
-
-    
   }
 
   
@@ -72,35 +70,29 @@ export class ModCombateComponent implements OnInit {
 
 
   onSubmit(){
-    console.log("entre");
     if(this.CombateForm.value!=null){
-      this.http.put('http://3.13.114.248:8000/modCombate/'+this.idcombate, this.CombateForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
-          (response ) => {
-            console.log(response);
-            swal.fire('Modificación exitosa de combate').then(() => {
-                this.router.navigate(['/combates/']);
-                
-              }
-            );
-           
-          },
-          (error)=>{
-            swal.fire('Error en modificación de combate',error).then(() => {
-              this.router.navigate(['/combates']);
-              
-              }
-            );
-          
-          });
-          this.ngOnInit();
-    }
-  
+      this.http.put(environment.urlAddress+'update/combate/'+this.idcombate, this.CombateForm.value, 
+        { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Modificación del combate exitosa!',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                  this.router.navigate(['/combates/']);
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          })
+        );  
+      }
   }
 
   // Método que obtiene el hito actual del combate en cuestión.
 
   async getHito(){
-    this.hito = await this.http.get('http://3.13.114.248:8000/hito/'+this.idcombate).toPromise();
+    this.hito = await this.http.get(environment.urlAddress+'select/combate/hito/'+this.idcombate).toPromise();
     return this.hito.data[0]
   }
 

@@ -1,138 +1,119 @@
+<head>
+    <title>Login V3</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">                   
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="Chart.js"></script>
+    <script type="text/javascript" src="chartjs-plugin-colorschemes.js"></script>
+</head>
 
 
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css">
-  <ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
+<body>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css">
     <app-navbar></app-navbar>
-</ng-container>
-
-<ng-template #second>
-    <app-navbar2></app-navbar2>
-</ng-template>
-
-
-
-    <div class="tab">
-            <button class="tablinks" (click)="openCity( 'Datos')" >Datos</button>
-            <button class="tablinks" (click)="openCity( 'Gráficos')">Gráficos</button>
-            <button class="tablinks" (click)="openCity( 'Mapa')" id="defaultOpen">Mapa</button>
-          </div>
-
-    <div id="Datos" class="tabcontent">
-        <h1>&bull;{{datoActual$[0].nombre}} {{datoActual$[0].apellidoP}} {{datoActual$[0].apellidoM}} &bull;</h1>
-        <div class="underline"> </div>
-        <div class="pricingdiv">
-            <div >
-                <ul class="theplan">
-                        <table *ngFor="let brigadista of datoActual$;">
-
-
-                                <tr>
-                                    <td>Edad : {{brigadista.edad}}</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Temperatura Ambiental: {{brigadista.t_ambiental}}°C</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Temperatura Corporal: {{brigadista.t_corporal}}°C</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Pulsaciones: {{brigadista.pulsaciones}}</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Saturación de oxígeno: {{brigadista.saturacion}}</td>
-                                </tr>
-
-                                <tr>
-                                    <ng-container *ngIf="brigadista.fatigado == 0;else second">
-                                        <td>Nivel de Fatiga: Bajo</td>
-                                    </ng-container>
-
-                                    <ng-template #second>
-                                        <ng-container *ngIf="brigadista.fatigado == 1;else third">
-                                            <td>Nivel de Fatiga: Medio</td>
-                                        </ng-container>
-                                    </ng-template>
-
-                                    <ng-template #third>
-                                        <ng-container *ngIf="brigadista.fatigado == 2;">
-                                            <td>Nivel de Fatiga: Alto</td>
-                                        </ng-container>
-                                    </ng-template>
-                                </tr>
-                        </table>
-                    </ul>
-            </div>
-
-            <div>
-                    <ul class="theplan">
-                        <div class="col col2" *ngFor="let brigadista of datoActual$;">
-                            <ng-container *ngIf="brigadista.fatigado == 0;else second">
-                                <li class="title"><img   src="src=./assets/images/brigadistaverde.png"/></li>
+    <div class="limiter">
+        <div class="card-tab">
+            <h1>&bull;  {{nombre_brigadista}} &bull;</h1>
+             <div class="row">
+                <div class="left">   
+                    <div class="profile">
+                        <div class="col col2">
+                            <ng-container *ngIf="fatiga == 0;else second">
+                                <img src="./assets/images/brigadistaverde.png"/>
                             </ng-container>
 
                             <ng-template #second>
-                                <ng-container *ngIf="brigadista.fatigado == 1;else third">
-                                    <li class="title"><img  src="./assets/images/brigadistaamarillo.png"/></li>
+                                <ng-container *ngIf="fatiga == 1;else third">
+                                    <img src="./assets/images/brigadistaamarillo.png"/>
                                 </ng-container>
                             </ng-template>
 
                             <ng-template #third>
-                                <ng-container *ngIf="brigadista.fatigado == 2;">
-                                    <li class="title"><img src="./assets/images/brigadistarojo.png"/></li>
+                                <ng-container *ngIf="fatiga == 2;">
+                                    <img src="./assets/images/brigadistarojo.png"/>
                                 </ng-container>
                             </ng-template>
-                                <li>
-                                    <div class=tiempo>
-                                        <br>Horas combatiendo:<br/>
-                                        <br>{{tiempo}}<br/>
-                                    </div>
-                                </li>
+                            <div class=tiempo>
+                                <br>Horas combatiendo:<br/>
+                                <br>{{tiempo}}<br/>
+                            </div>
                         </div>
-                    </ul>
-            </div>
-        </div>
-    </div>
-
-    <div id="Gráficos" class="tabcontent">
-            <h1>&bull;{{datoActual$[0].nombre}} {{datoActual$[0].apellidoP}} {{datoActual$[0].apellidoM}} &bull;</h1>
-            <div class="underline"> </div>
-            <div class="pricingdiv">
-                <div >
-                    <ul class="theplan2">
-                        <canvas baseChart
-                            [datasets]="lineChartData"
-                            [labels]="lineChartLabels"
-                            [options]="lineChartOptions"
-                            [colors]="lineChartColors"
-                            [legend]="lineChartLegend"
-                            [chartType]="lineChartType">
-                        </canvas>
-                    </ul>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div id = "Mapa" class="tabcontent map-container">
-            <h1>&bull;{{datoActual$[0].nombre}} {{datoActual$[0].apellidoP}} {{datoActual$[0].apellidoM}} &bull;</h1>
-            <div class="underline"> </div>
-            <div class="pricingdiv">
-                <div class="theplan3">
-
-                    <div class="map-container">
-                        <div class="map-frame">
-                          <div id="map"></div>
-                        </div>
-                      </div>
-
-
-
+                <div class="right">
+                    <div class="tab">
+                        <button class="tablinks" (click)="openCity('Datos')" >Datos</button>
+                        <button class="tablinks" (click)="openCity('Gráficos')">Gráficos</button>
+                        <button class="tablinks" (click)="openCity('Mapa')">Mapa</button>
                     </div>
 
+                    <div id="Datos" class="tabcontent">
+                        <div class="pricingdiv">
+                            <ul class="theplan">
+                                <table class="table table-striped" *ngFor="let brigadista of datoActual$;">
+                                    <tbody>
+                                        <tr>
+                                            <td>Edad: </td> <td>{{brigadista.edad}} años</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Temperatura Ambiental:</td><td> {{brigadista.t_ambiental}} °C</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Temperatura Corporal: </td><td>{{brigadista.t_corporal}}°C</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pulsaciones: </td><td>{{brigadista.pulsaciones}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Saturación de oxígeno: </td><td> {{brigadista.saturacion}}</td>
+                                        </tr>
+                                        <tr>
+                                            <ng-container *ngIf="brigadista.fatigado == 0;else second">
+                                                <td>Nivel de Fatiga: </td><td>Bajo</td>
+                                            </ng-container>
+                                            <ng-template #second>
+                                                <ng-container *ngIf="brigadista.fatigado == 1;else third">
+                                                    <td>Nivel de Fatiga:</td><td>Medio</td>
+                                                </ng-container>
+                                            </ng-template>
+                                            <ng-template #third>
+                                                <ng-container *ngIf="brigadista.fatigado == 2;">
+                                                    <td>Nivel de Fatiga:</td><td>Alto</td>
+                                                </ng-container>
+                                            </ng-template>
+                                        </tr>  
+                                    </tbody>
+                                </table>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="Gráficos" class="tabcontent">
+                        <div class="pricingdiv">
+                            <div>
+                                <ul class="theplan2">
+                                    <app-graph></app-graph>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id = "Mapa" class="tabcontent">           
+                        <div class="pricingdiv">
+                            <div class="theplan3">
+                                <app-map-unit></app-map-unit>
+                            </div>
+                        </div>                    
+                    </div>
                 </div>
             </div>
-        
+        </div>
+    </div>   
+</body>
+
+                
+
+  

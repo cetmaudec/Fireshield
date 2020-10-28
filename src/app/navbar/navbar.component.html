@@ -1,32 +1,55 @@
-
-  <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login V3</title>
+	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
 </head>
-<div class="topnav" id="myTopnav">
-	<a routerLink="/home" class="logo"><img  width="80px" height="" src="./assets/images/Safeteamlogopng.png"></a>
-	
-	<a routerLink="/estado" *ngIf="auth.loggedIn"><span>Estado Cuadrilla</span></a>
-		<a routerLink="/reporteria"*ngIf="auth.loggedIn"><span>Reportería</span></a>
-		<a routerLink="/brigadas"*ngIf="auth.loggedIn"><span>Brigadas</span></a>
-		<a routerLink="/combates"*ngIf="auth.loggedIn"><span>Combates</span></a>
-		<a routerLink="/personal"*ngIf="auth.loggedIn"><span>Personal</span></a>
-		<a routerLink="/contacto"*ngIf="auth.loggedIn"><span>Contacto</span></a>
-		<a  class="logo2" routerLink="/personal" *ngIf="auth.loggedIn">
-			<img  width="40px" height="" src="./assets/images/campana.png">
-			<ng-container *ngIf="num != 0;">
-				<span class="badge">{{num}}</span>
-			</ng-container>
-			
-		  </a>
-			
-		<a class="active" routerLink="" (click)="logout()" *ngIf="auth.loggedIn">Cerrar Sesión</a>	
-		<a href="javascript:void(0);" class="icon" (click)="myFunction()">
-			<i class="fa fa-bars"></i>
-		  </a>
-  </div>
-  
 
+<body>
+	<nav class="navbar sticky-top navbar-expand-lg">
+		<a class="navbar-brand" routerLink="/estado">
+			<img src="../assets/images/Safeteamlogopng.png" alt="logo">
+		</a>
+		<button class="navbar-toggler collapsed navbar-light btn-outline-light" type="button" (click)="toggleState()">
+			<span class="navbar-toggler-icon" ></span>
+		</button>
 
+		<div class="navbar-collapse" [ngClass]="{ 'collapse': isCollapse }">
+			<ul class="navbar-nav mr-auto">
+				<li  routerLinkActive="active" class="nav-item">
+					<a class="nav-link" routerLink="/estado" ><span>Estado Cuadrilla</span></a>
+				</li>
+				<li  *ngIf="cargo != 'Jefe Brigada'" routerLinkActive="active" class="nav-item">
+					<a class="nav-link" routerLink="/reporteria" ><span>Reportería</span></a>
+				</li>
+				<li  routerLinkActive="active" class="nav-item">
+					<a class="nav-link" routerLink="/brigadas"><span>Brigadas</span></a>
+				</li>
+				<li routerLinkActive="active" class="nav-item">
+					<a class="nav-link" routerLink="/combates"><span>Combates</span></a>
+				</li>
+				<li  *ngIf="cargo != 'Jefe Brigada'" routerLinkActive="active" class="nav-item">
+					<a class="nav-link" routerLink="/personal" ><span>Personal</span></a>
+				</li>
+				<li routerLinkActive="active" class="nav-item">
+					<a class="nav-link" (click)="logOut()">Salir</a>
+				</li>
+			</ul>
+		</div>
+		
+	</nav>
 
-  
+	<div id="dropDownSelect1"></div>
+	<script src="assets/vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="assets/vendor/animsition/js/animsition.min.js"></script>
+	<script src="assets/vendor/bootstrap/js/popper.js"></script>
+	<script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/vendor/select2/select2.min.js"></script>
+	<script src="assets/vendor/daterangepicker/moment.min.js"></script>
+	<script src="assets/vendor/daterangepicker/daterangepicker.js"></script>
+	<script src="assets/vendor/countdowntime/countdowntime.js"></script>
+	<script src="assets/js/main.js"></script>
+</body>
+</html>	

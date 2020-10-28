@@ -1,148 +1,195 @@
-<app-navbar></app-navbar>
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
-<div class="tab">
-        <button class="tablinks" (click)="openCity('Administradores')" id="defaultOpen">Administradores</button>
-        <button class="tablinks" (click)="openCity('Jefes')">Jefes de Brigada</button>
-        <button class="tablinks" (click)="openCity('Añadir')">Añadir Personal</button>
-        <button class="tablinks" (click)="openCity('Solicitud')"> 
-          Solicitudes
-          <span class="badge">{{num}}</span>
-         </button>
-        
-      </div>
+</head>
 
-<div id="Administradores" class="tabcontent">
-    <div class="pricingdiv">
-        <div *ngFor="let admin of admin$">
-            <ul class="theplan" >
-                <li class="title"><img  width="100px" height=" " src="./assets/images/brigada.png"> <img style="float: right;" width="5px" height=" " *ngIf="rut == admin.rut;" src="./assets/images/estrella.png"><br/><b>Administrador:</b> <br /></li>       
-                <li class="title2">{{admin.nombre}} {{admin.apellidoP}} {{admin.apellidoM}} <br/>{{admin.rut}}</li>
-                <li>
-                  <button class="button" (click)="modPersonal(admin.rut)" >Modificar</button>
-                  <button  *ngIf="cargo=='super_admin';" class="button" (click)="delPersonal(admin.rut)"  >Eliminar</button>
-                  
 
-              </li>
-            </ul>    
-        </div>           
+<body>
+  <app-navbar></app-navbar>
+  <div class="limiter">
+    <div class="tab">
+      <button class="tablinks" (click)="openCity('Administradores')" id="defaultOpen">Administradores</button>
+      <button class="tablinks" (click)="openCity('Jefes')">Jefes de Brigada</button>
+      <button class="tablinks" (click)="openCity('Añadir')">Añadir Personal</button>
+      <button class="tablinks" (click)="openCity('Solicitud')"> 
+        Solicitudes
+        <span class="badge">{{num}}</span>
+      </button>
     </div>
-</div>
 
-<div id="Jefes" class="tabcontent">
-    <div class="pricingdiv">
-        <div *ngFor="let jefe of jefes$">
-            <ul class="theplan" >
-                <li class="title"><img  width="100px" height=" " src="./assets/images/brigada.png"><img  width="40px" height=" " *ngIf="rut == jefe.rut;" src="./assets/images/estrella.png"><br/><b>Jefe Brigada:</b> <br /></li>       
-                <li class="title2">{{jefe.nombre}} {{jefe.apellidoP}} {{jefe.apellidoM}}<br/>{{jefe.rut}}</li>
-                
-                <li>
-                    <button class="button" (click)="modPersonal(jefe.rut)" >Modificar</button>
-                    <button  class="button" (click)="delPersonal(jefe.rut)"  >Eliminar</button>
-                </li>
-            </ul>    
-        </div>           
-    </div>
-</div>
-
-<div id="Añadir" class="tabcontent">
-    <div id="container">
-        <h1>&bull;Añadir Personal &bull;</h1>
-        <div class="underline">
+    <div id="Administradores" class="tabcontent">
+      <div class="pricingdiv">
+        <div class="card" *ngFor="let admin of admin$.data">               
+          <div class="card-header">
+            <div class="card-img-header">
+              <img src="./assets/images/icons/jefe-rescue.png">
+              <div class="card-header-star">
+                <img *ngIf="rut == admin.rut;" src="./assets/images/icons/star.png">
+              </div>
+            </div>
+              <h1>Administrador:</h1>
+              <h2> {{admin.nombre}} {{admin.apellidoP}} {{admin.apellidoM}}</h2>
+              <h3> {{admin.rut}}</h3>
+          </div>
+          <div class="card-body">
+            <div class="button-group">
+              <button class="button" (click)="modPersonal(admin.rut)" >Modificar</button>
+              <button class="button"  *ngIf="admin.cargo !='Super Administrador';" (click)="delPersonal(admin.rut)">Eliminar</button>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <div id="Jefes" class="tabcontent">
+      <div class="pricingdiv">
+        <div class="card" *ngFor="let jefe of jefes$.data">               
+          <div class="card-header">
+            <div class="card-img-header">
+              <img src="./assets/images/icons/jefe-rescue.png">
+              <div class="card-header-star">
+                <img *ngIf="rut == jefe.rut;" src="./assets/images/icons/star.png">
+              </div>
+            </div>
+              <h1>Jefe Brigada:</h1>
+              <h2>{{jefe.nombre}} {{jefe.apellidoP}} {{jefe.apellidoM}}</h2>
+              <h3>{{jefe.rut}}</h3>
+          </div>
+
+          <div class="card-body">
+            <div class="button-group">
+              <button class="button" (click)="modPersonal(jefe.rut)" >Modificar</button>
+              <button  class="button" (click)="delPersonal(jefe.rut)"  >Eliminar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="Añadir" class="tabcontent">
+      <div id="container">
+        <h1>&bull;Añadir Personal &bull;</h1>
         <form [formGroup]="PersonalForm" (ngSubmit)="onSubmit()">
-            <fieldset>
-                <legend>Datos Personales</legend>
-                <div class="row">
-                    <div class="column" >
-                        <label for="nombre" ></label>
-                        <input type="text" formControlName="nombre" placeholder="Nombre" requiered><br>
-                        <div *ngIf="PersonalForm.get('nombre').hasError('required')"><span>Nombre requerido</span></div>
-                    </div>
-                    <div class="column" >
-                        <label for="apellidoP"></label>
-                        <input type="text" formControlName="apellidoP" placeholder="Apellido Paterno"required><br>
-                        <div *ngIf="PersonalForm.get('apellidoP').hasError('required')"><span>Apellido Paterno requerido</span></div>
-                    </div>
-                  </div>
-                  <div class="row">
-                      <div class="column" >
-                          <label for="apellidoM"></label>
-                          <input type="text" formControlName="apellidoM" placeholder="Apellido Materno" required><br>
-                          <div *ngIf="PersonalForm.get('apellidoM').hasError('required')"><span>Apellido Materno requerido</span></div>
-                      </div>
-                      <div class="column" >
-                          <label for="rut"></label>
-                          <input type="text" formControlName="rut" placeholder="Rut"required><br>
-                          <div *ngIf="PersonalForm.get('rut').hasError('required')"><span>Rut requerido</span></div>
-                          <div *ngIf="PersonalForm.get('rut').hasError('pattern')"><span>Formato de rut Incorrecto</span></div>
-
-                      </div>
-                    </div>
-                  <div class="row">
-                        <div class="column2" >
-                            <label for="correo"></label>
-                            <input type="text" formControlName="correo" placeholder="Correo" required><br>
-                            <div *ngIf="PersonalForm.get('correo').hasError('required')"><span>Correo requerido</span></div>
-                            <div *ngIf="PersonalForm.get('correo').hasError('email')"><span>Formato de correo Incorrecto</span></div>
-                        </div>
-                        
-                    </div>
-                <div class="row">
-                    
-                      <div class="column2" >
-                          <label for="pass"></label>
-                          <input type="password" formControlName="pass" placeholder="Contraseña"required>
-                          
-                          <div *ngIf="PersonalForm.get('pass').hasError('required')"><span>Contraseña requerida</span></div>
-                      </div>
+          <fieldset>
+            <legend> 
+              <img src="./assets/images/icons/id.svg"> Datos Personales
+            </legend>
+            <div class="form-input">
+              <div class="row">
+                <div class="col-4">
+                  <label for="nombre">Nombre
+                    <span *ngIf="PersonalForm.get('nombre').hasError('required')">(*)requerido</span>
+                  </label>
+                  <input type="text" formControlName="nombre" placeholder="Nombre" requiered><br>
                 </div>
-              
-            </fieldset>
-           
-           
-            <fieldset>
-                <div class="row">
-                    <div class="column2" >
-                        <label for="cargo"></label>
-               
-                        <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
-                          <option value="" class="option" disabled hidden selected>Cargo</option>
-                          <option class="option">Administrador</option>
-                          <option class="option">Jefe Brigada</option>
-                          
-                        </select>
-                        <div *ngIf="PersonalForm.get('cargo').hasError('required')"><span>Cargo requerido</span></div>
-                    </div>
-                    
-                  </div>
-            
-            </fieldset>
-            
-                
-                <div class="submit">
-                    <input [disabled]="!PersonalForm.valid" type="submit" value="Registrar" id="form_button" />
-                  </div>
-                 
-               
-        </form><!-- // End form -->
-      </div><!-- // End #container -->
-</div>
+                <div class="col-4">
+                  <label for="apellidoP">Apellido Paterno
+                    <span *ngIf="PersonalForm.get('apellidoP').hasError('required')">(*)requerido</span>
+                  </label>
+                  <input type="text" formControlName="apellidoP" placeholder="Apellido Paterno"required><br>
+                </div>
+                <div class="col-4">
+                  <label for="apellidoM">Apellido Materno
+                    <span *ngIf="PersonalForm.get('apellidoM').hasError('required')">(*)requerido</span>
+                  </label>
+                  <input type="text" formControlName="apellidoM" placeholder="Apellido Materno" required><br>
+                </div>
+              </div>
 
-<div id="Solicitud" class="tabcontent">
-  <div class="pricingdiv">
-    <div *ngFor="let espera of listaEspera$; let i= index;">
-        <ul class="theplan" >
-            <li class="title"><img  width="100px" height=" " src="./assets/images/brigada.png"><br/><b>{{espera.cargo}}</b> <br /></li>       
-            <li class="title2">{{espera.nombre}} {{espera.apellidoP}} {{espera.apellidoM}} <br/>Rut: {{espera.rut}} <br/>
-              Usuario: {{espera.usuario}}
-            </li>
-            <li>
-                <button class="button"  (click)="addPersonal(espera.rut,i)">Aceptar</button>
-                <button  class="button"  (click)="rmPersonal(espera.rut)">Rechazar</button>
-            </li>
-        </ul>    
-    </div>           
-</div>
-</div>
+              <div class="row">
+                <div class="col-4">
+                  <label for="rut">RUT
+                    <span *ngIf="PersonalForm.get('rut').hasError('required')">(*)requerido</span>
+                  </label>
+                  <input type="text" formControlName="rut" placeholder="xx.xxx.xxx-x"required><br>
+                  <div *ngIf="PersonalForm.get('rut').hasError('pattern')">
+                    <span>Formato de rut Incorrecto</span>
+                  </div>
+                </div>
+              </div>
+           
+              <div class="row">
+                <div class="col-6" >
+                  <label for="correo">Correo
+                    <span *ngIf="PersonalForm.get('correo').hasError('required')">(*)requerido</span>
+                  </label>
+                  <input type="text" formControlName="correo" placeholder="ejemplo@gmail.com" required><br>
+                  <div *ngIf="PersonalForm.get('correo').hasError('email')">
+                    <span>Formato de correo Incorrecto</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4" >
+                  <label for="password">contraseña
+                    <span *ngIf="PersonalForm.get('password').hasError('required')">(*)requerido</span>
+                  </label>
+                  <input type="password" formControlName="password" (keyup)= "getPassword($event)" placeholder="Contraseña"  minlength="8" required>
+                </div>
+                <div class="col-4" >
+                  <label for="confirm">Confirme contraseña</label>
+                  <input type="password" (keyup)="getconfirmPassword($event)" placeholder="Confirme su contraseña" minlength="8" required>
+                </div>
+                <div class="col-2" *ngIf="!confirm">
+                  <img src="/assets/images/icons/asterisk.svg" alt="" width="20" height="20" title="Bootstrap">
+                </div>
+              </div>
+            </div>
+          </fieldset>
 
+          <fieldset>
+            <div class="form-input">
+              <div class="row">
+                <div class="col-6" >
+                  <label for="cargo">Cargo
+                    <span *ngIf="PersonalForm.get('cargo').hasError('required')">(*)requerido</span>
+                  </label>
+                  <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
+                    <option value="" class="option" disabled hidden selected>Cargo</option>
+                    <option class="option">Administrador</option>
+                    <option class="option">Jefe Brigada</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="submit">
+            <input [disabled]="!PersonalForm.valid" type="submit" value="Registrar" id="form_button" />
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="Solicitud" class="tabcontent">
+      <div class="pricingdiv">
+        <div class="card" *ngFor="let espera of listaEspera$.data; let i= index;">               
+          <div class="card-header">
+            <div class="card-img-header">
+              <img src="./assets/images/icons/jefe-rescue.png">
+              <div class="card-header-star">
+                <img src="./assets/images/icons/star.png">
+              </div>
+            </div>
+              <h1>{{espera.cargo}}</h1>
+              <h2>{{espera.nombre}} {{espera.apellidoP}} {{espera.apellidoM}} </h2>
+              <h3>RUT: {{espera.rut}}</h3>
+          </div>
+
+          <div class="card-body">
+            <div class="button-group">
+              <button class="button"  (click)="addPersonal(espera.rut,i)">Aceptar</button>
+              <button  class="button"  (click)="rmPersonal(espera.rut)">Rechazar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
 

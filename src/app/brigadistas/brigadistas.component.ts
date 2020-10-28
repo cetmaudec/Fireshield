@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { HttpClient ,HttpParams ,HttpHeaders} from '@angular/common/http';
-import swal from'sweetalert2';
+import Swal from'sweetalert2';
+import { environment } from '../environment';
+
 
 @Component({
   selector: 'app-brigadistas',
@@ -66,13 +68,9 @@ export class BrigadistasComponent implements OnInit {
       todos los brigadistas y sus datos de la brigada en cuestión.
     */
 
-   ngOnInit() {
-
+  async ngOnInit() {
     //Método que devuelve toda la información de todos los brigadistas de la brigada en cuestión.
-
-    this.getBrigadistas();
-    
-    
+    this.brigadistas$= await this.getBrigadistas();
   }
 
   /*
@@ -80,17 +78,13 @@ export class BrigadistasComponent implements OnInit {
     para poder realizar correctamente la consulta que encuentre los brigadistas asociados a cierta brigada
     de acuerdo a su nombre y numero.
   */
-
-  getBrigadistas(){
+  async getBrigadistas(){
     let params = new HttpParams().set("n_brigada", this.n_brigada).set("nombre",this.nombre_brigada);
-    
-
-    this.http.get('http://3.13.114.248:8000/brigadistas',{headers: new HttpHeaders({
+    this.brigadistas$ = await this.http.get(environment.urlAddress+'brigadistas',{headers: new HttpHeaders({
       'Content-Type':'application/json'
-      }), params: params}).subscribe(resp =>
-      this.brigadistas$ = resp as []
-    )
-
+      }), params: params}).toPromise();
+    
+    return this.brigadistas$;
   }
 
   /*
@@ -103,25 +97,31 @@ export class BrigadistasComponent implements OnInit {
   */
 
   delBrig(id:string){
-    
-
-    if(confirm("¿Estás seguro de querer borrar al brigadista "+id+"?")) {
-
-    
-    this.http.delete('http://3.13.114.248:8000/delBrigadista/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
-          (response ) => {
-            swal.fire('Borrado de brigadista completo').then(
-              function(){ 
-                location.reload();
-              }
-            );
-
-          },
-          (error)=>{
-            swal.fire('Error en el borrado de brigadista', error, 'success');
-
-          });
-  
-    }
+    Swal.fire({
+      icon: 'warning',
+      title: '¿Estás seguro de querer borrar al brigadista '+id+'?',
+      showCancelButton: true,
+      confirmButtonText: `Aceptar`,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+     if (result.value) {
+        this.http.delete(environment.urlAddress+'delete/brigadista/'+id, { headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Brigadista eliminado exitosamente!',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                   location.reload();
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          })
+        );  
+      }
+    });
   }
 }

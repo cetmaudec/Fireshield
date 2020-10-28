@@ -1,18 +1,97 @@
-@import url(https://fonts.googleapis.com/css?family=Playfair+Display&display=swap);
+html, body{
+  background-color: #f9f9f9;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 
-body {font-family: 'Playfair Display', serif;}
+}
+
+app-navbar{
+  display: block;
+  height: auto;
+}
+
+app-graph{
+  display: block;
+  height: auto;
+}
+
+app-map-unit{
+  display: block;
+  height: auto;
+}
+
+.limiter {
+    background-color: #f9f9f9;
+    position: relative;
+    min-width: 100%;
+    width: auto;    
+    height: 100%;
+    text-align: center;
+    display: block ruby;
+ }
+
+
+.card-tab{
+  width: 80%;
+}
+
+.card-tab h1{
+  font-size: 36px;
+  font-weight: bold;
+  color:black;
+}
+
+.row{
+  width: 100%;
+}
+
+.left{
+  width: 20%;
+}
+
+.right{
+  width: 80%;
+}
+
+.profile{
+  text-align: center;
+  align-self: center;
+  align-content: center;
+  align-items: center;
+}
+
+
+.profile img{
+  width: 100%;
+}
+
+.profile .tiempo{
+  width: 100%;
+}
+
+.tiempo{
+  width: 80%;
+  height: 10%;
+  border: 2px solid gray;
+  border-radius: 2rem;
+  background-color:#c4242c;
+  color: white;
+  text-align: center;
+}
+
+
 
 /* Style the tab */
 .tab {
   overflow: hidden;
   border: 1px solid #ccc;
-  background-image: linear-gradient(90deg,#c49c48cc 0%, #806223 100%);
-  background-image: -moz-linear-gradient(top, #c49c48cc 0%, #806223 100%);
-  background-image: -webkit-linear-gradient(top, #c49c48cc 0%, #806223 100%);
-  background-image: linear-gradient(to bottom, #c49c48cc 0%, #806223 100%);
+  border-radius: 20px 20px 0px 0px;
+  background: linear-gradient(to top, #f19b5f, #f47e1e);
+  filter: drop-shadow(5px 5px 4px #696969 );
   max-width: 80%;
+  width: 80%;
   margin-left: 10%;
   margin-right: 10.45%;
+
 }
 
 /* Style the buttons inside the tab */
@@ -40,17 +119,21 @@ body {font-family: 'Playfair Display', serif;}
 
 /* Style the tab content */
 .tabcontent {
-  max-width: 78.55%;
+  max-width: 80%;
+  width: 80%;
+  border: 1px solid #ccc;
+  border-radius: 0px 0px 20px 20px;
   margin-left: 10%;
   margin-right: 10.45%;
   display: none;
   padding: 6px 12px;
   -webkit-animation: fadeEffect 1s;
   animation: fadeEffect 1s;
-  background-image: linear-gradient(90deg,#e4bc96cc 0%, #725a43 100%);
-      background-image: -moz-linear-gradient(top, #e4bc96cc 0%, #725a43 100%);
-      background-image: -webkit-linear-gradient(top, #e4bc96cc 0%, #725a43 100%);
-      background-image: linear-gradient(to bottom, #e4bc96cc 0%, #725a43 100%);
+  background-color: white;
+  /*background-image: linear-gradient(90deg, #6c6c6c 0%, #565656 100%);
+      background-image: -moz-linear-gradient(top, #6c6c6c 0%, #565656 100%);
+      background-image: -webkit-linear-gradient(top, #6c6c6c 0%, #565656 100%);
+      background-image: linear-gradient(to bottom, #6c6c6c 0%, #565656 100%);*/
 }
 
 /* Fade in tabs */
@@ -101,17 +184,16 @@ body {font-family: 'Playfair Display', serif;}
   display: flex;
   flex-direction: column;
   color: black;
-  width: 700px; /* width of each table */
- height: 400px;
-  margin-right: 50px; /* spacing between tables */
-  margin-bottom: 2em;
-  margin-top:  2em;;
-  border: 3px solid rgb(26, 26, 26);
+  width: 45vw; /* width of each table */
+  height: 25vw;
+  padding: 5% 8% 5% 8%;
+  border: 0px solid rgb(26, 26, 26);
   transition: all .5s;
-  background-image: linear-gradient(90deg,#d6e2e6d7 0%, #707c80d7 100%);
+  background-color: white;
+  /*background-image: linear-gradient(90deg,#d6e2e6d7 0%, #707c80d7 100%);
       background-image: -moz-linear-gradient(top, #d6e2e6d7 0%, #707c80d7 100%);
       background-image: -webkit-linear-gradient(top, #d6e2e6d7 0%, #707c80d7 100%);
-      background-image: linear-gradient(to bottom, #d6e2e6d7 0%, #707c80d7 100%);
+      background-image: linear-gradient(to bottom, #d6e2e6d7 0%, #707c80d7 100%);*/
 }
 
 .pricingdiv ul.theplan3{
@@ -122,15 +204,12 @@ body {font-family: 'Playfair Display', serif;}
   flex-direction: column;
   color: black;
   width: 1000px; /* width of each table */
- height: 500px;
+  height: 500px;
   margin-right: 50px; /* spacing between tables */
   margin-bottom: 2em;
   margin-top:  2em;;
   transition: all .5s;
-
 }
-
-
 
 .pricingdiv ul.theplan .center{
   margin: 0 auto;
@@ -148,11 +227,8 @@ body {font-family: 'Playfair Display', serif;}
 }
 
 .pricingdiv ul.theplan img{
-  width: 50%;
+  width: 100%;
   height: auto;
-
-
-
 }
 
 .pricingdiv ul.theplan li{
@@ -177,10 +253,10 @@ body {font-family: 'Playfair Display', serif;}
   font-weight: bold;
   text-align: center;
   padding: 20px 10px;
-  background-image: linear-gradient(90deg,#c49c48cc 0%, #244e0ccc 100%);
-      background-image: -moz-linear-gradient(top, #c49c48cc 0%, #244e0ccc 100%);
-      background-image: -webkit-linear-gradient(top, #c49c48cc 0%, #244e0ccc 100%);
-      background-image: linear-gradient(to bottom, #c49c48cc 0%, #244e0ccc 100%);
+  background-image: linear-gradient(90deg,#c4242c 0%, #244e0ccc 100%);
+      background-image: -moz-linear-gradient(top, #c4242c 0%, #244e0ccc 100%);
+      background-image: -webkit-linear-gradient(top, #c4242c 0%, #244e0ccc 100%);
+      background-image: linear-gradient(to bottom, #c4242c 0%, #244e0ccc 100%);
   color: white;
   box-shadow: 0 -10px 5px rgba(0,0,0,.1) inset;
 
@@ -250,8 +326,14 @@ body {font-family: 'Playfair Display', serif;}
   border-radius: 5px;
   color: white;
   font-weight: bold;
-  border-radius: 5px;
   text-transform: uppercase;
+}
+
+table{
+  text-align: left;
+  border: 0.5px solid gray;
+  border-radius: 20px;
+  margin-top: 2%;
 }
 
 @media only screen and (max-width: 1400px) {
@@ -386,13 +468,7 @@ body {font-family: 'Playfair Display', serif;}
    height: 300px;
 
   }
-
-
-
 }
-
-
-
 
 
 .frow {
@@ -429,60 +505,11 @@ body {font-family: 'Playfair Display', serif;}
 }
 
 
-
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
-    color: white;
-    background-image: linear-gradient(90deg,#52bd58cc 0%, #1f4921 100%);
-      background-image: -moz-linear-gradient(top, #52bd58cc 0%, #1f4921 100%);
-      background-image: -webkit-linear-gradient(top, #52bd58cc 0%, #1f4921 100%);
-    background-image: linear-gradient(to bottom, #52bd58cc 0%, #1f4921 100%);
-    border: rgba(0, 78, 39, 0.877) 2px solid;
-  }
-
-  th, td {
-    text-align: left;
-    padding: 8px;
-  }
-
-
-  tr:nth-child(even){
-    background-image: linear-gradient(90deg,#da9e66e7 0%, #da9e66e7 100%);
-      background-image: -moz-linear-gradient(top, #da9e66e7 0%, #da9e66e7 100%);
-      background-image: -webkit-linear-gradient(top, #da9e66e7 0%, #da9e66e7 100%);
-      background-image: linear-gradient(to bottom, #da9e66e7 0%, #da9e66e7 100%);
-      border: rgba(0, 78, 39, 0.877) 2px solid;
-    }
-
-
-
- img{
-    margin-top:-5%;
-    width: 35%;
-    height: 30%;
- }
-
-.tiempo{
-    margin-top: -7.7%;
-    margin-left: 29%;
-    width: 40%;
-    height: 10%;
-    border: 2px solid gray;
-    border-radius: 2rem;
-    background-color:rgb(97, 91, 91);
-    color: white;
-    text-align: center;
-}
-
 @media only screen and (max-width: 500px) {
 
 
   .tiempo{
-    margin-top: -7.7%;
-    margin-left: 0%;
-    width: 100%;
+    width: 80%;
     height: 10%;
     border: 2px solid gray;
     border-radius: 2rem;
@@ -518,16 +545,20 @@ h1 {
     background-color: rgba(197, 206, 201, 0.877);
 }
 .map-container {
-
-
 }
 
 .map-frame {
-  border: 2px solid black;
-  height: 100%;
+  border: 0px solid black;
+  width: 100%;
 }
 
 #map {
-  width: 55vw;
+  width: 45vw;
   height: 60vh;
+}
+
+canvas{
+  display: block; 
+  width: 100%; 
+  height: 100%;
 }

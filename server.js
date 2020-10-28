@@ -10,515 +10,134 @@ const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 
-    // config for your database
+
+// config for your database
 const con = msql.createConnection({
-        
-        user: 'root',
-        password: 'admin',
-        host: 'LAPTOP-AKALA047',
-        database: 'plataforma',
-        host: 'localhost',
-        
-    });
+  host: "localhost",
+    user: "root",
+  password: "cetma2019",
+  database: 'cet_fire'
+});
 
-const con2 = msql.createConnection({
-        
-        user: 'root',
-        password: 'admin',
-        host: 'LAPTOP-AKALA047',
-        database: 'datosprueba',
-        host: 'localhost',
-        
-    });
 var transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: 'joaquin.bahamonde.b@gmail.com',
-          pass: 'cako310979'
-        }
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: 'joaquin.bahamonde.b@gmail.com',
+      pass: 'cako310979'
+    }
 });
+
+
 con.connect(function (err) {
+  if (err) console.log(err);
+    console.log("Connected!");
+});
 
-        if (err) console.log(err);
-        console.log("Connected!");
-       });
-
-con2.connect(function (err) {
-
-    if (err) console.log(err);
-        console.log("Connected!");
-     });
-     
-app.use(expressJwt({secret: 'todo-app-super-shared-secret'}).unless({path: ['/auth', '/addUsuario']}));
-
-app.use(bodyParser.urlencoded({ extended: false }))
+//app.use(expressJwt({secret: 'todo-app-super-shared-secret'}).unless({path: ['/auth', '/addUsuario']}));
+//app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors());
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
-app.post('/auth', function(req, res) {
-    const body = req.body;
-    console.log(req.body.username);
-    console.log(req.body.password);
-    const select_query=`SELECT COUNT(*) as total FROM usuarios where rut='${req.body.username}' AND CAST(AES_DECRYPT(pass, 'encriptado') AS CHAR)='${req.body.password}';`
+
+app.post('/auth',  bodyParser.json(), (req, res, next) => {
+    const select_query=`SELECT COUNT(*) as total FROM usuario WHERE usuario.rut='${req.body.username}' AND usuario.password = SHA('${req.body.password}');`
     con.query(select_query, (err, result) => {
-        console.log(result[0].total);
         if (err){
             return res.sendStatus(401);
-        }else if(result[0].total>0){
-            
-                console.log("entreeeee");
-                const select_query2=`SELECT COUNT(*) as total FROM usuarios where rut='${req.body.username}' AND cargo="Administrador";`
-                con.query(select_query2, (err2, result2) => {
-                    console.log(result2[0].total);
-                    if (err2){
-                        return res.sendStatus(401);
-                    }else if(result2[0].total>0){
-                        
-                            console.log("admin");
-                            var cargo ="administrador";
-                            var token = jwt.sign({userID: req.body.username}, 'todo-app-super-shared-secret');
-                            res.send({token,cargo});
-                    }else{
-                        const select_query3=`SELECT COUNT(*) as total FROM usuarios where rut='${req.body.username}' AND cargo="Jefe Brigada";`
-                        con.query(select_query3, (err3, result3) => {
-                            console.log(result3[0].total);
-                            if (err3){
-                                return res.sendStatus(401);
-                            }else if(result3[0].total>0){     
-                                console.log("jefe");
-                                var cargo ="jefe_brigada";
-                                var token = jwt.sign({userID: req.body.username}, 'todo-app-super-shared-secret');
-                                res.send({token,cargo});
-                            }else{
-                                const select_query4=`SELECT COUNT(*) as total FROM usuarios where rut='${req.body.username}' AND cargo="Super Administrador";`
-                                con.query(select_query4, (err4, result4) => {
-                                    console.log(result4[0].total);
-                                    if (err4){
-                                        return res.sendStatus(401);
-                                    }else if(result4[0].total>0){     
-                                        console.log("super administrador");
-                                        var cargo ="super_admin";
-                                        var token = jwt.sign({userID: req.body.username}, 'todo-app-super-shared-secret');
-                                        res.send({token,cargo});
-                                    }else{
-                                        return res.sendStatus(401);
-                                    }    
-                                });
-                            }    
-                        });
-                    }     
-                });  
         }else{
-            return res.sendStatus(401);
+            if(result[0].total>0){
+                con.query(`SELECT cargo, estado  FROM usuario WHERE usuario.rut='${req.body.username}' AND usuario.password = SHA('${req.body.password}');`, (err, resultados) => {
+                    if(err) {
+                        return res.sendStatus(401);
+                    } else {
+                        var token = jwt.sign({userID: req.body.username}, 'todo-app-super-shared-secret', {expiresIn: '2h'});
+                        res.send({'token': token, 'cargo': resultados[0].cargo, 'estado':resultados[0].estado });
+
+                    }
+                })
+            }else{
+                return res.sendStatus(401);    
+            }
         }
-        
-    });
+    })
 });
 
+app.post('/insert/usuario', bodyParser.json(), (req, res, next) => {
+    const INSERT_TIPO_QUERY = `INSERT INTO usuario (nombre, apellidoP, apellidoM, rut, cargo, correo, password, estado) VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}', SHA('${req.body.password}'), 'En espera')`;
+    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
+    if(err) {
+        res.status(500).send('Error al añadir solicitud de registro de usuario.');
+    } else {
+        res.json(res.body)
 
-
-
-
-
-
-
-
-
-
-
-
-app.post('/contacto', bodyParser.json(), (req, res, next) => {
-    //const INSERT_TIPO_QUERY = `INSERT INTO brigadistas VALUES('${req.body.rut}','${req.body.correo}','${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.f_nacimiento}',${req.body.n_brigada},'${req.body.cargo}',${req.body.peso},${req.body.altura},0,${req.body.pulsera}
-    console.log(req.body.phone);
-    var mailOptions = {
-        from: 'joaquin.bahamonde.b@gmail.com',
-        to: 'thevalone@gmail.com',
-        subject: req.body.asunto,
-        text: req.body.nombre+ ' se quiere contactar contigo. Sus datos son: \n Teléfono: ' + req.body.phone + '\n Correo: ' + req.body.correo + '\n Mensaje: ' + req.body.mensaje
-    };
-    console.log(transporter);
-    console.log(mailOptions);
-
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-
-        } else {
-            res.json(res.body);
-          console.log('Email sent: ' + info.response);
-        }
-      });
-
+    }
+  })
 });
-app.get('/usuarios', (req, res) => {
-       const select_query=`SELECT usuario, CAST(AES_DECRYPT(pass, 'encriptado') AS CHAR) as pass
-       FROM Usuarios;`
+
+app.get('/select/usuario/rut', (req, res) => {
+  const select_query=`SELECT rut FROM usuario;`
     con.query(select_query, (err, result) => {
-        console.log(result);
         if (err){
-          	return res.send(err)
-       	}else{
-           	return res.json({
+            return res.send(err)
+        }else{
+            return res.json({
 
                    data: result
 
-           	})
+            })
         }
-   	});
+    });
 });
 
-app.get('/admin', (req, res) => {
+app.get('/select/usuario/personal/:id', (req, res) => {
+    var id=req.params.id;
+    const select_query=`SELECT correo, rut, nombre, apellidoP, apellidoM, cargo FROM usuario where rut = '${id}';`    
+    con.query(select_query, (err, result) => {
+        if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+        }
+    });
+});
+
+app.get('/select/usuario/espera',(req, res) => {
+    const select_query=`SELECT * FROM usuario WHERE estado = 'En espera';`
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
+        }
+    });
+});
+
+app.get('/select/usuario/admin', (req, res) => {
     const select_query=`SELECT *
-    FROM Usuarios WHERE cargo="Administrador" OR cargo="Super Administrador";`
- con.query(select_query, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-
-app.get('/estadoBrigadas', (req, res) => {
-    const select_query=`SELECT b.nombre,c.estado, c.n_brigada, b.rut_jefe, c.id FROM combatesbrigada as c, brigada as b WHERE estado=1 and c.n_brigada=b.n_brigada AND c.nombre_brigada=b.nombre;`
+    FROM usuario WHERE cargo='Administrador' OR cargo='Super Administrador';`
     con.query(select_query, (err, result) => {
-     console.log("esatdo "+result);
-     if (err){
+        if (err){
            return res.send(err)
         }else{
             return res.json({
+
                 data: result
+
             })
      }
     });
 });
 
-
-
-
-app.get('/FatigaBajaBrigadas', (req, res) => {
-    const select_query=`SELECT IFNULL(a.fatigaBaja, 0) as fatigaBaja, d.nombre,d.n_brigada, d.estado, d.id
-    FROM (SELECT b.nombre, b.n_brigada , c.estado, c.id
-		FROM brigada as b, combatesbrigada as c
-        WHERE b.n_brigada = c.n_brigada AND b.nombre=c.nombre_brigada AND c.estado=1
-        ) as d
-    LEFT JOIN (
-        SELECT count(b.fatigado) as fatigaBaja, b.nombre_brigada, b.n_brigada, c.estado, c.id
-        FROM brigadistas as b, combatesbrigada as c
-        WHERE b.fatigado = 0 AND b.n_brigada=c.n_brigada AND b.nombre_brigada=c.nombre_brigada AND c.estado=1
-        group by b.n_brigada
-    ) as a
-    ON d.n_brigada=a.n_brigada AND d.nombre =a.nombre_brigada
-    ORDER BY d.n_brigada;`
+app.get('/select/usuario/jefe', (req, res) => {
+    const select_query=`SELECT * FROM usuario WHERE cargo="Jefe Brigada";`
     con.query(select_query, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/FatigaMediaBrigadas', (req, res) => {
-    const select_query=`SELECT IFNULL(a.fatigaMedia, 0) as fatigaMedia, d.nombre,d.n_brigada, d.estado, d.id
-    FROM (SELECT b.nombre, b.n_brigada , c.estado, c.id
-		FROM brigada as b, combatesbrigada as c
-        WHERE b.n_brigada = c.n_brigada AND b.nombre=c.nombre_brigada AND c.estado=1
-        ) as d
-    LEFT JOIN (
-        SELECT count(b.fatigado) as fatigaMedia, b.nombre_brigada, b.n_brigada, c.estado, c.id
-        FROM brigadistas as b, combatesbrigada as c
-        WHERE b.fatigado = 1 AND b.n_brigada=c.n_brigada AND b.nombre_brigada=c.nombre_brigada AND c.estado=1
-        group by b.n_brigada
-    ) as a
-    ON d.n_brigada=a.n_brigada AND d.nombre =a.nombre_brigada
-    ORDER BY d.n_brigada;`
-    con.query(select_query, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/FatigaAltaBrigadas', (req, res) => {
-    const select_query=`SELECT IFNULL(a.fatigaAlta, 0) as fatigaAlta, d.nombre,d.n_brigada, d.estado, d.id
-    FROM (SELECT b.nombre, b.n_brigada , c.estado, c.id
-		FROM brigada as b, combatesbrigada as c
-        WHERE b.n_brigada = c.n_brigada AND b.nombre=c.nombre_brigada AND c.estado=1
-        ) as d
-    LEFT JOIN (
-        SELECT count(b.fatigado) as fatigaAlta, b.nombre_brigada, b.n_brigada, c.estado, c.id
-        FROM brigadistas as b, combatesbrigada as c
-        WHERE b.fatigado = 2 AND b.n_brigada=c.n_brigada AND b.nombre_brigada=c.nombre_brigada AND c.estado=1
-        group by b.n_brigada
-    ) as a
-    ON d.n_brigada=a.n_brigada AND d.nombre =a.nombre_brigada
-    ORDER BY d.n_brigada;`
-    con.query(select_query, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-
-app.get('/brigadas', (req, res) => {
-
-    const select_query=`SELECT b.n_brigada, b.rut_jefe, u.nombre, u.apellidoP, u.apellidoM, b.nombre as nombre_brigada FROM Brigada as b, Usuarios as u WHERE b.rut_jefe = u.rut ORDER BY n_brigada;`
- con.query(select_query, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.put('/modUsuario/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const upd_query = `UPDATE usuarios SET pass=AES_ENCRYPT('${req.body.pass}','encriptado'), correo='${req.body.correo}', rut='${req.body.rut}', nombre='${req.body.nombre}', apellidoP = '${req.body.apellidoP}', apellidoM='${req.body.apellidoM}', cargo='${req.body.cargo}' WHERE rut =?;`
-    console.log(upd_query);
-    con.query(upd_query, id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-
-            })
-     }
-    });
-});
-app.get('/personal/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`SELECT usuario, CAST(AES_DECRYPT(pass, 'encriptado') AS CHAR) as pass, correo, rut, nombre, apellidoP, apellidoM, cargo FROM usuarios where rut = ?;`
-    console.log(select_query)
-    con.query(select_query,id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/brigadasCombate/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`select n_brigada, nombre_brigada from combatesbrigada where id=?;`
-    console.log(select_query)
-    con.query(select_query,id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/brigadistasParticipando/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`SELECT count(*) as nbrigadistas
-    from brigadistas as b,(
-        select n_brigada, nombre_brigada, id from combatesbrigada where id=?) as aux,
-
-        (
-        SELECT distinct(rut)
-        from datos
-        where id=?
-
-        ) as d
-
-    where b.n_brigada = aux.n_brigada and b.nombre_brigada = aux.nombre_brigada  and b.rut = d.rut`
-    console.log(select_query)
-    con.query(select_query,[id,id], (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-
-            })
-     }
-    });
-});
-
-
-app.get('/alta/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`select distinct(hf.rut), b.* from historialfatiga as hf, brigadistas as b where hf.idcombate = ? and hf.fatiga = 2 and hf.rut = b.rut order by b.n_brigada ASC, b.nombre_brigada ASC;`
-    console.log(select_query)
-    con.query(select_query,id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/media/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`select distinct(hf.rut), b.* from historialfatiga as hf, brigadistas as b where hf.idcombate = ? and hf.fatiga = 1 and hf.rut = b.rut order by b.n_brigada ASC, b.nombre_brigada ASC;`
-    console.log(select_query)
-    con.query(select_query,id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/combatesFin/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`select nombre_brigada, n_brigada, id, DATE_FORMAT(fecha, '%Y-%m-%d') as fecha, hora, DATE_FORMAT(fecharetiro, '%Y-%m-%d') as fecharetiro, horaretiro from combatesbrigadafin where id=?;`
-    console.log(select_query)
-    con.query(select_query,id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-
-            })
-     }
-    });
-});
-
-
-
-app.get('/brigadaFatigadosMedia/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`select distinct(h.rut), nombre, apellidoP, apellidoM ,nombre_brigada, n_brigada from historialfatiga as h, brigadistas as b where idcombate=? and fatiga=1 and h.rut=b.rut;`
-    console.log(select_query)
-    con.query(select_query,id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/brigadaFatigadosAlta/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`select distinct(h.rut), nombre, apellidoP, apellidoM , nombre_brigada, n_brigada from historialfatiga as h, brigadistas as b where idcombate=? and fatiga=2 and h.rut=b.rut;`
-    console.log(select_query)
-    con.query(select_query,id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-
-            })
-     }
-    });
-});
-app.get('/combates', (req, res) => {
-
-    const select_query=`SELECT *,DATE_FORMAT(fecha, '%d/%m/%y') as fecha FROM Combate;`
-    con.query(select_query, (err, result) => {
-    console.log(result);
-    if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-app.get('/combatesBrig:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`
-        SELECT nombre_brigada, n_brigada, id, DATE_FORMAT(fecha, '%d/%m/%y') as fecha, DATE_FORMAT(hora, '%H:%i') as hora, estado 
-        FROM combatesbrigada
-        where id = ?;`
-    con.query(select_query,id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-
-            })
-     }
-    });
-});
-app.get('/nbrigadas', (req, res) => {
-    const select_query=`SELECT COUNT(brigada.n_brigada) AS numero FROM brigada,combatesbrigada WHERE brigada.n_brigada=combatesbrigada.n_brigada AND combatesbrigada.estado=1 AND brigada.nombre=combatesbrigada.nombre_brigada;`
-    con.query(select_query, (err, result) => {
-     console.log(result);
      if (err){
            return res.send(err)
         }else{
@@ -529,1254 +148,752 @@ app.get('/nbrigadas', (req, res) => {
     });
 });
 
-
-app.get('/maxbrigada:id', (req, res) => {
-    var id=req.params.id;
-    const select_query=`SELECT max(n_brigada) AS max FROM brigada where nombre = ?;`
-    con.query(select_query, id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-            })
-     }
-    });
-});
-
-
-app.get('/brigadasPorNombre:id', (req, res) => {
-    var id=req.params.id;
-    const select_query=`SELECT n_brigada FROM brigada where nombre = ? ORDER BY n_brigada ASC;`
-    con.query(select_query, id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-            })
-     }
-    });
-});
-app.get('/nombresbrigadas',(req, res) => {
-    const select_query=`SELECT * FROM nombrebrig ORDER BY nombre ASC;`
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-app.get('/nbrigadas:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`SELECT nombre, n_brigada FROM brigada WHERE rut_jefe=?;`
-    con.query(select_query,id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-            })
-     }
-    });
-});
-
-app.get('/jefes', (req, res) => {
-    const select_query=`SELECT * FROM Usuarios WHERE cargo="Jefe Brigada";`
-    con.query(select_query, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-            })
-     }
-    });
-});
-
-app.get('/npulseras', (req, res) => {
-    const select_query=`SELECT COUNT(id) AS numero FROM pulsera;`
-    con.query(select_query, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-                data: result
-            })
-     }
-    });
-});
-
-app.get('/pulserasnousadas',(req, res) => {
-    const select_query=`SELECT p.id FROM pulsera as p WHERE p.id NOT IN(
-        SELECT p2.id FROM pulsera as p2, brigadistas as b WHERE p2.id = b.pulsera
-    
-    );`
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-app.get('/pulseraAct/:id',(req, res) => {
-    var id=req.params.id;
-    const select_query=`SELECT pulsera from brigadistas where rut =?;`
-    con.query(select_query,id, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-app.get('/brigadistas', (req, res) => {
-    console.log("LLEGUEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-
-    console.log("Holaaaa: " + id);
-    console.log("Holaaaa2: " + id2);
-    const select_query=`SELECT *, DATE_FORMAT(f_nacimiento, '%Y-%m-%d') as f_nacimiento FROM Brigadistas WHERE n_brigada=? AND nombre_brigada=?;`
-    con.query(select_query,[id,id2], (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/brigadistasFatiga', (req, res) => {
-   
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-
-    console.log("Holaaaa: " + id);
-    console.log("Holaaaa2: " + id2);
-    const select_query=`SELECT b.rut, b.nombre, b.apellidoP, b.apellidoM, DATE_FORMAT(h.fecha, '%Y-%m-%d') as fecha,  h.hora, h.fatiga
-    FROM (SELECT *,
-        row_number() OVER (PARTITION BY rut ORDER BY fecha DESC, hora DESC) as row_num
-      FROM historialfatiga) as h , brigadistas as b
-    WHERE h.row_num = 1 AND b.n_brigada=? AND b.nombre_brigada=? AND b.rut=h.rut;`
-    con.query(select_query,[id,id2], (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-app.get('/rutAlta', (req, res) => {
-
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-    var id3 = req.param('idcombate');
-
-    console.log("Holaaaa: " + id);
-    console.log("Holaaaa2: " + id2);
-    const select_query=`select distinct(ff.rut)
-    from fatigafin as ff, brigadistas as b
-    where b.rut = ff.rut and b.n_brigada = ? and b.nombre_brigada=? and idcombate = ? and fatiga = 2
-    order by rut desc;`
-    con.query(select_query,[id,id2,id3], (err, result) => {
-     console.log(result);
-     if (err){
-         console.log(err);
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/fatigaFinAlta', (req, res) => {
-
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-    var id3 = req.param('idcombate');
-
-    console.log("Holaaaa: " + id);
-    console.log("Holaaaa2: " + id2);
-    const select_query=`select ff.rut, ff.idcombate, ff.fatiga, DATE_FORMAT(ff.fecha, '%Y-%m-%d') as fecha, ff.hora, DATE_FORMAT(ff.fechafin, '%Y-%m-%d') as fechafin, ff.horafin
-    from fatigafin as ff, brigadistas as b
-    where ff.rut = b.rut and b.n_brigada = ? and b.nombre_brigada=? and idcombate = ? and fatiga = 2
-    order by ff.rut desc, ff.fechafin desc, ff.horafin desc;`
-
-    con.query(select_query,[id,id2,id3], (err, result) => {
-     console.log(result);
-     console.log(select_query);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/rutMedia', (req, res) => {
-
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-    var id3 = req.param('idcombate');
-
-    console.log("Holaaaa: " + id);
-    console.log("Holaaaa2: " + id2);
-    const select_query=`select distinct(ff.rut)
-    from fatigafin as ff, brigadistas as b
-    where b.rut = ff.rut and b.n_brigada = ? and b.nombre_brigada=? and idcombate = ? and fatiga = 1
-    order by rut desc;`
-    con.query(select_query,[id,id2,id3], (err, result) => {
-     console.log(result);
-     if (err){
-         console.log(err);
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/fatigaFinMedia', (req, res) => {
-
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-    var id3 = req.param('idcombate');
-
-    console.log("Holaaaa: " + id);
-    console.log("Holaaaa2: " + id2);
-    const select_query=`select ff.rut, ff.idcombate, ff.fatiga, DATE_FORMAT(ff.fecha, '%Y-%m-%d') as fecha, ff.hora, DATE_FORMAT(ff.fechafin, '%Y-%m-%d') as fechafin, ff.horafin
-    from fatigafin as ff, brigadistas as b
-    where ff.rut = b.rut and b.n_brigada = ? and b.nombre_brigada=? and idcombate = ? and fatiga = 1
-    order by ff.rut desc, ff.fechafin desc, ff.horafin desc;`
-
-    con.query(select_query,[id,id2,id3], (err, result) => {
-     console.log(result);
-     console.log(select_query);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/brigadistasMedia', (req, res) => {
-   
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-
-    console.log("Holaaaa: " + id);
-    console.log("Holaaaa2: " + id2);
-    const select_query=`select distinct(h.rut), nombre, apellidoP, apellidoM 
-    from historialfatiga as h, brigadistas as b 
-    where b.rut=h.rut and b.n_brigada=? and b.nombre_brigada=? AND fatiga=1
-    order by b.rut desc;`
-    con.query(select_query,[id,id2], (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/brigadistasAlta', (req, res) => {
-   
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-
-    console.log("Holaaaa: " + id);
-    console.log("Holaaaa2: " + id2);
-    const select_query=`select distinct(h.rut), nombre, apellidoP, apellidoM 
-    from historialfatiga as h, brigadistas as b 
-    where b.rut=h.rut and  b.n_brigada=? and b.nombre_brigada=? AND fatiga=2
-    order by b.rut desc;`
-    con.query(select_query,[id,id2], (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/brigadafin', (req, res) => {
-   
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-    var id3=req.param('id');
-    console.log("llegueeeeeeeeeeeeeeeeeeeeeeeeee")
-    console.log("Holaaaa: " + id);
-    console.log("Holaaaa2: " + id2);
-    console.log("Holaaaa3: " + id3);
-    const select_query=`select nombre_brigada, n_brigada,  DATE_FORMAT(fecha, '%Y-%m-%d') as fecha, hora, DATE_FORMAT(fecharetiro, '%Y-%m-%d') as fechafin, horaretiro as horafin
-    from combatesbrigadafin
-    where nombre_brigada=? and  n_brigada=? and id=?;`
-    con.query(select_query, [id2,id,id3],(err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-
-
-
-
-app.get('/jefeBrigada', (req, res) => {
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-
-    console.log("Holaaaa: " + id);
-    console.log("Holaaaa2: " + id2);
-    select_query=`SELECT * FROM brigada WHERE n_brigada=? AND nombre = ?; `
-    con.query(select_query,[id, id2], (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            console.log("Hola soy la respuesta : " + res);
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-app.get('/brigadista/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`SELECT * FROM brigadistas WHERE rut=?; `
-    con.query(select_query,id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/hito/:id', (req, res) => {
-    var id=req.params.id;
-    console.log(id);
-    const select_query=`SELECT hito FROM combate WHERE id=?; `
-    con.query(select_query,id, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-app.get('/maxCombat',(req, res) => {
-    const select_query=`SELECT max(id) as combate FROM combate;`
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-app.get('/nEspera',(req, res) => {
-    const select_query=`SELECT COUNT(*) as numero FROM espera;`
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-app.get('/listaEspera',(req, res) => {
-    const select_query=`SELECT *, CAST(AES_DECRYPT(pass, 'encriptado') AS CHAR) as pass2 FROM espera;`
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-
-app.get('/combActivos',(req, res) => {
-    const select_query=`SELECT *, DATE_FORMAT(fecha, '%Y-%m-%d') as fecha FROM combate WHERE estado=1;`
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-
-app.get('/combMes',(req, res) => {
-    var fechatotal = new Date();
-            var mes;
-            var dia;
-            let fechaAux = fechatotal.getMonth()+1;
-            if(fechaAux>=0 && fechaAux<=9){
-                //console.log("Entre aquí");
-                console.log(fechatotal.getMonth());
-                console.log(fechaAux);
-                console.log(fechaAux.toString());
-                mes = "0" + fechaAux;
-            }else{
-                mes = fechatotal.getMonth() + 1;
-            }
-            let diaAux = fechatotal.getDate();
-            if(diaAux>=0 && diaAux<=9){
-                dia = "0" + diaAux;
-            }else{
-                dia = fechatotal.getDate();
-            }
-            var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
-
-    var horatotal =  new Date();
-            var hora;
-            var minuto;
-            var segundo;
-            let horaAux = horatotal.getHours();
-            if(horaAux>=0 && horaAux<=9){
-                hora = "0" + horaAux;
-            }else{
-                hora = horatotal.getHours();
-            }
-
-            let minutoAux = horatotal.getMinutes();
-            if(minutoAux>=0 && minutoAux<=9){
-                minuto = "0" + minutoAux;
-            }else{
-                minuto = horatotal.getMinutes();
-            }
-
-            let segundoAux = horatotal.getSeconds();
-
-            if(segundoAux>=0 && segundoAux<=9){
-                segundo = "0" + segundoAux;
-            }else{
-                segundo = horatotal.getSeconds();
-            }
-
-            var horafinal = hora + ":" + minuto + ":" + segundo;
-
-            console.log("Fechaaaaa:" + fecha);
-            console.log("Hora fin:" + horafinal);
-
-    const select_query=`SELECT c.id, c.hito, c.estado,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin, c.nfatigaMedia,c.nfatigaAlta
-    FROM(
-        SELECT *
-        FROM combate as c2
-        WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 1 MONTH)
-    ) as c
-    LEFT JOIN combatefin as cf
-    ON c.id = cf.id;`
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-
-app.get('/combMes2',(req, res) => {
-
-    var fechatotal = new Date();
-            var mes;
-            var dia;
-            let fechaAux = fechatotal.getMonth()+1;
-            if(fechaAux>=0 && fechaAux<=9){
-                //console.log("Entre aquí");
-                console.log(fechatotal.getMonth());
-                console.log(fechaAux);
-                console.log(fechaAux.toString());
-                mes = "0" + fechaAux;
-            }else{
-                mes = fechatotal.getMonth() + 1;
-            }
-            let diaAux = fechatotal.getDate();
-            if(diaAux>=0 && diaAux<=9){
-                dia = "0" + diaAux;
-            }else{
-                dia = fechatotal.getDate();
-            }
-            var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
-
-    var horatotal =  new Date();
-            var hora;
-            var minuto;
-            var segundo;
-            let horaAux = horatotal.getHours();
-            if(horaAux>=0 && horaAux<=9){
-                hora = "0" + horaAux;
-            }else{
-                hora = horatotal.getHours();
-            }
-
-            let minutoAux = horatotal.getMinutes();
-            if(minutoAux>=0 && minutoAux<=9){
-                minuto = "0" + minutoAux;
-            }else{
-                minuto = horatotal.getMinutes();
-            }
-
-            let segundoAux = horatotal.getSeconds();
-
-            if(segundoAux>=0 && segundoAux<=9){
-                segundo = "0" + segundoAux;
-            }else{
-                segundo = horatotal.getSeconds();
-            }
-
-            var horafinal = hora + ":" + minuto + ":" + segundo;
-
-            console.log("Fechaaaaa:" + fecha);
-            console.log("Hora fin:" + horafinal);
-
-            
-    const select_query=`select IFNULL(tabla.nombre_brigada, cb.nombre_brigada) as nombre_brigada,IFNULL(tabla.n_brigada, cb.n_brigada) as n_brigada, IFNULL(tabla.id, cb.id) as id, IFNULL(tabla.estado, cb.estado) as estado, DATE_FORMAT(IFNULL(tabla.fecha, cb.fecha), '%Y-%m-%d') as fecha , IFNULL(tabla.hora, cb.hora) as hora, IFNULL(tabla.fechafin, '${fecha}') as fechafin ,IFNULL(tabla.horafin, '${horafinal}')  as horafin, IFNULL(tabla.nMedia, 0) as nMedia, IFNULL(tabla.nAlta, 0) as nAlta,tabla.idcombate
-    FROM (
-        SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
-            FROM(
-                SELECT *
-                FROM combatesbrigada as c2, (
-                    select COUNT(f.n_brigada) as nMedia, f.id as idcombate, f.nombre
-                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
-                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
-                    ) as f
-                    group by f.nombre, f.n_brigada, f.id
-                ) as d, (
-                    select COUNT(f.n_brigada) as nAlta, f.id as idcombate2,f.nombre as nombre2
-                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
-                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
-                    ) as f
-                    group by f.nombre, f.n_brigada, f.id
-                ) as d2
-               WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 1 MONTH) AND c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
-               and c2.nombre_brigada=d.nombre and c2.nombre_brigada=d2.nombre2 and d.nombre=d2.nombre2
-    
-            ) as c
-            LEFT JOIN combatesbrigadafin as cf
-            ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora
-        ) as tabla
-    right JOIN (select * from combatesbrigada as cb2 where cb2.fecha <= now() AND cb2.fecha > DATE_SUB(now(), INTERVAL 1 MONTH)) as cb
-    ON  tabla.id = cb.id  and tabla.nombre_brigada=cb.nombre_brigada and tabla.n_brigada=cb.n_brigada `
-    
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-
-
-app.get('/comb6Mes',(req, res) => {
-
-    var fechatotal = new Date();
-            var mes;
-            var dia;
-            let fechaAux = fechatotal.getMonth()+1;
-            if(fechaAux>=0 && fechaAux<=9){
-                //console.log("Entre aquí");
-                console.log(fechatotal.getMonth());
-                console.log(fechaAux);
-                console.log(fechaAux.toString());
-                mes = "0" + fechaAux;
-            }else{
-                mes = fechatotal.getMonth() + 1;
-            }
-            let diaAux = fechatotal.getDate();
-            if(diaAux>=0 && diaAux<=9){
-                dia = "0" + diaAux;
-            }else{
-                dia = fechatotal.getDate();
-            }
-            var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
-
-    var horatotal =  new Date();
-            var hora;
-            var minuto;
-            var segundo;
-            let horaAux = horatotal.getHours();
-            if(horaAux>=0 && horaAux<=9){
-                hora = "0" + horaAux;
-            }else{
-                hora = horatotal.getHours();
-            }
-
-            let minutoAux = horatotal.getMinutes();
-            if(minutoAux>=0 && minutoAux<=9){
-                minuto = "0" + minutoAux;
-            }else{
-                minuto = horatotal.getMinutes();
-            }
-
-            let segundoAux = horatotal.getSeconds();
-
-            if(segundoAux>=0 && segundoAux<=9){
-                segundo = "0" + segundoAux;
-            }else{
-                segundo = horatotal.getSeconds();
-            }
-
-            var horafinal = hora + ":" + minuto + ":" + segundo;
-
-            console.log("Fechaaaaa:" + fecha);
-            console.log("Hora fin:" + horafinal);
-    const select_query=`SELECT c.id, c.hito, c.estado,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin, c.nfatigaMedia,c.nfatigaAlta
-    FROM(
-        SELECT *
-        FROM combate as c2
-        WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 6 MONTH)
-    ) as c
-    LEFT JOIN combatefin as cf
-    ON c.id = cf.id;`
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-
-
-app.get('/comb6Mes2',(req, res) => {
-
-    var fechatotal = new Date();
-            var mes;
-            var dia;
-            let fechaAux = fechatotal.getMonth()+1;
-            if(fechaAux>=0 && fechaAux<=9){
-                //console.log("Entre aquí");
-                console.log(fechatotal.getMonth());
-                console.log(fechaAux);
-                console.log(fechaAux.toString());
-                mes = "0" + fechaAux;
-            }else{
-                mes = fechatotal.getMonth() + 1;
-            }
-            let diaAux = fechatotal.getDate();
-            if(diaAux>=0 && diaAux<=9){
-                dia = "0" + diaAux;
-            }else{
-                dia = fechatotal.getDate();
-            }
-            var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
-
-    var horatotal =  new Date();
-            var hora;
-            var minuto;
-            var segundo;
-            let horaAux = horatotal.getHours();
-            if(horaAux>=0 && horaAux<=9){
-                hora = "0" + horaAux;
-            }else{
-                hora = horatotal.getHours();
-            }
-
-            let minutoAux = horatotal.getMinutes();
-            if(minutoAux>=0 && minutoAux<=9){
-                minuto = "0" + minutoAux;
-            }else{
-                minuto = horatotal.getMinutes();
-            }
-
-            let segundoAux = horatotal.getSeconds();
-
-            if(segundoAux>=0 && segundoAux<=9){
-                segundo = "0" + segundoAux;
-            }else{
-                segundo = horatotal.getSeconds();
-            }
-
-            var horafinal = hora + ":" + minuto + ":" + segundo;
-
-            console.log("Fechaaaaa:" + fecha);
-            console.log("Hora fin:" + horafinal);
-    const select_query=`select IFNULL(tabla.nombre_brigada, cb.nombre_brigada) as nombre_brigada,IFNULL(tabla.n_brigada, cb.n_brigada) as n_brigada, IFNULL(tabla.id, cb.id) as id, IFNULL(tabla.estado, cb.estado) as estado, DATE_FORMAT(IFNULL(tabla.fecha, cb.fecha), '%Y-%m-%d') as fecha , IFNULL(tabla.hora, cb.hora) as hora, IFNULL(tabla.fechafin, '${fecha}') as fechafin ,IFNULL(tabla.horafin, '${horafinal}')  as horafin, IFNULL(tabla.nMedia, 0) as nMedia, IFNULL(tabla.nAlta, 0) as nAlta,tabla.idcombate
-    FROM (
-        SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
-            FROM(
-                SELECT *
-                FROM combatesbrigada as c2, (
-                    select COUNT(f.n_brigada) as nMedia, f.id as idcombate, f.nombre
-                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
-                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
-                    ) as f
-                    group by f.nombre, f.n_brigada, f.id
-                ) as d, (
-                    select COUNT(f.n_brigada) as nAlta, f.id as idcombate2,f.nombre as nombre2
-                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
-                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
-                    ) as f
-                    group by f.nombre, f.n_brigada, f.id
-                ) as d2
-               WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 6 MONTH) AND c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
-               and c2.nombre_brigada=d.nombre and c2.nombre_brigada=d2.nombre2 and d.nombre=d2.nombre2
-    
-            ) as c
-            LEFT JOIN combatesbrigadafin as cf
-            ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora
-        ) as tabla
-    right JOIN (select * from combatesbrigada as cb2 where cb2.fecha <= now() AND cb2.fecha > DATE_SUB(now(), INTERVAL 6 MONTH)) as cb
-    ON  tabla.id = cb.id  and tabla.nombre_brigada=cb.nombre_brigada and tabla.n_brigada=cb.n_brigada `
-
-    
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-
-
-
-
-app.get('/combAnyo',(req, res) => {
-
-    var fechatotal = new Date();
-            var mes;
-            var dia;
-            let fechaAux = fechatotal.getMonth()+1;
-            if(fechaAux>=0 && fechaAux<=9){
-                //console.log("Entre aquí");
-                console.log(fechatotal.getMonth());
-                console.log(fechaAux);
-                console.log(fechaAux.toString());
-                mes = "0" + fechaAux;
-            }else{
-                mes = fechatotal.getMonth() + 1;
-            }
-            let diaAux = fechatotal.getDate();
-            if(diaAux>=0 && diaAux<=9){
-                dia = "0" + diaAux;
-            }else{
-                dia = fechatotal.getDate();
-            }
-            var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
-
-    var horatotal =  new Date();
-            var hora;
-            var minuto;
-            var segundo;
-            let horaAux = horatotal.getHours();
-            if(horaAux>=0 && horaAux<=9){
-                hora = "0" + horaAux;
-            }else{
-                hora = horatotal.getHours();
-            }
-
-            let minutoAux = horatotal.getMinutes();
-            if(minutoAux>=0 && minutoAux<=9){
-                minuto = "0" + minutoAux;
-            }else{
-                minuto = horatotal.getMinutes();
-            }
-
-            let segundoAux = horatotal.getSeconds();
-
-            if(segundoAux>=0 && segundoAux<=9){
-                segundo = "0" + segundoAux;
-            }else{
-                segundo = horatotal.getSeconds();
-            }
-
-            var horafinal = hora + ":" + minuto + ":" + segundo;
-
-            console.log("Fechaaaaa:" + fecha);
-            console.log("Hora fin:" + horafinal);
-    const select_query=`SELECT c.id, c.hito, c.estado,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin, c.nfatigaMedia,c.nfatigaAlta
-    FROM(
-        SELECT *
-        FROM combate as c2
-        WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 12 MONTH)
-    ) as c
-    LEFT JOIN combatefin as cf
-    ON c.id = cf.id;`
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-
-
-app.get('/combAnyo2',(req, res) => {
-
-    var fechatotal = new Date();
-            var mes;
-            var dia;
-            let fechaAux = fechatotal.getMonth()+1;
-            if(fechaAux>=0 && fechaAux<=9){
-                //console.log("Entre aquí");
-                console.log(fechatotal.getMonth());
-                console.log(fechaAux);
-                console.log(fechaAux.toString());
-                mes = "0" + fechaAux;
-            }else{
-                mes = fechatotal.getMonth() + 1;
-            }
-            let diaAux = fechatotal.getDate();
-            if(diaAux>=0 && diaAux<=9){
-                dia = "0" + diaAux;
-            }else{
-                dia = fechatotal.getDate();
-            }
-            var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
-
-    var horatotal =  new Date();
-            var hora;
-            var minuto;
-            var segundo;
-            let horaAux = horatotal.getHours();
-            if(horaAux>=0 && horaAux<=9){
-                hora = "0" + horaAux;
-            }else{
-                hora = horatotal.getHours();
-            }
-
-            let minutoAux = horatotal.getMinutes();
-            if(minutoAux>=0 && minutoAux<=9){
-                minuto = "0" + minutoAux;
-            }else{
-                minuto = horatotal.getMinutes();
-            }
-
-            let segundoAux = horatotal.getSeconds();
-
-            if(segundoAux>=0 && segundoAux<=9){
-                segundo = "0" + segundoAux;
-            }else{
-                segundo = horatotal.getSeconds();
-            }
-
-            var horafinal = hora + ":" + minuto + ":" + segundo;
-
-            console.log("Fechaaaaa:" + fecha);
-            console.log("Hora fin:" + horafinal);
-    const select_query=`select IFNULL(tabla.nombre_brigada, cb.nombre_brigada) as nombre_brigada,IFNULL(tabla.n_brigada, cb.n_brigada) as n_brigada, IFNULL(tabla.id, cb.id) as id, IFNULL(tabla.estado, cb.estado) as estado, DATE_FORMAT(IFNULL(tabla.fecha, cb.fecha), '%Y-%m-%d') as fecha , IFNULL(tabla.hora, cb.hora) as hora, IFNULL(tabla.fechafin, '${fecha}') as fechafin ,IFNULL(tabla.horafin, '${horafinal}')  as horafin, IFNULL(tabla.nMedia, 0) as nMedia, IFNULL(tabla.nAlta, 0) as nAlta,tabla.idcombate
-    FROM (
-        SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
-            FROM(
-                SELECT *
-                FROM combatesbrigada as c2, (
-                    select COUNT(f.n_brigada) as nMedia, f.id as idcombate, f.nombre
-                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
-                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
-                    ) as f
-                    group by f.nombre, f.n_brigada, f.id
-                ) as d, (
-                    select COUNT(f.n_brigada) as nAlta, f.id as idcombate2,f.nombre as nombre2
-                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
-                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
-                    ) as f
-                    group by f.nombre, f.n_brigada, f.id
-                ) as d2
-               WHERE c2.fecha <= now() AND c2.fecha > DATE_SUB(now(), INTERVAL 12 MONTH) AND c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
-               and c2.nombre_brigada=d.nombre and c2.nombre_brigada=d2.nombre2 and d.nombre=d2.nombre2
-    
-            ) as c
-            LEFT JOIN combatesbrigadafin as cf
-            ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora
-        ) as tabla
-    right JOIN (select * from combatesbrigada as cb2 where cb2.fecha <= now() AND cb2.fecha > DATE_SUB(now(), INTERVAL 12 MONTH)) as cb
-    ON  tabla.id = cb.id  and tabla.nombre_brigada=cb.nombre_brigada and tabla.n_brigada=cb.n_brigada `
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-
-
-app.get('/combTodos',(req, res) => {
-
-    var fechatotal = new Date();
-            var mes;
-            var dia;
-            let fechaAux = fechatotal.getMonth()+1;
-            if(fechaAux>=0 && fechaAux<=9){
-                //console.log("Entre aquí");
-                console.log(fechatotal.getMonth());
-                console.log(fechaAux);
-                console.log(fechaAux.toString());
-                mes = "0" + fechaAux;
-            }else{
-                mes = fechatotal.getMonth() + 1;
-            }
-            let diaAux = fechatotal.getDate();
-            if(diaAux>=0 && diaAux<=9){
-                dia = "0" + diaAux;
-            }else{
-                dia = fechatotal.getDate();
-            }
-            var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
-
-    var horatotal =  new Date();
-            var hora;
-            var minuto;
-            var segundo;
-            let horaAux = horatotal.getHours();
-            if(horaAux>=0 && horaAux<=9){
-                hora = "0" + horaAux;
-            }else{
-                hora = horatotal.getHours();
-            }
-
-            let minutoAux = horatotal.getMinutes();
-            if(minutoAux>=0 && minutoAux<=9){
-                minuto = "0" + minutoAux;
-            }else{
-                minuto = horatotal.getMinutes();
-            }
-
-            let segundoAux = horatotal.getSeconds();
-
-            if(segundoAux>=0 && segundoAux<=9){
-                segundo = "0" + segundoAux;
-            }else{
-                segundo = horatotal.getSeconds();
-            }
-
-            var horafinal = hora + ":" + minuto + ":" + segundo;
-
-            console.log("Fechaaaaa:" + fecha);
-            console.log("Hora fin:" + horafinal);
-    const select_query=`SELECT c.id, c.hito, c.estado,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fechafin, '${fecha}') as fechafin ,IFNULL(cf.horafin, '${horafinal}')  as horafin, c.nfatigaMedia,c.nfatigaAlta
-    FROM(
-        SELECT *
-        FROM combate as c2
-       
-    ) as c
-    LEFT JOIN combatefin as cf
-    ON c.id = cf.id;`
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-
-app.get('/combTodos2',(req, res) => {
-
-    console.log("Que pasaaaaaaaa");
-
-    var fechatotal = new Date();
-            var mes;
-            var dia;
-            let fechaAux = fechatotal.getMonth()+1;
-            if(fechaAux>=0 && fechaAux<=9){
-                //console.log("Entre aquí");
-                console.log(fechatotal.getMonth());
-                console.log(fechaAux);
-                console.log(fechaAux.toString());
-                mes = "0" + fechaAux;
-            }else{
-                mes = fechatotal.getMonth() + 1;
-            }
-            let diaAux = fechatotal.getDate();
-            if(diaAux>=0 && diaAux<=9){
-                dia = "0" + diaAux;
-            }else{
-                dia = fechatotal.getDate();
-            }
-            var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
-
-    var horatotal =  new Date();
-            var hora;
-            var minuto;
-            var segundo;
-            let horaAux = horatotal.getHours();
-            if(horaAux>=0 && horaAux<=9){
-                hora = "0" + horaAux;
-            }else{
-                hora = horatotal.getHours();
-            }
-
-            let minutoAux = horatotal.getMinutes();
-            if(minutoAux>=0 && minutoAux<=9){
-                minuto = "0" + minutoAux;
-            }else{
-                minuto = horatotal.getMinutes();
-            }
-
-            let segundoAux = horatotal.getSeconds();
-
-            if(segundoAux>=0 && segundoAux<=9){
-                segundo = "0" + segundoAux;
-            }else{
-                segundo = horatotal.getSeconds();
-            }
-
-            var horafinal = hora + ":" + minuto + ":" + segundo;
-
-            console.log("Fechaaaaa:" + fecha);
-            console.log("Hora fin:" + horafinal);
-    const select_query=`select IFNULL(tabla.nombre_brigada, cb.nombre_brigada) as nombre_brigada,IFNULL(tabla.n_brigada, cb.n_brigada) as n_brigada, IFNULL(tabla.id, cb.id) as id, IFNULL(tabla.estado, cb.estado) as estado, DATE_FORMAT(IFNULL(tabla.fecha, cb.fecha), '%Y-%m-%d') as fecha , IFNULL(tabla.hora, cb.hora) as hora, IFNULL(tabla.fechafin, '${fecha}') as fechafin ,IFNULL(tabla.horafin, '${horafinal}')  as horafin, IFNULL(tabla.nMedia, 0) as nMedia, IFNULL(tabla.nAlta, 0) as nAlta,tabla.idcombate
-    FROM (
-        SELECT c.nombre_brigada, c.n_brigada, c.id, c.estado ,DATE_FORMAT(c.fecha, '%Y-%m-%d') as fecha , c.hora, IFNULL(cf.fecharetiro, '${fecha}') as fechafin ,IFNULL(cf.horaretiro, '${horafinal}')  as horafin, c.nMedia, c.nAlta,c.idcombate
-            FROM(
-                SELECT *
-                FROM combatesbrigada as c2, (
-                    select COUNT(f.n_brigada) as nMedia, f.id as idcombate, f.nombre
-                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
-                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=1
-                    ) as f
-                    group by f.nombre, f.n_brigada, f.id
-                ) as d, (
-                    select COUNT(f.n_brigada) as nAlta, f.id as idcombate2,f.nombre as nombre2
-                    from (select distinct(br.rut), b.nombre, b.n_brigada, co.id, h.fatiga
-                    from brigadistas as br, brigada as b, combatesbrigada as co, historialfatiga as h
-                    where br.nombre_brigada=b.nombre AND br.n_brigada=b.n_brigada AND b.nombre=co.nombre_brigada AND b.n_brigada=co.n_brigada AND br.rut = h.rut AND co.id = h.idcombate AND h.fatiga=2
-                    ) as f
-                    group by f.nombre, f.n_brigada, f.id
-                ) as d2
-               WHERE  c2.id=d.idcombate AND c2.id = d2.idcombate2 AND d.idcombate =d2.idcombate2
-               and c2.nombre_brigada=d.nombre and c2.nombre_brigada=d2.nombre2 and d.nombre=d2.nombre2
-    
-            ) as c
-            LEFT JOIN combatesbrigadafin as cf
-            ON c.id = cf.id and c.nombre_brigada=cf.nombre_brigada and c.n_brigada=cf.n_brigada and c.fecha=cf.fecha and c.hora=cf.hora
-        ) as tabla
-    right JOIN (select * from combatesbrigada as cb2 ) as cb
-    ON  tabla.id = cb.id  and tabla.nombre_brigada=cb.nombre_brigada and tabla.n_brigada=cb.n_brigada `
-    con.query(select_query, (err, result) => {
-        if(err){
-            return res.send(err);
-        }else{
-            console.log(result);
-
-            return res.json({
-                data: result
-            });
-        }
-    });
-
-});
-
-app.get('/combFin', (req, res) => {
-
-
-    const select_query=`
-            SELECT n_brigada, nombre_brigada, id, DATE_FORMAT(cb.fecha, '%Y-%m-%d') as fecha, hora, DATE_FORMAT(fecharetiro, '%Y-%m-%d') as fechafin, horaretiro as horafin
-        FROM combatesbrigadafin as cb`
-    console.log(select_query);
-    con.query(select_query, (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-
-
-
-
-app.get('/existe', bodyParser.json(), (req, res) => {
-    var nombre = req.param('nombre');
-    var n_brigada = req.param('n_brigada');
-
-    console.log(nombre);
-    console.log(n_brigada);
-
-    const get_query = `SELECT EXISTS(SELECT * FROM combatesbrigadafin WHERE nombre_brigada = ? and n_brigada=?) as cond;`
-
-    con.query(get_query, [nombre, n_brigada], (err, resultados) => {
-
+app.post('/insert/usuario/activo', bodyParser.json(), (req, res, next) => {
+    const INSERT_TIPO_QUERY = `INSERT INTO usuario (nombre, apellidoP, apellidoM, rut, cargo, correo, password, estado)  VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}', SHA('${req.body.password}'), 'Activo')`;
+    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
         if(err) {
-            
+            res.status(500).send('Error al añadir solicitud de registro de usuario.');
+        } else {
+            res.json(res.body)
+        }
+    })
+});
+
+app.post('/update/usuario/set/estado/activo', bodyParser.json(), (req, res, next) => {  
+  con.query(`UPDATE usuario SET estado = 'Activo' WHERE rut='${req.body.rut}';`, (err, resultados) => {
+    if(err) {
+      res.status(500).send('Error al añadir solicitud de registro de usuario.');
+
+    } else {
+      res.json(res.body)      
+    }
+  })
+});
+
+app.put('/update/usuario/set/password/:id', bodyParser.json(), (req, res, next) => {
+    var id=req.params.id;
+    const upd_query = `UPDATE usuario SET password=SHA('${req.body.pass}') WHERE rut ='${id}';`
+    con.query(upd_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
+
+app.put('/update/usuario/set/cargo/:id',  bodyParser.json(), (req, res, next) => {
+    var id=req.params.id;
+    const upd_query = `UPDATE usuario SET cargo='${req.body.cargo}' WHERE rut ='${id}';`
+    con.query(upd_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
+
+app.delete('/delete/usuario/:id',(req, res) => {
+    const del_query = `DELETE FROM usuario WHERE rut='${req.params.id}';`
+    con.query(del_query, (err, resultados) => {
+        if(err) {
             return res.send(err)
         } else {
-            console.log(resultados);
+            res.json(res.body)
+        }
+    })
+});
+
+
+/*****************************************************
+                    BRIGADAS
+*****************************************************/
+
+app.post('/insert/brigada', bodyParser.json(), (req, res, next) => {
+    const INSERT_TIPO_QUERY = `INSERT INTO brigada(n_brigada, rut_jefe, nombre, region) VALUES(${req.body.n_brigada},'${req.body.rut}','${req.body.nombre}', '${req.body.region}');`
+    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
+        if(err) {
+            res.status(500).send('Error al añadir nueva brigada');            
+        } else {
+            res.json(res.body)
+        }
+    })
+})
+
+app.get('/select/count/brigada', (req, res) => {
+    const select_query=`SELECT COUNT(brigada.n_brigada) AS numero FROM brigada,combate_brigada WHERE brigada.n_brigada=combate_brigada.n_brigada AND combate_brigada.estado=1 AND brigada.nombre=combate_brigada.nombre_brigada;`
+    con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+            })
+     }
+    });
+});
+
+app.get('/select/brigada', (req, res) => {
+    const select_query=`SELECT b.nombre as nombre, c.estado as estado, c.n_brigada as n_brigada, b.rut_jefe as rut_jefe, c.id as id 
+    FROM combate_brigada as c, brigada as b 
+    WHERE estado=1 and c.n_brigada=b.n_brigada AND c.nombre_brigada=b.nombre;`
+    con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+            })
+     }
+    });
+});
+
+app.get('/select/brigadas/usuario', (req, res) => {
+  const select_query=`SELECT b.n_brigada, b.rut_jefe, u.nombre, u.apellidoP, u.apellidoM, b.nombre as nombre_brigada 
+  FROM brigada as b, usuario as u 
+  WHERE b.rut_jefe = u.rut ORDER BY n_brigada;`
+  con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
             return res.json({
 
-                data: resultados
+                data: result
 
             })
+     }
+    });
+});
+
+app.delete('/delete/brigada',(req, res) => {
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre');
+    const del_query = `DELETE FROM brigada WHERE n_brigada=? AND nombre = ?;`
+    con.query(del_query,[id,id2], (err, resultados) => {
+
+        if(err) {
+            return res.send(err)
+        } else {
+            res.json(res.body)
+
+        }
+    })
+});
+
+app.get('/select/brigada/:id', (req, res) => {
+  const select_query=`SELECT b.n_brigada, b.rut_jefe, u.nombre, u.apellidoP, u.apellidoM, b.nombre as nombre_brigada 
+  FROM brigada as b, usuario as u 
+  WHERE b.rut_jefe = u.rut AND b.rut_jefe = '${req.params.id}' ORDER BY n_brigada;`
+  con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/select/brigada/max/nombre', (req, res) => {
+    const select_query=`SELECT max(n_brigada) AS max, nombre  FROM brigada GROUP BY(nombre);`
+    con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+            })
+     }
+    });
+});
+
+app.get('/select/distinct/brigada/nombre',(req, res) => {
+    const select_query=`SELECT DISTINCT nombre, region FROM brigada ORDER BY nombre ASC;`
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+             return res.json({
+                data: result
+            });
+        }
+    });
+});
+
+app.get('/select/brigada/numero:id', (req, res) => {
+    var id=req.params.id;
+    const select_query=`SELECT n_brigada FROM brigada where nombre = '${id}' ORDER BY n_brigada ASC;`
+    con.query(select_query, id, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+            })
+     }
+    });
+});
+
+app.get('/select/jefebrigada', (req, res) => {
+    var id=req.param("n_brigada");
+    var id2=req.param("nombre");
+    const select_query=`
+    SELECT * 
+    FROM brigada as b, usuario as u
+    WHERE b.n_brigada=${id} AND b.nombre = '${id2}' AND b.rut_jefe = u.rut;`
+    con.query(select_query, [id,id2], (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/select/brigadajefe:id', (req, res) => {
+    var id=req.params.id;
+    const select_query=`SELECT nombre, n_brigada FROM brigada WHERE rut_jefe=?;`
+    con.query(select_query,id, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+            })
+     }
+    });
+});
+
+
+app.get('/select/brigadainactiva:id', (req, res) => {
+    var id=req.params.id;
+    const select_query=`SELECT *
+    FROM brigada as b 
+    WHERE b.rut_jefe = '${id}' AND CONCAT(b.nombre,"-",b.n_brigada) NOT IN ( 
+        SELECT CONCAT(cb.nombre_brigada,"-",cb.n_brigada) 
+        FROM combate_brigada as cb 
+        WHERE estado = 1)`
+    con.query(select_query,(err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+            })
+     }
+    });
+});
+
+app.put('/update/brigada/set/jefe', bodyParser.json(), (req, res, next) => {
+    var id=req.param('n_brigada');
+    var id2= req.param('nombre');
+    const upd_query = `UPDATE brigada SET rut_jefe='${req.body.rut}' WHERE n_brigada =? AND nombre = ?;`
+    con.query(upd_query,[id,id2], (err, resultados) => {
+
+        if(err) {
+            return res.send(err)
+        } else {
+            res.json(res.body)
 
         }
     })
 })
 
 
-app.delete('/delBrigada',(req, res) => {
+
+/*****************************************************
+                    FATIGA
+*****************************************************/
+
+app.post('/insert/fatiga', bodyParser.json(), (req, res, next) => {
     var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-    const del_query = `DELETE FROM Brigada WHERE n_brigada=? AND nombre = ?;`
-    con.query(del_query,[id,id2], (err, resultados) => {
+    var id2 = req.param('nombre_brigada');
+    const combate_brig = `SELECT id, DATE_FORMAT(fecha, '%Y-%m-%d') as fecha, hora
+                        FROM combate_brigada
+                        ORDER by id DESC LIMIT 1;`
+    con.query(combate_brig, (err, resultados) => {
+        if(err) {
+            res.status(500).send('Error al añadir nuevo brigadista');    
+        } else {
+            var idrelacion = 0;
+            var fecha, hora;
+            idrelacion = resultados[0].id;
+            fecha = resultados[0].fecha;
+            hora = resultados[0].hora
+            const select_brig = `SELECT b.rut
+                                FROM brigadista as b
+                                WHERE b.n_brigada = ${id} AND b.nombre_brigada = '${id2}';`
+            con.query(select_brig, (err, resultados2) => {
+                if(err) {
+                    res.status(500).send('Error al añadir nuevo brigadista');
+                }else {
+                    if(resultados2.length==0){
+                        return res.json(resultados2.body)
+                    }else{
+                        var arrayAux = [];
+                        arrayAux = resultados2;
+                        var tam = arrayAux.length;
+                        for(let i=0; i<tam; i++){
+                            const INSERT_TIPO_QUERY = `INSERT INTO fatiga(rut, idcombate, fatiga, fecha, hora) VALUES('${arrayAux[i].rut}', ${idrelacion}, 0, '${fecha}', '${hora}');`
+                            con.query(INSERT_TIPO_QUERY, (err3, resultados3)=>{
+                                if(err3){
+                                    return res.send(err3);
+                                }else{
+                                    res.json(res.body)
+                                    res.json(resultados3.body)
+                                }
+                            });
+                        }
+                    }
+                }
+            })
+        }
+    })
+});
+
+app.get('/select/brigada/fatiga/baja', (req, res) => {
+    const select_query=`SELECT IFNULL(a.fatigaBaja, 0) as fatigaBaja, d.nombre,d.n_brigada, d.estado, d.id
+    FROM (SELECT b.nombre, b.n_brigada , c.estado, c.id
+        FROM brigada as b, combate_brigada as c
+        WHERE b.n_brigada = c.n_brigada AND b.nombre=c.nombre_brigada AND c.estado=1
+        ) as d
+    LEFT JOIN (
+        SELECT count(b.fatigado) as fatigaBaja, b.nombre_brigada
+        FROM brigadista as b, combate_brigada as c
+        WHERE b.fatigado = 0 AND b.n_brigada=c.n_brigada AND b.nombre_brigada=c.nombre_brigada AND c.estado=1
+        group by b.nombre_brigada
+    ) as a
+    ON d.nombre =a.nombre_brigada
+    ORDER BY d.n_brigada;`
+    con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/select/brigada/fatiga/media', (req, res) => {
+    const select_query=`SELECT IFNULL(a.fatigaMedia, 0) as fatigaMedia, d.nombre,d.n_brigada, d.estado, d.id
+    FROM (SELECT b.nombre, b.n_brigada , c.estado, c.id
+        FROM brigada as b, combate_brigada as c
+        WHERE b.n_brigada = c.n_brigada AND b.nombre=c.nombre_brigada AND c.estado=1
+        ) as d
+    LEFT JOIN (
+        SELECT count(b.fatigado) as fatigaMedia, b.nombre_brigada
+        FROM brigadista as b, combate_brigada as c
+        WHERE b.fatigado = 1 AND b.n_brigada=c.n_brigada AND b.nombre_brigada=c.nombre_brigada AND c.estado=1
+        group by b.nombre_brigada
+    ) as a
+    ON d.nombre =a.nombre_brigada
+    ORDER BY d.n_brigada;`
+    con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/select/brigada/fatiga/alta', (req, res) => {
+    const select_query=`SELECT IFNULL(a.fatigaAlta, 0) as fatigaAlta, d.nombre,d.n_brigada, d.estado, d.id
+    FROM (SELECT b.nombre, b.n_brigada , c.estado, c.id
+        FROM brigada as b, combate_brigada as c
+        WHERE b.n_brigada = c.n_brigada AND b.nombre=c.nombre_brigada AND c.estado=1
+        ) as d
+    LEFT JOIN (
+        SELECT count(b.fatigado) as fatigaAlta, b.nombre_brigada
+        FROM brigadista as b, combate_brigada as c
+        WHERE b.fatigado = 2 AND b.n_brigada=c.n_brigada AND b.nombre_brigada=c.nombre_brigada AND c.estado=1
+        group by b.nombre_brigada
+    ) as a
+    ON d.nombre =a.nombre_brigada
+    ORDER BY d.n_brigada;`
+    con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.put('/update/fatigaretiro', bodyParser.json(), (req, res, next) => {
+    var id=req.param('id');
+    var nombre=req.param('nombre_brigada');
+    var numero=req.param('n_brigada');
+
+    const combate_brig = `SELECT id, DATE_FORMAT(fechafin, '%Y-%m-%d') as fechafin, horafin
+                            FROM combate_brigada
+                            WHERE estado = 0 AND idCombate = ${id}
+                            ORDER BY id DESC LIMIT 1;`
+
+    con.query(combate_brig, (err, resultados) => {
+        if(err) {
+            res.status(500).send('Error al añadir nuevo brigadista');    
+        } else {
+            var idrelacion = 0;
+            var fecha, hora;
+            idrelacion = resultados[0].id;
+            fecha_fin = resultados[0].fechafin;
+            hora_fin = resultados[0].horafin;
+            const select_brig = `SELECT b.rut, b.fatigado as fatiga
+                                FROM brigadista as b
+                                WHERE b.n_brigada = ${numero} AND b.nombre_brigada = '${nombre}';`
+            con.query(select_brig, (err, resultados2) => {
+                if(err) {
+                    res.status(500).send('Error al añadir nuevo brigadista');
+                }else {
+                    if(resultados2.length==0){
+                        return res.json(resultados2.body)
+                    }else{
+                        var arrayAux = [];
+                        arrayAux = resultados2;
+                        var tam = arrayAux.length;
+                        for(let i=0; i<tam; i++){
+                            const UPDATE_QUERY = `
+                            UPDATE fatiga 
+                            SET fatiga.horafin =  '${hora_fin}', fatiga.fechafin = '${fecha_fin}', fatiga.fatiga = ${arrayAux[i].fatiga}
+                            WHERE fatiga.idcombate = ${idrelacion} AND fatiga.rut = '${arrayAux[i].rut}';`
+                            con.query(UPDATE_QUERY, (err3, resultados3)=>{
+                                if(err3){
+                                    return res.send(err3);
+                                }else{
+                                    res.json(res.body)
+                                    res.json(resultados3.body)
+                                }
+                            });
+                        }
+                    }
+                }
+            })
+        }
+    })
+})
+
+app.put('/update/fatigaretiro/todo', bodyParser.json(), (req, res, next) => {
+    var id=req.param('id');
+    var nombre=req.param('nombre_brigada');
+    var numero=req.param('n_brigada');
+
+    const combate_brig = `SELECT id, DATE_FORMAT(fechafin, '%Y-%m-%d') as fechafin, horafin
+                            FROM combate_brigada
+                            WHERE estado = 0 AND idCombate = ${id}
+                            ORDER BY id DESC LIMIT 1;`
+
+    con.query(combate_brig, (err, resultados) => {
+        if(err) {
+            res.status(500).send('Error al añadir nuevo brigadista');    
+        } else {
+            var idrelacion = 0;
+            var fecha, hora;
+            idrelacion = resultados[0].id;
+            fecha_fin = resultados[0].fechafin;
+            hora_fin = resultados[0].horafin;
+            const select_brig = `SELECT b.rut, b.fatigado as fatiga
+                                FROM brigadista as b
+                                WHERE b.n_brigada = ${numero} AND b.nombre_brigada = '${nombre}';`
+            con.query(select_brig, (err, resultados2) => {
+                if(err) {
+                    res.status(500).send('Error al añadir nuevo brigadista');
+                }else {
+                    if(resultados2.length==0){
+                        return res.json(resultados2.body)
+                    }else{
+                        var arrayAux = [];
+                        arrayAux = resultados2;
+                        var tam = arrayAux.length;
+                        for(let i=0; i<tam; i++){
+                            const UPDATE_QUERY = `
+                            UPDATE fatiga 
+                            SET fatiga.horafin =  '${hora_fin}', fatiga.fechafin = '${fecha_fin}', fatiga.fatiga = ${arrayAux[i].fatiga}
+                            WHERE fatiga.idcombate = ${idrelacion} AND fatiga.rut = '${arrayAux[i].rut}';`
+                            con.query(UPDATE_QUERY, (err3, resultados3)=>{
+                                if(err3){
+                                    return res.send(err3);
+                                }else{
+                                    res.json(res.body)
+                                    res.json(resultados3.body)
+                                }
+                            });
+                        }
+                    }
+                }
+            })
+        }
+    })
+})
+
+app.put('/update/fatiga', bodyParser.json(), (req, res, next) => {
+    var id=req.param('id');
+    const combate_brig = `SELECT id, n_brigada, nombre_brigada
+                            FROM combate_brigada
+                            WHERE idCombate = ${id}
+                            ORDER BY id DESC;`
+
+    con.query(combate_brig, (err, resultados) => {
+        if(err) {
+            res.status(500).send('Error al añadir nuevo brigadista');    
+        } else {
+            var idrelacion = 0;
+            var numero, nombre;
+            idrelacion = resultados[0].id;
+            numero = resultados[0].n_brigada;
+            nombre = resultados[0].nombre_brigada;
+            const select_brig = `SELECT b.rut, b.fatigado as fatiga
+                                FROM brigadista as b
+                                WHERE b.n_brigada = ${numero} AND b.nombre_brigada = '${nombre}';`
+            con.query(select_brig, (err, resultados2) => {
+                if(err) {
+                    res.status(500).send('Error al añadir nuevo brigadista');
+                }else {
+                    if(resultados2.length==0){
+                        return res.json(resultados2.body)
+                    }else{
+                        var arrayAux = [];
+                        arrayAux = resultados2;
+                        var tam = arrayAux.length;
+                        for(let i=0; i<tam; i++){
+                            const UPDATE_QUERY = `
+                            UPDATE fatiga 
+                            SET fatiga.fatiga = ${arrayAux[i].fatiga}
+                            WHERE fatiga.idcombate = ${idrelacion} AND fatiga.rut = '${arrayAux[i].rut}';`
+                            con.query(UPDATE_QUERY, (err3, resultados3)=>{
+                                if(err3){
+                                    return res.send(err3);
+                                }else{
+                                    res.json(res.body)
+                                    res.json(resultados3.body)
+                                }
+                            });
+                        }
+                    }
+                }
+            })
+        }
+    })
+})
+
+
+/*****************************************************
+                    BRIGADISTAS
+*****************************************************/
+
+app.get('/brigadistas', (req, res) => {
+    var id=req.param("n_brigada");
+    var id2=req.param("nombre");
+    const select_query=`
+    SELECT *, DATE_FORMAT(f_nacimiento, '%d/%m/%Y') as f_nacimiento
+    FROM brigadista as b
+    WHERE b.n_brigada=${id} AND b.nombre_brigada='${id2}'`
+    con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+        }
+    });
+});
+
+app.get('/select/brigadistas/gps', (req, res) => {
+    var n_brig=req.param("n_brigada");
+    var nombre_brig=req.param("nombre");
+    const select_query=`
+    SELECT b.rut, b.nombre, b.apellidoP, b.apellidoM,  b.fatigado, d.LAT as latitud, d.LNG as longitud, DATE_FORMAT(d.fecha_reg, '%Y-%m-%d') as fecha, DATE_FORMAT(d.fecha_reg, '%H:%i') as hora
+    FROM brigadista as b LEFT JOIN reg_fire as d ON d.ID_OP=b.pulsera
+        INNER JOIN (SELECT d.ID_OP as pulsera, MAX(TIMESTAMP(d.fecha_reg)) as ul_fecha
+                    FROM brigadista as b LEFT JOIN reg_fire as d ON d.ID_OP=b.pulsera
+                    GROUP BY(b.rut)) AS ul_reg ON ul_reg.pulsera=b.pulsera AND ul_reg.ul_fecha=TIMESTAMP(d.fecha_reg)
+    WHERE b.n_brigada=${n_brig} AND b.nombre_brigada='${nombre_brig}';`
+    con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+            })
+     }
+    });
+});
+
+app.get('/brigadista', (req, res) => {
+    var id=req.param("n_brigada");
+    var id2=req.param("nombre");
+    const select_query=`
+    SELECT *, DATE_FORMAT(f_nacimiento, '%d/%m/%Y') as f_nacimiento
+    FROM brigadista as b
+    WHERE b.n_brigada=${id} AND b.nombre_brigada='${id2}'`
+    con.query(select_query, [id,id2], (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/brigadista/brigada/:id', (req, res) => {
+    var id=req.params.id;
+    const select_query=`
+    SELECT cb.estado as estado, DATE_FORMAT(cb.fecha, "%d-%m-%Y") as ini_combate, DATE_FORMAT(cb.hora, "%H:%i:%s") as ini_hora_combate,
+        DATE_FORMAT(cb.fechafin, "%d-%m-%Y") as fin_combate, DATE_FORMAT(cb.horafin, "%H:%i:%s") as fin_hora_combate,
+        CONCAT(bg.nombre, " ", bg.apellidoP," ", bg.apellidoM) as brigadista, bg.rut as rut, bg.cargo as cargo, bg.pulsera as pulsera,
+        bg.correo as correo, f.fatiga as fatiga
+    FROM combate_brigada as cb, brigadista as bg, fatiga as f 
+    WHERE cb.n_brigada = bg.n_brigada AND cb.nombre_brigada = bg.nombre_brigada AND bg.rut = f.rut AND cb.id = f.idcombate AND cb.id = ${id}`
+    con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/count/brigadista', bodyParser.json(), (req, res, next) => {
+    var nombre = req.param('nombre');
+    var numero = req.param('numero');
+    const select_query=`
+    SELECT count(*) as cantidad
+    FROM brigadista as b, brigada as bg
+    WHERE bg.n_brigada=b.n_brigada AND bg.nombre = b.nombre_brigada AND b.n_brigada=${numero} AND b.nombre_brigada='${nombre}'`
+    con.query(select_query, (err, result) => {
+
+        if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+        }
+    });
+});
+
+
+app.post('/insert/brigadista', bodyParser.json(), (req, res, next) => {
+    var id=req.param('n_brigada');
+    var id2 = req.param('nombre_brigada');
+    const INSERT_TIPO_QUERY = `
+    INSERT INTO brigadista(rut, correo, nombre, apellidoP, apellidoM, f_nacimiento, n_brigada, cargo, peso, altura, fatigado, pulsera, nombre_brigada) 
+    VALUES('${req.body.rut}','${req.body.correo}','${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.f_nacimiento}',${id},'${req.body.cargo}',${req.body.peso},${req.body.altura},'0','${req.body.pulsera}','${id2}');`
+    con.query(INSERT_TIPO_QUERY,[id,id2], (err, resultados) => {
+        if(err) {
+            res.status(500).send('Error al añadir nuevo brigadista');
+            
+        } else {
+            res.json(res.body)
+
+        }
+    })
+})
+
+app.get('/select/brigadista/data/last/:rut', (req, res) => {
+    var rut=req.params.rut;
+    const select_query=`
+    SELECT  b.rut, b.nombre, b.apellidoP, b.apellidoM, d.ID_OP, d.id_reg, TIMESTAMPDIFF(YEAR,b.f_nacimiento,CURDATE()) AS edad, 
+    d.T_ex as t_ambiental, d.T_in as t_corporal, d.Pul as pulsaciones, d.OD as saturacion, d.LAT as latitud, d.LNG as longitud, d.ELE as altitud,  b.fatigado
+    FROM
+        (SELECT id, fecha
+        FROM combate_brigada as cb, brigadista as b
+        WHERE b.rut = '${rut}' AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
+        ORDER BY cb.fecha DESC , cb.hora DESC
+        LIMIT 1) as c, (SELECT max(fecha_reg) as fecha, ID_OP
+        FROM reg_fire group by ID_OP) as x, brigadista as b, reg_fire as d
+        WHERE b.rut='${rut}' AND b.pulsera=d.ID_OP AND x.ID_OP=d.ID_OP AND d.fecha_reg=x.fecha 
+        ORDER BY d.fecha_reg DESC LIMIT 1`
+   
+    con.query(select_query,[rut,rut], (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            
+            return res.json({
+
+                data: result
+
+            })
+
+     }
+    });
+});
+
+app.get('/select/brigadista/gps/last/:rut', (req, res) => {
+    var rut=req.params.rut;
+    const select_query=`
+    SELECT b.rut, b.fatigado, d.ID_OP, d.id_reg as id, d.LAT as latitud, d.LNG as longitud, DATE_FORMAT(d.fecha_reg, '%Y-%m-%d') as fecha, DATE_FORMAT(d.fecha_reg, '%H:%i') as hora
+    FROM
+        (SELECT id, fecha
+        FROM combate_brigada as cb, brigadista as b
+        WHERE b.rut = '${rut}' AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
+        ORDER BY cb.fecha DESC , cb.hora DESC
+        LIMIT 1) as c,  (SELECT DATE_FORMAT(max(fecha_reg), '%Y-%m-%d') as fecha, ID_OP FROM reg_fire GROUP BY ID_OP) as x, reg_fire as d, brigadista as b
+    
+    WHERE
+         b.rut='${rut}' AND b.pulsera=d.ID_OP AND x.ID_OP=d.ID_OP AND  DATE_FORMAT(d.fecha_reg, '%Y-%m-%d') = x.fecha AND c.fecha = DATE_FORMAT(d.fecha_reg, '%Y-%m-%d')
+     
+      ORDER BY d.fecha_reg DESC LIMIT 20`
+    
+    con.query(select_query, (err, result) => {
+
+     if (err){
+           return res.send(err)
+        }else{
+
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.delete('/delete/brigadista/:id',(req, res) => {
+    var id=req.params.id;
+    const del_query = `DELETE FROM brigadista WHERE rut='${id}';`
+    con.query(del_query, (err, resultados) => {
 
         if(err) {
             return res.send(err)
@@ -1789,9 +906,363 @@ app.delete('/delBrigada',(req, res) => {
 
 
 
+/*****************************************************
+                    COMBATE - BRIGADA
+*****************************************************/
+
+app.get('/select/combate/brigada/brigadista/:rut', (req, res) => {
+    var rut=req.params.rut;
+    const select_query=`
+    SELECT cb.n_brigada, cb.nombre_brigada, cb.id, cb.estado, DATE_FORMAT(cb.fecha, '%Y-%m-%d') as fecha, cb.hora
+    FROM combate_brigada as cb,
+        (
+            SELECT n_brigada, nombre_brigada
+            FROM brigadista
+            where rut = '${rut}'
+        ) as aux
+    where aux.n_brigada = cb.n_brigada and aux.nombre_brigada = cb.nombre_brigada and estado = 1;`
+    con.query(select_query, (err, result) => {
+    if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+            })
+        }
+    });
+});
+
+app.get('/select/data/:rut', (req, res) => {
+    var rut=req.params.rut;
+    const select_query=`SELECT b.rut,d.ID_OP, d.id_reg as id, d.Pul as pulsaciones, d.T_in as t_corporal, d.T_ex as t_ambiental, d.OD as saturacion, DATE_FORMAT(d.fecha_reg, '%Y-%m-%d') as fecha, DATE_FORMAT(d.fecha_reg, '%H:%i') as hora
+    FROM
+        (SELECT id, fecha
+        FROM combate_brigada as cb, brigadista as b
+        WHERE b.rut = '${rut}' AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
+        ORDER BY cb.fecha DESC , cb.hora DESC
+        LIMIT 1) as c,  (SELECT DATE_FORMAT(max(fecha_reg), '%Y-%m-%d') as fecha, ID_OP FROM reg_fire GROUP BY ID_OP) as x, reg_fire as d, brigadista as b
+    
+    WHERE
+         b.rut='${rut}' AND b.pulsera=d.ID_OP AND x.ID_OP=d.ID_OP AND  DATE_FORMAT(d.fecha_reg, '%Y-%m-%d') = x.fecha AND c.fecha = DATE_FORMAT(d.fecha_reg, '%Y-%m-%d')
+      ORDER BY d.fecha_reg DESC LIMIT 20`
+    
+    con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+
+     }
+    });
+});
+
+app.get('/select/data/last/:rut', (req, res) => {
+    var rut=req.params.rut;
+    const select_query=`SELECT b.rut,d.ID_OP, d.id_reg as id, d.Pul as pulsaciones, d.T_in as t_corporal, d.T_ex as t_ambiental, d.OD as saturacion, DATE_FORMAT(d.fecha_reg, '%Y-%m-%d') as fecha, DATE_FORMAT(d.fecha_reg, '%H:%i') as hora
+    FROM
+        (SELECT id, fecha
+        FROM combate_brigada as cb, brigadista as b
+        WHERE b.rut = '${rut}' AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
+        ORDER BY cb.fecha DESC , cb.hora DESC
+        LIMIT 1) as c,  (SELECT DATE_FORMAT(max(fecha_reg), '%Y-%m-%d') as fecha, ID_OP FROM reg_fire GROUP BY ID_OP) as x, reg_fire as d, brigadista as b  
+    WHERE
+         b.rut='${rut}' AND b.pulsera=d.ID_OP AND x.ID_OP=d.ID_OP AND  DATE_FORMAT(d.fecha_reg, '%Y-%m-%d') = x.fecha AND c.fecha = DATE_FORMAT(d.fecha_reg, '%Y-%m-%d')
+      ORDER BY d.fecha_reg DESC LIMIT 1`
+    
+    con.query(select_query, (err, result) => {
+
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+        })
+     }
+    });
+});
+
+app.get('/select/combatebrigada/activa/:id', (req, res) => {
+    var idCombate=req.params.id;
+    const select_query=`SELECT n_brigada, nombre_brigada
+    FROM combate_brigada
+    WHERE estado = 1 AND idCombate = ${idCombate};`
+    con.query(select_query, (err, result) => {
+
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+
+     }
+    });
+});
+
+app.post('/insert/combate/brigada', bodyParser.json(), (req, res, next) => {
+    var n_brigada = req.body.n_brigada.numero
+    var nombre = req.body.n_brigada.nombre
+    var id = req.body.id
+
+    let date = new Date()
+    let hours = date.getHours()
+    let min = date.getMinutes()
+    let sec = date.getSeconds()
+    let day = date.getDate()
+    let month = date.getMonth() + 1
+    let year = date.getFullYear()
+    let fecha;
+    if(month < 10){
+         fecha=`${year}-0${month}-${day}`;
+    }else{
+        fecha=`${year}-${month}-${day}`;
+    }
+
+    let hora = `${hours}:${min}:${sec}`;
+    con.query( `INSERT INTO combate_brigada(idCombate, n_brigada, nombre_brigada, estado, fecha, hora) 
+        VALUES (${id}, ${n_brigada},'${nombre}',1,'${fecha}','${hora}');`, (err, resultados) => {
+    if(err) {
+        res.status(500).send('La brigada seleccionada ya posee un combate activo');
+    }else {
+        res.json(res.body)
+    }
+    })  
+})
+
+app.put('/update/combate/brigada/retiro', bodyParser.json(), (req, res, next)=> {
+    var n_brigada = req.body.n_brigada
+    var nombre = req.body.nombre_brigada
+    var id = req.body.id
+    let date = new Date()
+    let hours = date.getHours()
+    let min = date.getMinutes()
+    let sec = date.getSeconds()
+    let day = date.getDate()
+    let month = date.getMonth() + 1
+    let year = date.getFullYear()
+    let fecha;
+    if(month < 10){
+         fecha=`${year}-0${month}-${day}`;
+    }else{
+        fecha=`${year}-${month}-${day}`;
+    }
+
+    const del_query = `
+    UPDATE combate_brigada 
+    SET estado=0, combate_brigada.horafin = '${hours}:${min}:${sec}', combate_brigada.fechafin = '${fecha}'
+    WHERE n_brigada=? AND idCombate=? AND estado=1 AND nombre_brigada=?;`
+    con.query(del_query,[n_brigada,id,nombre], (err, resultados) => {
+        if(err) {
+            return res.send(err)
+        } else {
+            res.json(res.body)
+
+        }
+
+    })
+});
+
+app.put('/update/combatebrigada/unir', bodyParser.json(), (req, res, next) => {    
+    var n_brigada=req.body.n_brigada
+    var nombre= req.body.nombre_brigada;
+    var id= req.body.id;
+
+    let date = new Date()
+    let hours = date.getHours()
+    let min = date.getMinutes()
+    let sec = date.getSeconds()
+    let day = date.getDate()
+    let month = date.getMonth() + 1
+    let year = date.getFullYear()
+    let fecha;
+    if(month < 10){
+         fecha=`${year}-0${month}-${day}`;
+    }else{
+        fecha=`${year}-${month}-${day}`;
+    }
+    const UPDATE_TIPO_QUERY = `
+    UPDATE combate_brigada 
+    SET combate_brigada.estado=1, combate_brigada.fecha='${fecha}', combate_brigada.hora='${hours}:${min}:${sec}', combate_brigada.fecharetiro = NULL, combate_brigada.horaretiro = NULL
+    WHERE n_brigada= '${n_brigada}' AND idCombate='${id}'AND nombre_brigada='${nombre}';`
+    con.query( UPDATE_TIPO_QUERY, (err, resultados) => {
+
+        if(err) {
+            res.status(500).send('La brigada seleccionada ya posee un combate activo');
+        }else {
+            res.json(res.body)
+        }
+    })  
+});
+
+app.put('/update/combatebrigada/fatiga', bodyParser.json(), (req, res, next) => {    
+    var n_brigada=req.body.n_brigada
+    var nombre= req.body.nombre_brigada;
+    var id= req.body.id;
+
+    let date = new Date()
+    let hours = date.getHours()
+    let min = date.getMinutes()
+    let sec = date.getSeconds()
+    let day = date.getDate()
+    let month = date.getMonth() + 1
+    let year = date.getFullYear()
+    let fecha;
+    if(month < 10){
+         fecha=`${year}-0${month}-${day}`;
+    }else{
+        fecha=`${year}-${month}-${day}`;
+    }
+    const UPDATE_TIPO_QUERY = `
+    UPDATE fatiga 
+    SET hora = '${fecha}', fecha = '${hours}:${min}:${sec}', fatiga = 0
+    WHERE n_brigada= '${n_brigada}' AND id='${id}'AND nombre_brigada='${nombre}';`
+    con.query( UPDATE_TIPO_QUERY, (err, resultados) => {
+
+        if(err) {
+            res.status(500).send('La brigada seleccionada ya posee un combate activo');
+        }else {
+            res.json(res.body)
+        }
+    })  
+});
 
 
-app.put('/modCombate/:id', bodyParser.json(), (req, res, next) => {
+/*****************************************************
+                    COMBATE 
+*****************************************************/
+
+app.post('/insert/combate', bodyParser.json(), (req, res, next) => {
+    const INSERT_TIPO_QUERY = `INSERT INTO combate(hito,estado,fecha,hora) 
+     VALUES('${req.body.hito}','1','${req.body.fecha}','${req.body.hora}');`
+    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
+
+        if(err) {
+            res.status(500).send('Error al añadir nuevo combate');
+           
+        } else {
+            res.json(res.body)
+
+        }
+    })
+})
+
+app.get('/combates', (req, res) => {
+    const select_query=`SELECT *,DATE_FORMAT(fecha, '%d/%m/%y') as fecha FROM combate ORDER BY id DESC;`
+    con.query(select_query, (err, result) => {
+    if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/combate/activo',(req, res) => {
+    const select_query=`SELECT *, DATE_FORMAT(fecha, '%Y-%m-%d') as fecha FROM combate WHERE estado=1;`
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
+        }
+    });
+});
+
+
+app.get('/combates/activos', (req, res) => {
+    const select_query=`SELECT *,DATE_FORMAT(fecha, '%d/%m/%y') as fecha FROM combate WHERE estado=1 ORDER BY id DESC;`
+    con.query(select_query, (err, result) => {
+    if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.get('/combate/brigada:id', (req, res) => {
+    var id=req.params.id;
+    const select_query=`
+        SELECT nombre_brigada, n_brigada, id, DATE_FORMAT(fecha, '%d/%m/%y') as fecha, DATE_FORMAT(hora, '%H:%i') as hora, estado 
+        FROM combate_brigada
+        where idCombate = ?;`
+    con.query(select_query,id, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+
+            })
+     }
+    });
+});
+
+app.put('/combate/fin/:id',(req, res) => {
+    var id=req.params.id;
+
+    let date = new Date()
+    let hours = date.getHours()
+    let min = date.getMinutes()
+    let sec = date.getSeconds()
+    let day = date.getDate()
+    let month = date.getMonth() + 1
+    let year = date.getFullYear()
+    let fecha;
+    if(month < 10){
+         fecha=`${year}-0${month}-${day}`;
+    }else{
+        fecha=`${year}-${month}-${day}`;
+    }
+
+    const del_query = `UPDATE combate 
+    SET estado = 0, horafin='${hours}:${min}:${sec}', fechafin = '${fecha}'
+    WHERE id=?;`
+    con.query(del_query,id, (err, resultados) => {
+
+        if(err) {
+            return res.send(err)
+        } else {
+            res.json(res.body);            
+        }
+    })
+});
+
+app.get('/select/combate/hito/:id', (req, res) => {
+    var id=req.params.id;
+    const select_query=`SELECT hito FROM combate WHERE id=?; `
+    con.query(select_query,id, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+
+                data: result
+
+            })
+     }
+    });
+});
+
+app.put('/update/combate/:id', bodyParser.json(), (req, res, next) => {
     var id=req.params.id;
     const upd_query = `UPDATE combate SET hito='${req.body.hito}' WHERE id =?;`
     con.query(upd_query,id, (err, resultados) => {
@@ -1805,378 +1276,311 @@ app.put('/modCombate/:id', bodyParser.json(), (req, res, next) => {
     })
 })
 
-app.post('/addUsuario', bodyParser.json(), (req, res, next) => {
-    const INSERT_TIPO_QUERY = `INSERT INTO espera (nombre, apellidoP, apellidoM, rut, cargo, correo, pass) VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}', AES_ENCRYPT ('${req.body.pass}','encriptado'))`;
-    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
-
-    if(err) {
-        res.status(500).send('Error al añadir solicitud de registro de usuario.');
-        console.log(err); 
-    } else {
-        res.json(res.body)
-
-    }
-})
+app.get('/combates/todosactivos',(req, res) => {
+    const select_query=`
+    SELECT DISTINCT c.id as combate,  c.hito as hito, c.estado as estado_combate, c.estado as estado,
+        DATE_FORMAT(c.fecha, "%d-%m-%Y") as ini_combate, DATE_FORMAT(c.hora, "%H:%i:%s") as ini_hora_combate, 
+        DATE_FORMAT(c.fechafin, "%d-%m-%Y") as fin_combate, DATE_FORMAT(c.horafin, "%H:%i:%s") as fin_hora_combate
+    FROM combate as c LEFT JOIN combate_brigada as cb ON c.id = cb.idCombate, combate_brigada LEFT JOIN fatiga AS f ON combate_brigada.id = f.idcombate
+    WHERE c.estado = 1
+    GROUP BY c.id, cb.id, cb.n_brigada, cb.nombre_brigada`
+    
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
+        }
+    });
 });
 
-app.post('/addPersonal', bodyParser.json(), (req, res, next) => {
-    console.log("legueeeeee")
-    const INSERT_TIPO_QUERY = `INSERT INTO usuarios (nombre, apellidoP, apellidoM, rut, cargo, correo, pass)  VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}', AES_ENCRYPT ('${req.body.pass}','encriptado'))`;
-    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
+app.get('/combates/mes',(req, res) => {
+    const select_query=`
+    SELECT DISTINCT c.id as combate,  c.hito as hito, c.estado as estado_combate, c.estado as estado,
+        DATE_FORMAT(c.fecha, "%d-%m-%Y") as ini_combate, DATE_FORMAT(c.hora, "%H:%i:%s") as ini_hora_combate, 
+        DATE_FORMAT(c.fechafin, "%d-%m-%Y") as fin_combate, DATE_FORMAT(c.horafin, "%H:%i:%s") as fin_hora_combate
+    FROM combate as c LEFT JOIN combate_brigada as cb ON c.id = cb.idCombate, 
+        combate_brigada LEFT JOIN fatiga AS f ON combate_brigada.id = f.idcombate
+        WHERE DATE_FORMAT(c.fecha,'%Y-%m') >=  DATE_FORMAT(now() - interval 1 month,'%Y-%m')
+    GROUP BY c.id, cb.id, cb.n_brigada, cb.nombre_brigada`
+    
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
+        }
+    });
+});
 
-    if(err) {
-        res.status(500).send('Error al añadir solicitud de registro de usuario.');
-        console.log(err); 
-    } else {
-        res.json(res.body)
+app.get('/combates/6mes',(req, res) => {
+    const select_query=`
+    SELECT DISTINCT c.id as combate,  c.hito as hito, c.estado as estado_combate, c.estado as estado,
+        DATE_FORMAT(c.fecha, "%d-%m-%Y") as ini_combate, DATE_FORMAT(c.hora, "%H:%i:%s") as ini_hora_combate, 
+        DATE_FORMAT(c.fechafin, "%d-%m-%Y") as fin_combate, DATE_FORMAT(c.horafin, "%H:%i:%s") as fin_hora_combate
+    FROM combate as c LEFT JOIN combate_brigada as cb ON c.id = cb.idCombate,
+        combate_brigada LEFT JOIN fatiga AS f ON combate_brigada.id = f.idcombate
+        WHERE DATE_FORMAT(c.fecha,'%Y-%m') >=  DATE_FORMAT(now() - interval 6 month,'%Y-%m')
+    GROUP BY c.id, cb.id, cb.n_brigada, cb.nombre_brigada`
+    
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
+        }
+    });
+});
 
-    }
-})
+app.get('/combates/anio',(req, res) => {
+    const select_query=`
+    SELECT DISTINCT c.id as combate,  c.hito as hito, c.estado as estado_combate, c.estado as estado,
+        DATE_FORMAT(c.fecha, "%d-%m-%Y") as ini_combate, DATE_FORMAT(c.hora, "%H:%i:%s") as ini_hora_combate, 
+        DATE_FORMAT(c.fechafin, "%d-%m-%Y") as fin_combate, DATE_FORMAT(c.horafin, "%H:%i:%s") as fin_hora_combate
+    FROM combate as c LEFT JOIN combate_brigada as cb ON c.id = cb.idCombate,
+        combate_brigada LEFT JOIN fatiga AS f ON combate_brigada.id = f.idcombate
+        WHERE  DATE_FORMAT(c.fecha,'%Y-%m') >=  DATE_FORMAT(now() - interval 1 year,'%Y-%m')
+        GROUP BY c.id, cb.id, cb.n_brigada, cb.nombre_brigada`
+    
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
+        }
+    });
 });
 
 
-app.post('/addEsperaPersonal', bodyParser.json(), (req, res, next) => {
-    console.log("lllllllllllllllllegueeeeee")
+app.get('/combates/todos',(req, res) => {
+    const select_query=`
+    SELECT DISTINCT c.id as combate,  c.hito as hito, c.estado as estado_combate, c.estado as estado,
+        DATE_FORMAT(c.fecha, "%d-%m-%Y") as ini_combate, DATE_FORMAT(c.hora, "%H:%i:%s") as ini_hora_combate, 
+        DATE_FORMAT(c.fechafin, "%d-%m-%Y") as fin_combate, DATE_FORMAT(c.horafin, "%H:%i:%s") as fin_hora_combate
+    FROM combate as c LEFT JOIN combate_brigada as cb ON c.id = cb.idCombate, combate_brigada LEFT JOIN fatiga AS f ON combate_brigada.id = f.idcombate
+    GROUP BY c.id, cb.id, cb.n_brigada, cb.nombre_brigada`
     
-    const INSERT_TIPO_QUERY = `INSERT INTO usuarios (nombre, apellidoP, apellidoM, rut, cargo, correo, usuario, pass)  VALUES('${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.rut}','${req.body.cargo}','${req.body.correo}','${req.body.usuario}', AES_ENCRYPT ('${req.body.pass2}','encriptado'))`;
-    console.log(INSERT_TIPO_QUERY);
-    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
-
-        if(err) {
-            res.status(500).send('Error al añadir solicitud de registro de usuario.');
-            console.log(err); 
-        } else {
-            res.json(res.body)
-
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
         }
-    })
+    });
 });
 
-app.post('/addBrigadista', bodyParser.json(), (req, res, next) => {
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre_brigada');
-    console.log(id);
-    console.log(id2)
-    const INSERT_TIPO_QUERY = `INSERT INTO brigadistas VALUES('${req.body.rut}','${req.body.correo}','${req.body.nombre}','${req.body.apellidoP}','${req.body.apellidoM}','${req.body.f_nacimiento}',?,'${req.body.cargo}',${req.body.peso},${req.body.altura},'0',${req.body.pulsera},?);`
-    con.query(INSERT_TIPO_QUERY,[id,id2], (err, resultados) => {
 
-        if(err) {
-            res.status(500).send('Error al añadir nuevo brigadista');
-                        console.log(err); 
-            
-        } else {
-            res.json(res.body)
+/**********************************************
+        COMBATE_BRIGADA
+**********************************************/
 
+app.get('/combatebrig/mes',(req, res) => {
+    const select_query=`
+    SELECT cb.id, cb.n_brigada, cb.nombre_brigada, 
+        DATE_FORMAT(cb.fecha, "%d-%m-%Y") as ini_combate, 
+        DATE_FORMAT(cb.hora, "%H:%i:%s") as ini_hora_combate, 
+        DATE_FORMAT(cb.fechafin, "%d-%m-%Y") as fin_combate, 
+        DATE_FORMAT(cb.horafin, "%H:%i:%s") as fin_hora_combate, 
+        cb.estado, cb.idCombate, c.hito
+    FROM combate_brigada as cb LEFT JOIN combate as c  ON c.id = cb.idCombate , 
+        combate_brigada LEFT JOIN fatiga AS f ON combate_brigada.id = f.idcombate
+    WHERE DATE_FORMAT(c.fecha,'%Y-%m') >=  DATE_FORMAT(now() - interval 1 month,'%Y-%m')
+    GROUP BY c.id, cb.id, cb.n_brigada, cb.nombre_brigada`
+    
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
         }
-    })
-})
+    });
+});
 
-app.post('/addBrigada', bodyParser.json(), (req, res, next) => {
-    console.log(req.body.n_brigada)
-    const INSERT_TIPO_QUERY = `INSERT INTO brigada VALUES(${req.body.n_brigada},'${req.body.rut}','${req.body.nombre}');`
-    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
-
-        if(err) {
-            console.log("entre a error")
-            res.status(500).send('Error al añadir nueva brigada');
-            
-        } else {
-            console.log(res);
-            res.json(res.body)
-
+app.get('/combatebrig/6mes',(req, res) => {
+    const select_query=`
+    SELECT cb.id, cb.n_brigada, cb.nombre_brigada, 
+        DATE_FORMAT(cb.fecha, "%d-%m-%Y") as ini_combate, 
+        DATE_FORMAT(cb.hora, "%H:%i:%s") as ini_hora_combate, 
+        DATE_FORMAT(cb.fechafin, "%d-%m-%Y") as fin_combate, 
+        DATE_FORMAT(cb.horafin, "%H:%i:%s") as fin_hora_combate, 
+        cb.estado, cb.idCombate, c.hito
+    FROM combate_brigada as cb LEFT JOIN combate as c  ON c.id = cb.idCombate,  
+        combate_brigada LEFT JOIN fatiga AS f ON combate_brigada.id = f.idcombate
+    WHERE DATE_FORMAT(c.fecha,'%Y-%m') >=  DATE_FORMAT(now() - interval 6 month,'%Y-%m')
+    GROUP BY c.id, cb.id, cb.n_brigada, cb.nombre_brigada`
+    
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
         }
-    })
-})
-app.post('/addCombate', bodyParser.json(), (req, res, next) => {
+    });
+});
+
+app.get('/combatebrig/anio',(req, res) => {
+    const select_query=`
+    SELECT cb.id, cb.n_brigada, cb.nombre_brigada, 
+        DATE_FORMAT(cb.fecha, "%d-%m-%Y") as ini_combate, 
+        DATE_FORMAT(cb.hora, "%H:%i:%s") as ini_hora_combate, 
+        DATE_FORMAT(cb.fechafin, "%d-%m-%Y") as fin_combate, 
+        DATE_FORMAT(cb.horafin, "%H:%i:%s") as fin_hora_combate, 
+        cb.estado, cb.idCombate, c.hito
+    FROM combate_brigada as cb LEFT JOIN combate as c  ON c.id = cb.idCombate, 
+        combate_brigada LEFT JOIN fatiga AS f ON combate_brigada.id = f.idcombate
+    WHERE DATE_FORMAT(c.fecha,'%Y-%m') >=  DATE_FORMAT(now() - interval 1 year,'%Y-%m')
+    GROUP BY c.id, cb.id, cb.n_brigada, cb.nombre_brigada`
     
-    const INSERT_TIPO_QUERY = `INSERT INTO combate  VALUES('${req.body.id}','${req.body.hito}','1',CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP());`
-    con.query(INSERT_TIPO_QUERY, (err, resultados) => {
-
-        if(err) {
-            res.status(500).send('Error al añadir nuevo combate');
-                        console.log(err); 
-           
-        } else {
-            res.json(res.body)
-
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
         }
-    })
-})
+    });
+});
 
-app.post('/unirseCombate', (req, res, next) => {
-    console.log("holaaaaaaaaaaaaaa")
-    var n_brigada=req.body.n_brigada
-    var nombre= req.body.nombre_brigada;
-    var id= req.body.id;
-    console.log(n_brigada)
-    console.log(nombre)
-    console.log(id)
+app.get('/combatebrig/todos',(req, res) => {
+    const select_query=`
+    SELECT cb.id, cb.n_brigada, cb.nombre_brigada, 
+        DATE_FORMAT(cb.fecha, "%d-%m-%Y") as ini_combate, 
+        DATE_FORMAT(cb.hora, "%H:%i:%s") as ini_hora_combate, 
+        DATE_FORMAT(cb.fechafin, "%d-%m-%Y") as fin_combate, 
+        DATE_FORMAT(cb.horafin, "%H:%i:%s") as fin_hora_combate, 
+        cb.estado, cb.idCombate, c.hito
+    FROM combate_brigada as cb LEFT JOIN combate as c  ON c.id = cb.idCombate,  
+        combate_brigada LEFT JOIN fatiga AS f ON combate_brigada.id = f.idcombate
+    GROUP BY c.id, cb.id, cb.n_brigada, cb.nombre_brigada`
     
-    
-    let date = new Date()
-    let hours = date.getHours()
-    let min = date.getMinutes()
-    let sec = date.getSeconds()
-    let day = date.getDate()
-    let month = date.getMonth() + 1
-    let year = date.getFullYear()
-    let fecha;
-    if(month < 10){
-         fecha=`${year}-0${month}-${day}`;
-    }else{
-        fecha=`${year}-${month}-${day}`;
-    }
-    console.log(fecha);
-    console.log(`${hours}:${min}:${sec}`)
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
+        }
+    });
+});
 
-    const UPDATE_TIPO_QUERY = `UPDATE combatesbrigada set estado=1, fecha='${fecha}', hora='${hours}:${min}:${sec}' WHERE n_brigada= '${n_brigada}' AND id='${id}'AND nombre_brigada='${nombre}';`
-    console.log(UPDATE_TIPO_QUERY)
-    con.query( UPDATE_TIPO_QUERY, (err, resultados) => {
-    if(err) {
-        res.status(500).send('La brigada seleccionada ya posee un combate activo');
-    }else {
-        console.log("holaaaaaaaaaaaaaa"+resultados)
-        res.json(res.body)
-    }
-    })  
-    
-})
-
-app.post('/unirseCombate2', bodyParser.json(), (req, res, next) => {
-    console.log("holaaaaaaaaaaaaaa")
-    console.log(req.body.n_brigada.numero)
-    console.log(req.body.n_brigada.nombre)
-    var n_brigada = req.body.n_brigada
-    var id = req.body.id
-    console.log(n_brigada+" "+id)
-    let date = new Date()
-    let hours = date.getHours()
-    let min = date.getMinutes()
-    let sec = date.getSeconds()
-    let day = date.getDate()
-    let month = date.getMonth() + 1
-    let year = date.getFullYear()
-    let fecha;
-    if(month < 10){
-         fecha=`${year}-0${month}-${day}`;
-    }else{
-        fecha=`${year}-${month}-${day}`;
-    }
-    console.log(fecha);
-    console.log(`${hours}:${min}:${sec}`)
-
-    const UPDATE_TIPO_QUERY = `INSERT into combatesbrigada values ('${req.body.n_brigada.numero}','${req.body.id}','${fecha}','${hours}:${min}:${sec}', 1,'${req.body.n_brigada.nombre}');`
-    console.log(UPDATE_TIPO_QUERY)
-    con.query( UPDATE_TIPO_QUERY, (err, resultados) => {
-    if(err) {
-        res.status(500).send('La brigada seleccionada ya posee un combate activo');
-    }else {
-        console.log("holaaaaaaaaaaaaaa"+resultados)
-        res.json(res.body)
-    }
-    })  
-    
-})
-
-
-
-
-app.delete('/delBrigadista/:id',(req, res) => {
+app.get('/combatebrig/fatiga/:id', (req, res) => {
     var id=req.params.id;
-    const del_query = `DELETE FROM Brigadistas WHERE rut=?;`
-    con.query(del_query,id, (err, resultados) => {
+    const select_query=`select n_brigada, nombre_brigada from combate_brigada where id=?;`
+    con.query(select_query,id, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
 
-        if(err) {
-            return res.send(err)
-        } else {
-            res.json(res.body)
-
-        }
-    })
+            })
+     }
+    });
 });
 
-app.delete('/delPersonal/:id',(req, res) => {
+app.get('/combatebrig/registro/:id', (req, res) => {
     var id=req.params.id;
-    const del_query = `DELETE FROM Usuarios WHERE rut=?;`
-    con.query(del_query,id, (err, resultados) => {
+    const select_query=`
+    SELECT cb.n_brigada as num_brigada, cb.nombre_brigada as nombre_brigada, cb.estado as estado,
+        DATE_FORMAT(cb.fecha, "%d-%m-%Y") as ini_brig_combate, DATE_FORMAT(cb.hora, "%H:%i:%s") as ini_hora_brig_combate, 
+        DATE_FORMAT(cb.fechafin, "%d-%m-%Y") as fin_brig_combate, DATE_FORMAT(cb.horafin, "%H:%i:%s") as fin_hora_brig_combate,
+        bg.region as region, CONCAT(u.nombre," ",u.apellidoP," ",u.apellidoM) as jefe, 
+        CONCAT(b.nombre," ",b.apellidoP," ",b.apellidoM) as brigadista, b.rut as rut_brigadista, 
+        b.cargo as cargo, b.pulsera, f.fatiga as fatiga_combate
+    FROM combate as c, combate_brigada as cb, brigada as bg, brigadista as b, fatiga as f, usuario as u
+    WHERE c.id = cb.idCombate AND cb.id = f.idcombate AND cb.n_brigada=bg.n_brigada AND cb.nombre_brigada=bg.nombre 
+    AND f.rut=b.rut AND bg.rut_jefe = u.rut AND c.id = ${id}`
+    con.query(select_query,id, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
 
-        if(err) {
-            return res.send(err)
-        } else {
-            res.json(res.body)
-
-        }
-    })
+            })
+     }
+    });
 });
 
-
-app.delete('/rmEsperaPersonal/:id',(req, res) => {
+app.get('/combatebrig/data/:id', (req, res) => {
     var id=req.params.id;
-    const del_query = `DELETE FROM Espera WHERE rut=?;`
-    con.query(del_query,id, (err, resultados) => {
+    const select_query=`
+    SELECT CONCAT(bg.nombre,"-",bg.n_brigada) as brigada, CONCAT(u.nombre," ",u.apellidoP," ",u.apellidoM) as jefe, c.hito as hito
+    FROM combate_brigada AS cb, brigada as bg, usuario as u, combate as c
+    WHERE cb.n_brigada = bg.n_brigada AND cb.nombre_brigada = bg.nombre AND bg.rut_jefe = u.rut AND cb.idCombate = c.id AND cb.id = ${id}`
+    con.query(select_query,id, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
 
-        if(err) {
-            return res.send(err)
-        } else {
-            res.json(res.body)
-
-        }
-    })
+            })
+     }
+    });
 });
 
-app.delete('/delBrigada',(req, res) => {
-    var id=req.param('n_brigada');
-    var id2 = req.param('nombre');
-    const del_query = `DELETE FROM Brigada WHERE n_brigada=? AND nombre = ?;`
-    con.query(del_query,[id,id2], (err, resultados) => {
 
-        if(err) {
-            return res.send(err)
-        } else {
-            res.json(res.body)
 
-        }
-    })
+
+
+/*****************************************************
+                    REGION
+*****************************************************/
+
+app.get('/region', (req, res) => {
+    const select_query=`SELECT * FROM region;`
+    con.query(select_query, (err, result) => {
+     if (err){
+           return res.send(err)
+        }else{
+            return res.json({
+                data: result
+            })
+     }
+    });
 });
 
-app.put('/finCombate/:id',(req, res) => {
+
+/*****************************************************
+                    PULSERA-BRIGADISTA
+*****************************************************/
+
+
+app.get('/select/pulsera/brigadista/disponible',(req, res) => {
+    const select_query=`SELECT p.id FROM pulsera as p WHERE p.id NOT IN(
+            SELECT p2.id FROM pulsera as p2, brigadista as b WHERE p2.id = b.pulsera);`
+    con.query(select_query, (err, result) => {
+        if(err){
+            return res.send(err);
+        }else{
+            return res.json({
+                data: result
+            });
+        }
+    });
+});
+
+
+app.put('/update/brigadista/condicion/:id', bodyParser.json(), (req, res, next) => {
     var id=req.params.id;
-    const del_query = `UPDATE Combate SET estado =0 WHERE id=?;`
-    con.query(del_query,id, (err, resultados) => {
-
-        if(err) {
-            return res.send(err)
-        } else {
-            const help_query = `
-            SELECT hf.rut, hf.idcombate, hf.fatiga, hf.fecha, max(hf.hora) as hora
-            FROM historialfatiga as hf, (
-                select rut, max(fecha) as fecha from historialfatiga group by rut
-            ) as tabla2
-            WHERE hf.rut = tabla2.rut and hf.fecha = tabla2.fecha AND hf.idcombate = ?
-            group by hf.rut;`
-
-                con.query(help_query, id, (err2, resultados2)=>{
-                    if(err2){
-                        return res.send(err2);
-                    }else{
-
-                        var arrayAux = [];
-                        arrayAux = resultados2;
-                        console.log(tam);
-                        var tam = arrayAux.length;
-                        var fechaAux = new Date();
-
-                        for(let i=0; i<tam; i++){
-                            console.log("loop");
-                            console.log(arrayAux[i].rut);
-
-                            fechaAux.setMonth(arrayAux[i].fecha.getMonth());
-
-                            console.log(fechaAux);
-
-
-                            const INSERT_TIPO_QUERY = `INSERT INTO fatigafin values ('${arrayAux[i].rut}', '${id}','${arrayAux[i].fatiga}','${arrayAux[i].fecha.getFullYear()}-${arrayAux[i].fecha.getMonth()}-${arrayAux[i].fecha.getDate()}','${arrayAux[i].hora}',CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP());`
-
-                            con.query(INSERT_TIPO_QUERY, (err3, resultados3)=>{
-                                if(err3){
-                                    console.log(err3);
-                                    return res.send(err3);
-                                }
-                            });
-
-
-
-
-                        }
-
-
-                        res.json(res.body);
-
-
-
-                    }
-                });
-
-        }
-    })
-});
-
-app.delete('/updCombateBrig',(req, res) => {
-    var n_brigada = req.param('n_brigada');
-    var id = req.param('id');
-    var nombre = req.param('nombre_brigada');
-
-    console.log("hola "+n_brigada+" "+id)
-    const del_query = `UPDATE combatesbrigada SET estado=0 WHERE n_brigada=? AND id=? AND estado=1 AND nombre_brigada=?;`
-
-
-
-
-    con.query(del_query,[n_brigada,id,nombre], (err, resultados) => {
-
-        if(err) {
-            return res.send(err)
-        } else {
-
-            const help_query = `
-            SELECT hf.rut, hf.idcombate, hf.fatiga, hf.fecha, max(hf.hora) as hora
-            FROM historialfatiga as hf, (
-                select rut, max(fecha) as fecha from historialfatiga group by rut
-            ) as tabla2
-            WHERE hf.rut = tabla2.rut and hf.fecha = tabla2.fecha AND hf.idcombate = ?
-            group by hf.rut;`
-
-                con.query(help_query, id, (err2, resultados2)=>{
-                    if(err2){
-                        return res.send(err2);
-                    }else{
-
-                        var arrayAux = [];
-                        arrayAux = resultados2;
-                        console.log(tam);
-                        var tam = arrayAux.length;
-                        var fechaAux = new Date();
-
-                        for(let i=0; i<tam; i++){
-                            console.log("loop");
-                            console.log(arrayAux[i].rut);
-
-                            fechaAux.setMonth(arrayAux[i].fecha.getMonth());
-
-                            console.log(fechaAux);
-
-
-                            const INSERT_TIPO_QUERY = `INSERT INTO fatigafin values ('${arrayAux[i].rut}', '${id}','${arrayAux[i].fatiga}','${arrayAux[i].fecha.getFullYear()}-${arrayAux[i].fecha.getMonth()}-${arrayAux[i].fecha.getDate()}','${arrayAux[i].hora}',CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP());`
-
-                            con.query(INSERT_TIPO_QUERY, (err3, resultados3)=>{
-                                if(err3){
-                                    console.log(err3);
-                                    return res.send(err3);
-                                }
-                            });
-
-
-
-
-                        }
-
-
-                        res.json(res.body);
-
-
-
-                    }
-                });
-
-
-
-        }
-    })
-});
-
-app.put('/modBrigadista/:id', bodyParser.json(), (req, res, next) => {
-    var id=req.params.id;
-    const upd_query = `UPDATE brigadistas SET correo='${req.body.correo}', nombre='${req.body.nombre}', apellidoP='${req.body.apellidoP}',apellidoM='${req.body.apellidoM}', n_brigada=${req.body.n_brigada},cargo='${req.body.cargo}',peso=${req.body.peso},pulsera=${req.body.pulsera},nombre_brigada='${req.body.nombre_brigada}' WHERE rut =?;`
+    const upd_query = `UPDATE brigadista SET peso=${req.body.peso}, altura=${req.body.altura} WHERE rut =?;`
     con.query(upd_query,id, (err, resultados) => {
 
         if(err) {
@@ -2187,13 +1591,12 @@ app.put('/modBrigadista/:id', bodyParser.json(), (req, res, next) => {
         }
     })
 })
-app.put('/modBrigada', bodyParser.json(), (req, res, next) => {
-    var id=req.param('n_brigada');
-    var id2= req.param('nombre');
-    console.log(id);
-    console.log(id2);
-    const upd_query = `UPDATE brigada SET rut_jefe='${req.body.rut}' WHERE n_brigada =? AND nombre = ?;`
-    con.query(upd_query,[id,id2], (err, resultados) => {
+
+
+app.put('/update/brigadista/brigada/:id', bodyParser.json(), (req, res, next) => {
+    var id=req.params.id;
+    const upd_query = `UPDATE brigadista SET n_brigada=${req.body.n_brigada}, cargo='${req.body.cargo}', pulsera=${req.body.pulsera},nombre_brigada='${req.body.nombre_brigada}' WHERE rut =?;`
+    con.query(upd_query,id, (err, resultados) => {
 
         if(err) {
             return res.send(err)
@@ -2203,524 +1606,6 @@ app.put('/modBrigada', bodyParser.json(), (req, res, next) => {
         }
     })
 })
-
-app.get('/datosRandom', (req, res) => {
-
-
-    /*console.log("hola")
-
-    const select_query=`select * from reg_fire;`
-
-    con2.query(select_query, (err, result) => {
-        var id = result[0].ID_OP.match(/[0-9]+/g)
-        console.log(id[0]);
-        console.log(result.length)
-        if (err){
-            return res.send(err)
-        }else {
-            const select_query2=`SELECT brigadistas.rut, combatesbrigada.id
-            FROM combatesbrigada ,brigadistas
-            where estado=1 and brigadistas.n_brigada=combatesbrigada.n_brigada;`
-
-            con2.query(select_query2, (err2, result2) => {
-                if (err2){
-                    return res.send(err2)
-                }else{
-                    for ()
-                    let date = new Date()
-                    let hours = date.getHours()
-                    let min = date.getMinutes()
-                    let sec = date.getSeconds()
-                    let day = date.getDate()
-                    let month = date.getMonth() + 1
-                    let year = date.getFullYear()
-                    let fecha;
-                    if(month < 10){
-                        fecha=`${year}-0${month}-${day}`;
-                    }else{
-                        fecha=`${year}-${month}-${day}`;
-                    }
-                    console.log(fecha);
-                    console.log(`${hours}:${min}:${sec}`)
-                }
-            })  
-
-            
-            res.json(res.body)
-        }
-    })*/
-
-    const select_query=`SELECT brigadistas.rut, combatesbrigada.id
-    FROM combatesbrigada ,brigadistas
-    where estado=1 and brigadistas.n_brigada=combatesbrigada.n_brigada;`
-
-    con.query(select_query, (err, result) => {
-     
-     if (err){
-           return res.send(err)
-        }
-
-        
-        for(var i = 0, len = result.length; i<len;i++){
-
-            var moneda = Math.floor((Math.random() * (3 - 0)));
-            console.log(moneda);
-            moneda = 0;
-            var latitud;
-            var longitud;
-            if(moneda == 0){
-                latitud = (Math.random()*(-41.157696 - -41.178606) - 41.178606);
-                longitud = (Math.random()*(-72.519478 - -72.541317)- 72.541317);
-            }else if(moneda == 1){
-                latitud = (Math.random()*(-37.261880 - -37.267535) - 37.267535);
-                longitud = (Math.random()*(-72.950598 - -72.959111)- 72.959111);
-            }else if(moneda == 2){
-                
-                latitud = (Math.random()*(-33.086752 - -33.090359)- 33.090359);
-                longitud = (Math.random()*(-71.653655 - -71.657766) -71.657766 );
-            }
-            console.log(latitud);
-            console.log(longitud);
-
-
-
-
-            /*var latitud = (Math.random() * (0.000000000000000 - -100.000000000000000) - 100.000000000000000).toFixed(12);
-            //console.log(latitud);
-            var longitud = (Math.random() * (0.000000000000000 - -100.000000000000000) - 100.000000000000000).toFixed(12);
-            //console.log(longitud);*/
-
-            var acelX = (Math.random() * (60 - 5) + 5).toFixed(3);
-            var acelY = (Math.random() * (60 - 5) + 5).toFixed(3);
-            var acelZ = (Math.random() * (60 - 5) + 5).toFixed(3);
-            var alturaGrand = Math.random() * (100 - 0) + 0;
-            var altura;
-            if(alturaGrand>=90){
-                altura = (Math.random() * (4000 - 2500) + 2500).toFixed(2);
-            }else{
-                altura = (Math.random() * (2000 - 500) + 500).toFixed(2);
-            }
-            //console.log(altura);
-            var t_corporal_alt = Math.random() * (100 - 0) + 0;
-            var t_corporal;
-            if(t_corporal_alt>=90){
-                t_corporal = (Math.random() * (41.00 - 38.00) + 38.00).toFixed(2);
-            }else if(t_corporal_alt>=80 && t_corporal_alt<90){
-                t_corporal = (Math.random() * (38.00 - 37.00) + 37.00).toFixed(2);
-            }else{
-                t_corporal = (Math.random() * (37.00 - 36.00) + 36.00).toFixed(2);
-            }
-            //console.log(t_corporal);
-            var t_ambiental_alt = Math.random() * (100 - 0) + 0;
-            var t_ambiental;
-            if(t_ambiental_alt>=80){
-                t_ambiental = (Math.random() * (150.00 - 100.00) + 100.00).toFixed(2);
-            }else if(t_ambiental_alt>=50 && t_ambiental_alt<80){
-                t_ambiental = (Math.random() * (100.00 - 40.00) + 40.00).toFixed(2);
-            }else{
-                t_ambiental = (Math.random() * (40.00 - 24.00) + 24.00).toFixed(2);
-            }
-            //console.log(t_ambiental);
-            var probabilidad = Math.random() * (100 - 0) + 0;
-
-            var pulsaciones;
-            if(probabilidad<=80){
-                pulsaciones = (Math.random() * (82 - 60) + 60).toFixed(0);
-            }else if(probabilidad>80 && probabilidad<=95){
-                pulsaciones = (Math.random() * (190 - 83) + 83).toFixed(0);
-            }else{
-                pulsaciones = (Math.random() * (300 - 190) + 190).toFixed(0);
-            }
-            //console.log(pulsaciones);
-            //var pulsaciones = Math.random() * (high - low) + low;
-            var fechatotal = new Date();
-            var mes;
-            var dia;
-            if(fechatotal.getMonth()+1>=0 && fechatotal.getMonth()+1<=9){
-                //console.log("Entre aquí");
-                mes = "0" + fechatotal.getMonth()+1;
-
-            }else{
-                mes = fechatotal.getMonth() + 1;
-            }
-            if(fechatotal.getDate()>=0 && fechatotal.getDate<=9){
-                dia = "0" + fechatotal.getDate();
-            }else{
-                dia = fechatotal.getDate();
-            }
-
-            var fecha = fechatotal.getFullYear()+'-'+mes+'-'+dia;
-            //console.log(fecha);
-            var horatotal =  new Date();
-            var hora;
-            var minuto;
-            var segundo;
-            if(horatotal.getHours()>=0 && horatotal.getHours()<=9){
-                hora = "0" + horatotal.getHours();
-            }else{
-                hora = horatotal.getHours();
-            }
-
-            if(horatotal.getMinutes()>=0 && horatotal.getMinutes()<=9){
-                minuto = "0" + horatotal.getMinutes();
-            }else{
-                minuto = horatotal.getMinutes();
-            }
-
-            if(horatotal.getSeconds()>=0 && horatotal.getSeconds()<=9){
-                segundo = "0" + horatotal.getSeconds();
-            }else{
-                segundo = horatotal.getSeconds();
-            }
-
-            var horafinal = hora + ":" + minuto + ":" + segundo;
-            //console.log(horafinal);
-            var sql = `INSERT INTO datos (rut,id,latidud,longitud,acelX,acelY,acelZ,altura,t_corporal,t_ambiental,pulsaciones,fecha,hora)
-            VALUES (`+con.escape(result[i].rut)+`, `+con.escape(result[i].id)+`,`+con.escape(latitud)+`,`+con.escape(longitud)+
-            `,`+con.escape(acelX)+`,`+con.escape(acelY)+`,`+con.escape(acelZ)+`,`+con.escape(altura)+`,`
-            +con.escape(t_corporal)+`,`+con.escape(t_ambiental)+`,`+con.escape(pulsaciones)+`,`+con.escape(fecha)
-            +`,`+con.escape(horafinal)+`, 0.00);`;
-            console.log(sql);
-
-            con.query(sql, function (err, result2) {
-                if (err) throw err;
-                console.log("1 record inserted");
-            });
-        }
-
-    });
-
-      /*con.query(sql, function (err, result) {
-          if (err) throw err;
-          console.log("1 record inserted");
-        });*/
-});
-
-app.get('/estadobrigadistas', (req, res) => {
-    var id=req.param("n_brigada");
-    var id2=req.param("nombre");
-    console.log(id);
-    console.log(id2);
-    const select_query=`
-    SELECT b.rut, b.nombre, b.apellidoP, b.apellidoM,  b.fatigado, d.latidud,d.longitud, fecha,  hora
-    FROM (SELECT *,
-        row_number() OVER (PARTITION BY rut ORDER BY fecha DESC, hora DESC) as row_num
-      FROM datos) as d , brigadistas as b
-    WHERE d.row_num = 1 AND b.n_brigada=? AND b.nombre_brigada=?AND b.rut=d.rut;
-        `
-    console.log(select_query);
-    con.query(select_query, [id,id2], (err, result) => {
-     console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-            return res.json({
-
-                data: result
-
-            })
-     }
-    });
-});
-
-
-
-app.get('/datosestadoactualbrigadistas/:rut', (req, res) => {
-    var rut=req.params.rut;
-    console.log(rut);
-    const select_query=`SELECT  b.rut, b.nombre, b.apellidoP, b.apellidoM, d.id, TIMESTAMPDIFF(YEAR,b.f_nacimiento,CURDATE()) AS edad, d.t_ambiental, d.t_corporal, d.pulsaciones,d.latidud, d.longitud, b.fatigado, d.saturacion
-    FROM
-        (SELECT id, fecha
-        FROM combatesbrigada as cb, brigadistas as b
-        WHERE b.rut = ? AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
-        ORDER BY cb.fecha DESC , cb.hora DESC
-        LIMIT 1)
-     as c, datos as d,(SELECT max(fecha) as fecha, rut
-        FROM datos 
-       group by rut) as x, brigadistas as b
-    
-    WHERE
-        d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut AND b.rut =d.rut
-     
-    ORDER BY d.fecha DESC, d.hora DESC LIMIT 1 ;`
-    console.log(select_query);
-    con.query(select_query,[rut,rut], (err, result) => {
-     //console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-
-
-            //result[0].hora
-
-            console.log(result[0].nombre);
-            return res.json({
-
-                data: result
-
-            })
-
-     }
-    });
-});
-
-app.get('/combatesbrigadabrig/:rut', (req, res) => {
-    var rut=req.params.rut;
-    console.log(rut);
-    const select_query=`SELECT cb.n_brigada, cb.nombre_brigada, cb.id, cb.estado, DATE_FORMAT(cb.fecha, '%Y-%m-%d') as fecha, cb.hora
-    FROM combatesbrigada as cb,
-        (
-            SELECT n_brigada, nombre_brigada
-            FROM brigadistas
-            where rut = ?
-
-        ) as aux
-    where aux.n_brigada = cb.n_brigada and aux.nombre_brigada = cb.nombre_brigada and estado = 1;`
-    console.log(select_query);
-    con.query(select_query, rut, (err, result) => {
-     //console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-
-
-            //result[0].hora
-
-            return res.json({
-
-                data: result
-
-            })
-
-     }
-    });
-});
-
-
-
-
-app.get('/ultimassaturaciones/:rut', (req, res) => {
-    var rut=req.params.rut;
-    console.log(rut);
-    const select_query=`SELECT d.rut, d.id, d.saturacion, d.fecha, d.hora
-    FROM
-        (SELECT id, fecha
-        FROM combatesbrigada as cb, brigadistas as b
-        WHERE b.rut = ? AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
-        ORDER BY cb.fecha DESC , cb.hora DESC
-        LIMIT 1)
-     as c, datos as d,(SELECT max(fecha) as fecha, rut
-        FROM datos 
-       group by rut) as x
-    
-    WHERE
-        d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut
-     
-    ORDER BY d.fecha DESC, d.hora DESC LIMIT 20;`
-    
-    console.log(select_query);
-    con.query(select_query,[rut,rut,rut], (err, result) => {
-     //console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-
-            return res.json({
-
-                data: result
-
-            })
-
-     }
-    });
-});
-app.get('/ultimastemperaturasambientales/:rut', (req, res) => {
-    var rut=req.params.rut;
-    console.log(rut);
-    const select_query=`SELECT d.rut, d.id, d.t_ambiental, d.fecha, d.hora
-    FROM
-        (SELECT id, fecha
-        FROM combatesbrigada as cb, brigadistas as b
-        WHERE b.rut = ? AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
-        ORDER BY cb.fecha DESC , cb.hora DESC
-        LIMIT 1)
-     as c, datos as d,(SELECT max(fecha) as fecha, rut
-        FROM datos 
-       group by rut) as x
-    
-    WHERE
-        d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut
-     
-    ORDER BY d.fecha DESC, d.hora DESC LIMIT 20;`
-    
-    console.log(select_query);
-    con.query(select_query,[rut,rut,rut], (err, result) => {
-     //console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-
-            return res.json({
-
-                data: result
-
-            })
-
-     }
-    });
-});
-
-app.get('/ultimastemperaturascorporales/:rut', (req, res) => {
-    var rut=req.params.rut;
-    console.log(rut);
-    const select_query=`SELECT d.rut, d.id, d.t_corporal, d.fecha, d.hora
-    FROM
-        (SELECT id, fecha
-        FROM combatesbrigada as cb, brigadistas as b
-        WHERE b.rut = ? AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
-        ORDER BY cb.fecha DESC , cb.hora DESC
-        LIMIT 1)
-     as c, datos as d,(SELECT max(fecha) as fecha, rut
-        FROM datos 
-       group by rut) as x
-    
-    WHERE
-        d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut
-     
-    ORDER BY d.fecha DESC, d.hora DESC LIMIT 20;`
-    console.log(select_query);
-    con.query(select_query,[rut,rut,rut], (err, result) => {
-     //console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-
-            return res.json({
-
-                data: result
-
-            })
-
-     }
-    });
-});
-
-app.get('/ultimaspulsaciones/:rut', (req, res) => {
-    var rut=req.params.rut;
-    console.log(rut);
-    const select_query=`
-    SELECT d.rut, d.id, d.pulsaciones, d.fecha, d.hora
-FROM
-    (SELECT id, fecha
-    FROM combatesbrigada as cb, brigadistas as b
-    WHERE b.rut = ? AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
-    ORDER BY cb.fecha DESC , cb.hora DESC
-    LIMIT 1)
- as c, datos as d,(SELECT max(fecha) as fecha, rut
-    FROM datos 
-   group by rut) as x
-
-WHERE
-    d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut
- 
-ORDER BY d.fecha DESC, d.hora DESC LIMIT 20;`
-
-   
-    console.log(select_query);
-    con.query(select_query,[rut,rut], (err, result) => {
-     //console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-
-            return res.json({
-
-                data: result
-
-            })
-
-     }
-    });
-});
-
-app.get('/ultimasfechasyhoras/:rut', (req, res) => {
-    var rut=req.params.rut;
-    console.log(rut);
-    const select_query=`SELECT DATE_FORMAT(d.fecha, '%d/%m') as fecha, DATE_FORMAT(d.hora, '%H:%i') as hora
-
-    FROM
-    (SELECT id, fecha
-    FROM combatesbrigada as cb, brigadistas as b
-    WHERE b.rut = ? AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
-    ORDER BY cb.fecha DESC , cb.hora DESC
-    LIMIT 1)
- as c, datos as d,(SELECT max(fecha) as fecha, rut
-    FROM datos 
-   group by rut) as x
-
-WHERE
-    d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut
- 
-ORDER BY d.fecha DESC, d.hora DESC LIMIT 20;`
-    console.log(select_query);
-    con.query(select_query,[rut,rut], (err, result) => {
-     //console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-
-
-            //result[0].hora
-
-            console.log(result[0].nombre);
-            return res.json({
-
-                data: result
-
-            })
-
-     }
-    });
-});
-
-app.get('/ultimasPosiciones/:rut', (req, res) => {
-    var rut=req.params.rut;
-    console.log(rut);
-    const select_query=`SELECT d.latidud, d.longitud, d.fecha, d.hora
-    FROM
-        (SELECT id, fecha
-        FROM combatesbrigada as cb, brigadistas as b
-        WHERE b.rut = ? AND b.n_brigada = cb.n_brigada AND b.nombre_brigada=cb.nombre_brigada
-        ORDER BY cb.fecha DESC , cb.hora DESC
-        LIMIT 1)
-     as c, datos as d,(SELECT max(fecha) as fecha, rut
-        FROM datos 
-       group by rut) as x
-    
-    WHERE
-        d.rut=? AND d.id=c.id AND d.fecha=x.fecha AND x.rut=d.rut 
-     
-    ORDER BY d.fecha DESC, d.hora DESC LIMIT 20;`
-    console.log(select_query);
-    con.query(select_query,[rut,rut], (err, result) => {
-     //console.log(result);
-     if (err){
-           return res.send(err)
-        }else{
-
-            return res.json({
-
-                data: result
-
-            })
-
-     }
-    });
-});
-
-
-
-
 
 
 

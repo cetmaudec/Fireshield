@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './auth.guard';
 import { RegistroComponent } from './registro/registro.component';
 import { LoginComponent } from './login/login.component';
-import { HomeComponent } from './home/home.component';
 import { EstadoComponent } from './estado/estado.component';
 import { ContactoComponent } from './contacto/contacto.component';
 import { EstadobrigadistasbrigadaComponent} from './estadobrigadistasbrigada/estadobrigadistasbrigada.component';
@@ -24,28 +23,26 @@ import { ModPersonalComponent } from './mod-personal/mod-personal.component';
 import { ReporteriaComponent } from './reporteria/reporteria.component';
 
 
-
 const routes: Routes = [
   {path:'', component: LoginComponent},
   {path: 'registro', component: RegistroComponent},
-  {path: 'home', component: HomeComponent,canActivate: [AuthGuard]},
   {path: 'estado', component: EstadoComponent,canActivate: [AuthGuard]},
   {path: 'contacto', component: ContactoComponent,canActivate: [AuthGuard]},
-  {path: 'estadobrigadistasbrigada/:id/:id2', component: EstadobrigadistasbrigadaComponent,canActivate: [AuthGuard]},
-  {path: 'estadobrigadista/:rut', component: EstadobrigadistaComponent,canActivate: [AuthGuard]},
+  {path: 'estado/brigada/:id/:id2', component: EstadobrigadistasbrigadaComponent,canActivate: [AuthGuard]},
+  {path: 'estado/brigadista/:rut', component: EstadobrigadistaComponent,canActivate: [AuthGuard]},
   {path: 'brigadas', component: BrigadasComponent,canActivate: [AuthGuard]},
   {path: 'brigadistas/:id/:id2', component: BrigadistasComponent,canActivate: [AuthGuard]},
-  {path: 'addBrigadista/:id/:id2', component: AddBrigadistaComponent,canActivate: [AuthGuard]},
-  {path: 'modBrigadista/:id', component: ModBrigadistaComponent,canActivate: [AuthGuard]},
+  {path: 'crear/brigadista/:id/:id2', component: AddBrigadistaComponent,canActivate: [AuthGuard]},
+  {path: 'edit/brigadista/:id', component: ModBrigadistaComponent,canActivate: [AuthGuard]},
   {path: 'combates', component: CombatesComponent,canActivate: [AuthGuard]},
-  {path: 'addbrigada', component: AddBrigadaComponent,canActivate: [AuthGuard]},
-  {path: 'modBrigada/:id/:id2', component: ModBrigadaComponent,canActivate: [AuthGuard]},
-  {path: 'combateBrig/:id', component: CombateBrigComponent,canActivate: [AuthGuard]},
-  {path: 'unirseCombate/:id', component: UnirseCombateComponent,canActivate: [AuthGuard]},
-  {path: 'modCombate/:id', component: ModCombateComponent ,canActivate: [AuthGuard]},
+  {path: 'crear/brigada', component: AddBrigadaComponent,canActivate: [AuthGuard]},
+  {path: 'edit/brigada/:id/:id2', component: ModBrigadaComponent,canActivate: [AuthGuard]},
+  {path: 'combate/brigada/:id', component: CombateBrigComponent,canActivate: [AuthGuard]},
+  {path: 'unirse/combate/:id', component: UnirseCombateComponent,canActivate: [AuthGuard]},
+  {path: 'edit/combate/:id', component: ModCombateComponent ,canActivate: [AuthGuard]},
   {path: 'mapa/:id/:id2', component: MapaComponent ,canActivate: [AuthGuard]},
   {path: 'personal', component: PersonalComponent ,canActivate: [AuthGuard]},
-  {path: 'modPersonal/:id', component: ModPersonalComponent, canActivate: [AuthGuard]},
+  {path: 'edit/usuario/:id', component: ModPersonalComponent, canActivate: [AuthGuard]},
   {path: 'reporteria', component: ReporteriaComponent, canActivate: [AuthGuard]},
 
 ];

@@ -1,10 +1,113 @@
+html, body{
+  background-color: #f9f9f9;;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+app-navbar{
+  display: block;
+  height: auto;
+}
+
+.limiter {
+    background-color: #f9f9f9;
+    position: relative;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    width: auto;    
+    height: 100%;
+ }
+
 .map-container {
-  margin-top: 5%;
+  margin-top: 2%;
   margin-left: 10%;
 }
 
+.NoFound {
+  margin-top: 2%;
+}
+
+.NoFound h1{
+  text-align: center;
+  font-weight: bold;
+  margin-top: 2%;
+}
+
+.NoFound img{
+  width: 20%;
+  margin-left: 40%
+}
 
 #map {
   width: 90%;
   height: 70vh;
+}
+
+.pricingdiv{
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 16px;
+  justify-content: center; 
+}
+
+.button {
+  background-color: #f47e1e;
+  border: none;
+  color: white;
+  padding: 0.75em 1.5em;
+  margin-left: 10%;
+  text-align: center;
+  text-decoration: none;
+  font-size: 12px;
+  cursor: pointer;
+  display: block;
+  margin-bottom: auto;
+  font-weight: bold;
+  text-transform: uppercase;
+  width: 80%;
+  margin-right: 10%;
+  cursor: pointer;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  border-radius: 10px;
+}
+
+.button:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+  background-color: #fff;
+  color: #ee812e;
+  transform: scale(1.05);
+  transition: all .3s;
+  z-index: 100;
+}
+
+#button {
+  background-color: #f47e1e;
+  border: none;
+  color: white;
+  padding: 0.75em 1.5em;
+  margin-left: 10%;
+  text-align: center;
+  text-decoration: none;
+  font-size: 12px;
+  cursor: pointer;
+  display: block;
+  margin-bottom: auto;
+  font-weight: bold;
+  text-transform: uppercase;
+  width: 80%;
+  margin-right: 10%;
+  cursor: pointer;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  border-radius: 10px;
+}
+
+#button:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+  background-color: #fff;
+  color: #ee812e;
+  transform: scale(1.05);
+  transition: all .3s;
+  z-index: 100;
 }

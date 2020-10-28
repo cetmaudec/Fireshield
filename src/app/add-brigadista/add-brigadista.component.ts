@@ -2,8 +2,9 @@ import { Component, OnInit ,NgModule} from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators,ReactiveFormsModule } from '@angular/forms';
 import { HttpClient , HttpHeaders,HttpParams} from '@angular/common/http';
 import {Router} from '@angular/router';
-import swal from'sweetalert2';
+import Swal from'sweetalert2';
 import { ActivatedRoute, Params } from '@angular/router';
+import { environment } from '../environment';
 
 @Component({
   selector: 'app-add-brigadista',
@@ -76,9 +77,7 @@ export class AddBrigadistaComponent implements OnInit {
   */
 
   async ngOnInit() {
-   
-
-    // Método que obtiene el nombre de todas las brigadas.
+  //Método que obtiene el nombre de todas las brigadas.
 
     this.getBrigadas();
 
@@ -96,9 +95,10 @@ export class AddBrigadistaComponent implements OnInit {
     this.getPulserasNoUsadas();
  
   }
+  dd
 
   async getBrigadas(){
-    this.nombresbrigadas$= await this.http.get('http://3.13.114.248:8000/nombresbrigadas').toPromise();
+    this.nombresbrigadas$= await this.http.get(environment.urlAddress+'select/distinct/brigada/nombre').toPromise();
   }
 
   /*
@@ -113,7 +113,7 @@ export class AddBrigadistaComponent implements OnInit {
   }
 
   async getnBrigadas(nombre){
-    this.brigadas$= await this.http.get('http://3.13.114.248:8000/brigadasPorNombre' + nombre).toPromise();
+    this.brigadas$= await this.http.get(environment.urlAddress+'select/brigada/numero' + nombre).toPromise();
   }
 
   /*
@@ -124,41 +124,34 @@ export class AddBrigadistaComponent implements OnInit {
     la pantalla en donde se muestran los brigadistas de la brigada en donde insertó al brigadista.
   */
 
-  onSubmit(){
-    console.log("entre");
-    console.log(this.BrigadistaForm.value)
-    
+  onSubmit(){  
     if(this.BrigadistaForm.value!=null){
       console.log(this.n_brigada, this.nombre_brigada)
       let params = new HttpParams().set("n_brigada", this.n_brigada).set("nombre_brigada",this.nombre_brigada);
-      this.http.post('http://3.13.114.248:8000/addBrigadista', this.BrigadistaForm.value, { headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params:params}).subscribe(
-          (response ) => {
-            console.log(response);
-            swal.fire('Registro exitoso de brigadista').then(() => {
-                this.router.navigate(['/brigadistas/'+this.n_brigada+'/'+this.nombre_brigada]);
-                
-              }
-            );
-           
-          },
-          (error)=>{
-            swal.fire('Error en el registro de brigadista',error).then(() => {
-                console.log(error)
-              }
-            );
-          
-          });
-          this.ngOnInit();
-        }
+      this.http.post(environment.urlAddress+'insert/brigadista', this.BrigadistaForm.value, { 
+        headers: new HttpHeaders({ 'Content-Type': 'application/json'}),params:params}).subscribe(
+          response =>  Swal.fire({
+                icon: 'success',
+                title: 'Registro de brigadista exitoso!',
+                confirmButtonText: 'Ok!'
+                }).then((result) => {
+                  this.router.navigate(['/brigadistas/'+this.n_brigada+'/'+this.nombre_brigada]);
+                }) ,
+          err => Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Ha ocurrido un error, vuelva a intentarlo'
+          })
+        );  
       }
+    }
 
   
-  getPulserasNoUsadas(){
-    this.http.get('http://3.13.114.248:8000/pulserasnousadas').subscribe(resp =>
-      this.pulserasNoUsadas$ = resp as []
-  
-    )
-
+  // Método que obtiene la pulseras disponibles para asociar.  
+    async getPulserasNoUsadas(){
+      this.pulserasNoUsadas$ = await this.http.get(environment.urlAddress+'select/pulsera/brigadista/disponible').toPromise();
+    return this.pulserasNoUsadas$;
   }
+
   	
 }

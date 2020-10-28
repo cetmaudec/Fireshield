@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddCombateComponent } from './add-combate.component';
+import { GeneralDataComponent } from './general-data.component';
 
-describe('AddCombateComponent', () => {
-  let component: AddCombateComponent;
-  let fixture: ComponentFixture<AddCombateComponent>;
+describe('GeneralDataComponent', () => {
+  let component: GeneralDataComponent;
+  let fixture: ComponentFixture<GeneralDataComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddCombateComponent ]
+      declarations: [ GeneralDataComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddCombateComponent);
+    fixture = TestBed.createComponent(GeneralDataComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

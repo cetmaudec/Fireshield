@@ -3,6 +3,9 @@ import { HttpClient} from '@angular/common/http';
 import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { BaseChartDirective } from 'ng2-charts';
 import * as Chart from 'chart.js';
+import { Router, RouterModule } from '@angular/router';
+
+import { environment } from '../environment';
 
 @Component({
   selector: 'app-estado',
@@ -107,7 +110,7 @@ export class EstadoComponent implements OnInit {
   */
  
  
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this.charts=[];
     this.cargo=localStorage.getItem('cargo');
     this.rut_jefe=localStorage.getItem('user');
@@ -135,11 +138,8 @@ export class EstadoComponent implements OnInit {
   */ 
 
   async ngOnInit() {
-    
     // Método que calcula el número de brigadas que actualmente están en combate.
-
     this.n = await this.getnBrigadas();
-
     /*
       Creación de cada uno de las n gráficas que se van a mostrar. Cada uno de estos gráficos se almacena en una posición
       del arreglo de gráficos.
@@ -159,61 +159,43 @@ export class EstadoComponent implements OnInit {
       de los ruts de sus jefes de brigada.
     */
     
-    this.brigadas=await this.getDatosEstado();
-
+    this.brigadas= await this.getDatosEstado();
     //Método que obtiene el número de brigadistas que se encuentran actualmente en fatiga baja por cada una de las brigadas.
 
     this.bajos$=await this.getnFatigadosBajo();
-
     //Método que obtiene el número de brigadistas que se encuentran actualmente en fatiga media por cada una de las brigadas.
-
     this.medios$=await this.getnFatigadosMedio();
-
     //Método que obtiene el número de brigadistas que se encuentran actualmente en fatiga alta por cada una de las brigadas.
-
     this.altos$=await this.getnFatigadosAlto();
-
-   // this.setDatosRandom();
-
     // Método que crea cada uno de los gráficos con sus datos correspondientes.
-
     this.createChartsData();
-   
   }
 
 
 
   async getnBrigadas(){
-    this.nbrigadas$= await this.http.get('http://3.13.114.248:8000/nbrigadas').toPromise();
+    this.nbrigadas$= await this.http.get(environment.urlAddress+'select/count/brigada').toPromise();
     return this.nbrigadas$.data[0].numero;
   }
 
   
 
   async getDatosEstado() {
-    this.estadoBrig$= await this.http.get('http://3.13.114.248:8000/estadoBrigadas').toPromise();
-
-    return this.estadoBrig$.data;
+    this.brigadas= await this.http.get(environment.urlAddress+'select/brigada').toPromise();
+    return this.brigadas;
   
   }
 
   async getnFatigadosBajo(){
-    this.fatigaBaja$= await this.http.get('http://3.13.114.248:8000/FatigaBajaBrigadas').toPromise();
-
-    
-   
-    
+    this.fatigaBaja$= await this.http.get(environment.urlAddress+'select/brigada/fatiga/baja').toPromise();
     this.chart.forEach((child) => {
       child.chart.update()
     });
     return this.fatigaBaja$.data
-    
   }
 
   async getnFatigadosMedio(){
-    this.fatigaMedia$ = await this.http.get('http://3.13.114.248:8000/FatigaMediaBrigadas').toPromise();
-    console.log(this.fatigaMedia$)
-   
+    this.fatigaMedia$ = await this.http.get(environment.urlAddress+'select/brigada/fatiga/media').toPromise(); 
     this.chart.forEach((child) => {
       child.chart.update()
   });
@@ -221,24 +203,12 @@ export class EstadoComponent implements OnInit {
   }
 
   async getnFatigadosAlto(){
-    this.fatigaAlta$= await this.http.get('http://3.13.114.248:8000/FatigaAltaBrigadas').toPromise();
-    console.log(this.fatigaAlta$)
-
-    
-    
-      
+    this.fatigaAlta$= await this.http.get(environment.urlAddress+'select/brigada/fatiga/alta').toPromise();
     this.chart.forEach((child) => {
       child.chart.update()
   });
       
     return this.fatigaAlta$.data
-  }
-
-
-  setDatosRandom(){
-    this.http.get('http://3.13.114.248:8000/datosRandom').subscribe(resp2 =>
-    this.datosEstado$ = resp2 as []
-    )
   }
 
   /*
@@ -256,10 +226,9 @@ export class EstadoComponent implements OnInit {
                 data: {
                     
                     labels: ['Riesgo Alto', 'Riesgo Medio', 'Riesgo Bajo'],
-                    datasets: [{
-                      
-                        backgroundColor: ['rgba(255,0,0)', 'rgba(255,255,0)', 'rgba(0,255,0)'],
-                        data: [this.altos$[i].fatigaAlta,this.medios$[i].fatigaMedia,this.bajos$[i].fatigaBaja]
+                    datasets: [{                      
+                        backgroundColor: ['#d9534f', '#f0ad4e', '#5cb85c'],
+                        data: [this.altos$[i].fatigaAlta, this.medios$[i].fatigaMedia, this.bajos$[i].fatigaBaja]
                     }]
                 },
                 options: {
@@ -292,7 +261,6 @@ export class EstadoComponent implements OnInit {
                   }
                 }
             };
-            console.log(pie)
             this.array.push(pie);
         }
 
@@ -322,8 +290,7 @@ export class EstadoComponent implements OnInit {
 
   
     
-    
-  
-  
-  
+  goBrigadistaBrigada(n_brigada: any, nombre: any) {
+    this.router.navigate(['/estado/brigada/', n_brigada, nombre]);
+  }
 }

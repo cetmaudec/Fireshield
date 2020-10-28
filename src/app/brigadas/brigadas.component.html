@@ -1,49 +1,81 @@
-<ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
-      <app-navbar></app-navbar>
-</ng-container>
-
-<ng-template #second>
-      <app-navbar2></app-navbar2>
-</ng-template>
-
-
 <head>
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-<link href="https://fonts.googleapis.com/css?family=Lora&display=swap" rel="stylesheet">
-
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </head>
-<button class="btn" *ngIf="cargo == 'administrador' || cargo=='super_admin';" routerLink="/addbrigada"><span>Añadir Brigada</span></button>
 
+<body>
+  <app-navbar></app-navbar>
+  <div class="limiter">
+    <div class="button-top">
+      <button class="btn" *ngIf="cargo == 'Administrador' || cargo=='Super Administrador';" routerLink="/crear/brigada">
+        <span>Añadir Brigada</span></button>
+    </div>
+    <div id="MisBrigadas" class="tabcontent" *ngIf="cargo == 'Jefe Brigada'">
+      <div class="pricingdiv">
+        <div class="card" *ngFor="let brig_jefe of brigadasJefe$.data">
+          <div class="card-header">
+            <div class="card-img-header">
+              <img  width="100px" height=" " src="./assets/images/icons/fire-rescue-team-boss.png">
+              <div class="card-header-star">
+                <img *ngIf="rut_jefe == brig_jefe.rut_jefe;" src="./assets/images/icons/star.png">
+              </div>
+            </div>
+            <br><br>
+            <h2>Jefe Brigada:</h2><h1>{{brig_jefe.nombre}} {{brig_jefe.apellidoP}} {{brig_jefe.apellidoM}}</h1>
+            <h3>Brigada <br>{{brig_jefe.nombre_brigada}} - {{brig_jefe.n_brigada}}</h3>
+          </div>
 
-
-<div class="pricingdiv">
-      <div *ngFor="let brigada of brigadas$.data">
-            <ng-container *ngIf="cargo == 'administrador' ||cargo=='super_admin';else second">
-                  <ul class="theplan" >
-                        <li class="title"><img  width="100px" height=" " src="./assets/images/brigada.png"><br/><b>Jefe Brigada:</b> <br />{{brigada.nombre}} {{brigada.apellidoP}} {{brigada.apellidoM}}</li>       
-                        <li class="title2">Brigada {{brigada.nombre_brigada}} - {{brigada.n_brigada}}</li>
-                        <li>
-                              <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada, brigada.nombre_brigada]">Seleccionar</button>
-                              <button class="button" [routerLink]="['/modBrigada', brigada.n_brigada, brigada.nombre_brigada]"*ngIf="cargo == 'administrador' ||cargo=='super_admin';">Modificar</button>
-                              <button  class="button" (click)="delBrigada(brigada.n_brigada, brigada.nombre_brigada)" *ngIf="cargo == 'administrador' ||cargo=='super_admin';">Eliminar</button>
-                        </li>
-                                      
-                  </ul>
-            </ng-container>
-                  
+          <div class="card-body">
+            <div class="button-group">
+              <ng-container *ngIf="cargo == 'Administrador' || cargo=='Super Administrador';else second"> 
+                <button class="button" [routerLink]="['/brigadistas', brig_jefe.n_brigada, brig_jefe.nombre_brigada]">Seleccionar</button>
+                <button class="button" [routerLink]="['/edit/brigada', brig_jefe.n_brigada, brig_jefe.nombre_brigada]">Modificar
+                </button>
+                <button  class="button" (click)="delBrigada(brig_jefe.n_brigada, brig_jefe.nombre_brigada)">Eliminar</button>
+              </ng-container>
+            </div>
             <ng-template #second>
-                  <ul class="theplan" *ngIf=" rut_jefe == brigada.rut_jefe ;" >
-                        <li class="title"><img  width="100px" height=" " src="./assets/images/brigada.png"><br/><b>Jefe Brigada:</b> <br />{{brigada.nombre}} {{brigada.apellidoP}} {{brigada.apellidoM}}</li>       
-                        <li class="title2">Brigada {{brigada.nombre_brigada}} - {{brigada.n_brigada}}</li>
-                        <li>
-                              <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada, brigada.nombre_brigada]">Seleccionar</button>
-                              
-                        </li>                       
-                  </ul>
-            </ng-template>          
-       
-    </div>
-       
-    </div>
+               <button class="button" [routerLink]="['/brigadistas', brig_jefe.n_brigada, brig_jefe.nombre_brigada]">Seleccionar</button>
+             </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="Todos" class="tabcontent" *ngIf="cargo == 'Administrador' || cargo=='Super Administrador';" >
+        <div class="pricingdiv">
+          <div class="card" *ngFor="let brigada of brigadas$.data">
+            <div class="card-header">
+              <div class="card-img-header">
+                <img  width="100px" height=" " src="./assets/images/icons/fire-rescue-team-boss.png">
+                <div class="card-header-star">
+                  <img *ngIf="rut_jefe == brigada.rut_jefe;" src="./assets/images/icons/star.png">
+                </div>
+              </div>
+              <br><br>
+              <h2>Jefe Brigada:</h2><h1>{{brigada.nombre}} {{brigada.apellidoP}} {{brigada.apellidoM}}</h1>
+              <h3>Brigada {{brigada.nombre_brigada}} - {{brigada.n_brigada}}</h3>
+            </div>
 
-
+            <div class="card-body">
+              <div class="button-group">
+                <ng-container *ngIf="cargo == 'Administrador' || cargo=='Super Administrador';else second"> 
+                  <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada, brigada.nombre_brigada]">Seleccionar
+                  </button>
+                  <button class="button" [routerLink]="['/edit/brigada', brigada.n_brigada, brigada.nombre_brigada]">Modificar
+                  </button>
+                  <button  class="button" (click)="delBrigada(brigada.n_brigada, brigada.nombre_brigada)">Eliminar</button>
+                </ng-container>
+              </div>
+              <ng-template #second>
+                 <button class="button" [routerLink]="['/brigadistas', brigada.n_brigada, brigada.nombre_brigada]">Seleccionar  </button>
+             </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>

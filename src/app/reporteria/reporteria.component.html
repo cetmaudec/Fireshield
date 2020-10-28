@@ -1,276 +1,253 @@
-<app-navbar></app-navbar>
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
 
-<div class="tab">
-    <button class="tablinks" (click)="openCity('Combates')" id="defaultOpen">Combates</button>
-    <button class="tablinks" (click)="openCity('Brigadas')">Brigadas</button>
-    
-   
-</div>
 
-<div id="Combates" class="tabcontent">
-
-        
-
-        <h1 class="animated rotateIn">&bull;Seleccione instancia de reporte&bull;</h1>
-       
-    
-       
-    <div class="select-box">
+<body>
+    <app-navbar></app-navbar>
+    <div class="limiter">
+        <div class="tab">
+            <button class="tablinks" (click)="openCity('Combates')" id="defaultOpen">Combates</button>
+            <button class="tablinks" (click)="openCity('Brigadas')">Brigadas</button>   
+        </div>
+        <div id="Combates" class="tabcontent">
+          <h1 class="animated rotateIn">&bull;Seleccione instancia de reporte&bull;</h1>
+          <div class="select-box">
             <label class="custom-select" for="styledSelect1">
-                <select (change)="onChange($event.target.value);">
-                    
-                    <option value="Activos">
-                      Activos
-                    </option>
-
-                    <option value="Último Mes">
-                        Último Mes
-                    </option>
-
-                    <option value="Últimos 6 Meses">
-                        Últimos 6 Meses
-                    </option>
-                    
-                    <option value="Último Año">
-                      Último Año
-                    </option>
-
-                    <option value="Todos">
-                        Todos
-                    </option>
-                    
-                </select>
+              <select (change)="onChange($event.target.value);">
+                <option value="Activos">Activos</option>
+                <option value="Último Mes">Último Mes</option>
+                <option value="Últimos 6 Meses">Últimos 6 Meses</option>
+                <option value="Último Año">Último Año</option>
+                <option value="Todos">Todos</option>
+              </select>
             </label>
-          
-
-        
 
             <table>
-                <thead>
-                    <tr>
-                        <th scope="col">ID Combate</th>
-                        <th scope="col">Hito</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Fecha Inicio</th>
-                        <th scope="col">Hora Inicio</th>
-                        <th scope="col" >Tiempo en Combate</th>
-                        
-                        <th scope="col" >Generar Reporte</th>
-                    </tr>
-                </thead>
-                <tbody>
+              <thead>
+                <tr>
+                  <th scope="col">ID Combate</th>
+                  <th scope="col">Hito</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Fecha Inicio</th>
+                  <th scope="col">Hora Inicio</th>
+                  <th scope="col" >Tiempo en Combate</th>
+                  <th scope="col" >Generar Reporte</th>
+                </tr>
+              </thead>
+              <tbody>
                 <ng-container *ngIf="eleccion$ == 'Activos'">
                   <tr  *ngFor="let comb of combactivos$.data; let i = index">
-                      <td data-label="ID Combate:">{{comb.id}}</td>
+                    <td data-label="ID Combate:">{{comb.combate}}</td>
                     <td data-label="Hito:">{{comb.hito}}</td>
                     <td data-label="Estado:">Activo</td>
-                    <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
-                    <td data-label="Hora Inicio:">{{comb.hora}}</td>
+                    <td data-label="Fecha Inicio:">{{comb.ini_combate}}</td>
+                    <td data-label="Hora Inicio:">{{comb.ini_hora_combate}}</td>
                     <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                    <button  class="button" (click)="generatePdfActivos(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,i,comb.nfatigaAlta, comb.nfatigaMedia)" >PDF</button>
-                    <button  class="button" (click)="generateCsvActivos(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,i,comb.nfatigaAlta, comb.nfatigaMedia)" >CSV</button>
-
+                    <td>
+                      <div class="button-group">
+                        <button  class="button" (click)="generatePDFCombate(comb.estado, comb.combate, comb.hito, comb.ini_combate, comb.ini_hora_combate, comb.fin_combate, comb.fin_hora_combate, i)">
+                          PDF
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 </ng-container>
 
                 <ng-container *ngIf="eleccion$ == 'Último Mes'">
-                    <tr  *ngFor="let comb of combmes$.data; let i = index">
-                        <td data-label="ID Combate:">{{comb.id}}</td>
-                      <td data-label="Hito:">{{comb.hito}}</td>
-                      <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
-                      <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
-                      <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
-                      <td data-label="Hora Inicio:">{{comb.hora}}</td>
-                      <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                      
-                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)">PDF</button>
-                      <button  class="button" (click)="generateCsv(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >CSV</button>
+                  <tr *ngFor="let comb of combmes$.data; let i = index">
+                    <td data-label="ID Combate:">{{comb.combate}}</td>
+                    <td data-label="Hito:">{{comb.hito}}</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+                    <td data-label="Fecha Inicio:">{{comb.ini_combate}}</td>
+                    <td data-label="Hora Inicio:">{{comb.ini_hora_combate}}</td>
+                    <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
+                    <td>
+                      <div class="button-group">
+                        <button  class="button" (click)="generatePDFCombate(comb.estado, comb.combate, comb.hito, comb.ini_combate, comb.ini_hora_combate, comb.fin_combate, comb.fin_hora_combate, i)">
+                          PDF
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
 
-                    </tr>
-                  </ng-container>
+                <ng-container *ngIf="eleccion$ == 'Últimos 6 Meses'">
+                  <tr  *ngFor="let comb of comb6mes$.data; let i = index ">
+                    <td data-label="ID Combate:">{{comb.combate}}</td>
+                    <td data-label="Hito:">{{comb.hito}}</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+                    <td data-label="Fecha Inicio:">{{comb.ini_combate}}</td>
+                    <td data-label="Hora Inicio:">{{comb.ini_hora_combate}}</td>
+                    <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
+                    <td>
+                      <div class="button-group">
+                        <button  class="button" (click)="generatePDFCombate(comb.estado, comb.combate, comb.hito, comb.ini_combate, comb.ini_hora_combate, comb.fin_combate, comb.fin_hora_combate, i)">
+                          PDF
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
 
-                  <ng-container *ngIf="eleccion$ == 'Últimos 6 Meses'">
-                    <tr  *ngFor="let comb of comb6mes$.data; let i = index ">
-                        <td data-label="ID Combate:">{{comb.id}}</td>
-                      <td data-label="Hito:">{{comb.hito}}</td>
-                      <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
-                      <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
-                      <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
-                      <td data-label="Hora Inicio:">{{comb.hora}}</td>
-                      <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >PDF</button>
-                      <button  class="button" (click)="generateCsv(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >CSV</button>
+                <ng-container *ngIf="eleccion$ == 'Último Año'">
+                  <tr *ngFor="let comb of combanyo$.data ; let i = index">
+                    <td data-label="ID Combate:">{{comb.combate}}</td>
+                    <td data-label="Hito:">{{comb.hito}}</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+                    <td data-label="Fecha Inicio:">{{comb.ini_combate}}</td>
+                    <td data-label="Hora Inicio:">{{comb.ini_hora_combate}}</td>
+                    <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
+                    <td>
+                      <div class="button-group">
+                        <button  class="button" (click)="generatePDFCombate(comb.estado, comb.combate, comb.hito, comb.ini_combate, comb.ini_hora_combate, comb.fin_combate, comb.fin_hora_combate, i)">
+                          PDF
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
 
-                    </tr>
-                  </ng-container>
+                <ng-container *ngIf="eleccion$ == 'Todos'">
+                  <tr *ngFor="let comb of combtodos$.data; let i = index ">
+                    <td data-label="ID Combate:">{{comb.combate}}</td>
+                    <td data-label="Hito:">{{comb.hito}}</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+                    <td data-label="Fecha Inicio:">{{comb.ini_combate}}</td>
+                    <td data-label="Hora Inicio:">{{comb.ini_hora_combate}}</td>
+                    <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
+                    <td>
+                      <div class="button-group">
+                        <button  class="button" (click)="generatePDFCombate(comb.estado, comb.combate, comb.hito, comb.ini_combate, comb.ini_hora_combate, comb.fin_combate, comb.fin_hora_combate, i)">
+                          PDF
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-                  <ng-container *ngIf="eleccion$ == 'Último Año'">
-                    <tr  *ngFor="let comb of combanyo$.data ; let i = index">
-                        <td data-label="ID Combate:">{{comb.id}}</td>
-                      <td data-label="Hito:">{{comb.hito}}</td>
-                      <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
-                      <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
-                      <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
-                      <td data-label="Hora Inicio:">{{comb.hora}}</td>
-                      <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >PDF</button>
-                      <button  class="button" (click)="generateCsv(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >CSV</button>
+        <div id="Brigadas" class="tabcontent">
+          <h1 class="animated rotateIn">&bull;Seleccione instancia de reporte&bull;</h1>
+          <div class="select-box">
+            <label class="custom-select" for="styledSelect1">
+              <select (change)="onChange($event.target.value);">
+                <option value="Último Mes2">Último Mes</option>
+                <option value="Últimos 6 Meses2">Últimos 6 Meses</option>
+                <option value="Último Año2">Último Año</option>
+                <option value="Todos2">Todos</option>
+              </select>
+            </label>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Nombre Brigada</th>
+                  <th scope="col">N° Brigada</th>
+                  <th scope="col">Combate</th>
+                  <th scope="col">Fecha Inicio</th>
+                  <th scope="col">Hora Inicio</th>
+                  <th scope="col">Tiempo en Combate</th>
+                  <th scope="col">Estado</th>             
+                  <th scope="col" >Generar Reporte</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="eleccion2$ == 'Último Mes2'">
+                  <tr *ngFor="let comb of combmes2$.data; let i = index ">
+                    <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
+                    <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
+                    <td data-label="Combate:">{{comb.hito}}</td>
+                    <td data-label="Fecha Inicio:">{{comb.ini_combate}}</td>
+                    <td data-label="Hora Inicio:">{{comb.ini_hora_combate}}</td>          
+                    <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+                    <td>
+                      <div class="button-group">            
+                        <button  class="button" (click)="generatePDFBrigada(comb.estado, comb.id, comb.idCombate, comb.nombre_brigada, comb.n_brigada, comb.ini_combate, comb.ini_hora_combate, comb.fin_combate, comb.fin_hora_combate, i)">
+                          PDF
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
 
-                    </tr>
-                  </ng-container>
+                <ng-container *ngIf="eleccion2$ == 'Últimos 6 Meses2'">
+                  <tr *ngFor="let comb of comb6mes2$.data; let i = index">
+                    <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
+                    <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
+                    <td data-label="Combate:">{{comb.hito}}</td>          
+                    <td data-label="Fecha Inicio:">{{comb.ini_combate}}</td>
+                    <td data-label="Hora Inicio:">{{comb.ini_hora_combate}}</td>            
+                    <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>   
+                    <td>
+                      <div class="button-group">  
+                        <button  class="button" (click)="generatePDFBrigada(comb.estado, comb.id, comb.idCombate, comb.nombre_brigada, comb.n_brigada, comb.ini_combate, comb.ini_hora_combate, comb.fin_combate, comb.fin_hora_combate, i)">
+                          PDF
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
 
-                  <ng-container *ngIf="eleccion$ == 'Todos'">
-                    <tr  *ngFor="let comb of combtodos$.data; let i = index ">
-                        <td data-label="ID Combate:">{{comb.id}}</td>
-                      <td data-label="Hito:">{{comb.hito}}</td>
-                      <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
-                      <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
-                      <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
-                      <td data-label="Hora Inicio:">{{comb.hora}}</td>
-                      <td data-label="Tiempo en Combate:">{{tiempo[i]}} días, {{tiempo2[i]}} horas y {{tiempo3[i]}} minutos.</td>
-                      <button  class="button" (click)="generatePdf(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >PDF</button>
-                      <button  class="button" (click)="generateCsv(comb.estado,comb.id, comb.hito, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i,comb.nfatigaAlta, comb.nfatigaMedia)" >CSV</button>
+                <ng-container *ngIf="eleccion2$ == 'Último Año2'">
+                  <tr *ngFor="let comb of combanyo2$.data; let i = index">
+                    <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
+                    <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
+                    <td data-label="Combate:">{{comb.hito}}</td>
+                    <td data-label="Fecha Inicio:">{{comb.ini_combate}}</td>
+                    <td data-label="Hora Inicio:">{{comb.ini_hora_combate}}</td>
+                    <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+                    <td>
+                      <div class="button-group">
+                        <button  class="button" (click)="generatePDFBrigada(comb.estado, comb.id, comb.idCombate, comb.nombre_brigada, comb.n_brigada, comb.ini_combate, comb.ini_hora_combate, comb.fin_combate, comb.fin_hora_combate, i)">
+                          PDF
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
 
-                    </tr>
-                  </ng-container>
-
-                  
-                
-                </tbody>
-              </table>
-            
-
-        
-    </div>  
-  </div>   
-
-<div id="Brigadas" class="tabcontent">
-
-  <h1 class="animated rotateIn">&bull;Seleccione instancia de reporte&bull;</h1>
-  <div class="select-box">
-    <label class="custom-select" for="styledSelect1">
-        <select (change)="onChange($event.target.value);">
-            
-            <option value="Último Mes2">
-                Último Mes
-            </option>
-
-            <option value="Últimos 6 Meses2">
-                Últimos 6 Meses
-            </option>
-            
-            <option value="Último Año2">
-              Último Año
-            </option>
-
-            <option value="Todos2">
-                Todos
-            </option>
-            
-        </select>
-    </label>
-  
-
-
-
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">Nombre Brigada</th>
-                <th scope="col">N° Brigada</th>
-                <th scope="col">ID Combate</th>
-                <th scope="col">Fecha Inicio</th>
-                <th scope="col">Hora Inicio</th>
-                <th scope="col">Tiempo en Combate</th>
-                <th scope="col">Estado</th>
-                
-                <th scope="col" >Generar Reporte</th>
-            </tr>
-        </thead>
-        <tbody>
-        <ng-container *ngIf="eleccion2$ == 'Último Mes2'">
-          <tr  *ngFor="let comb of combmes2$.data; let i = index ">
-            <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
-            <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
-            <td data-label="ID Combate:">{{comb.id}}</td>
-            <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
-            <td data-label="Hora Inicio:">{{comb.hora}}</td>
-           
-            <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
-            <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
-            <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
-            
-            <button  class="button" (click)="generatePdfBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">PDF</button>
-            <button  class="button" (click)="generateCsvBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">CSV</button>
-
-          </tr>
-        </ng-container>
-
-        <ng-container *ngIf="eleccion2$ == 'Últimos 6 Meses2'">
-          <tr  *ngFor="let comb of comb6mes2$.data; let i = index">
-              <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
-            <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
-            <td data-label="ID Combate:">{{comb.id}}</td>
-            
-            <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
-            <td data-label="Hora Inicio:">{{comb.hora}}</td>
-            
-            <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
-            <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
-            <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
-            
-            <button  class="button" (click)="generatePdfBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">PDF</button>
-            <button  class="button" (click)="generateCsvBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">CSV</button>
-            
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="eleccion2$ == 'Último Año2'">
-          <tr  *ngFor="let comb of combanyo2$.data; let i = index">
-              <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
-            <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
-            <td data-label="ID Combate:">{{comb.id}}</td>
-            
-            <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
-            <td data-label="Hora Inicio:">{{comb.hora}}</td>
-          
-            <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
-            <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
-            <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
-            
-            <button  class="button" (click)="generatePdfBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">PDF</button>
-            <button  class="button" (click)="generateCsvBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">CSV</button>
-            
-          </tr>
-        </ng-container>
-
-        <ng-container *ngIf="eleccion2$ == 'Todos2'">
-          <tr  *ngFor="let comb of combtodos2$.data; let i = index">
-              <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
-            <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
-            <td data-label="ID Combate:">{{comb.id}}</td>
-            
-            <td data-label="Fecha Inicio:">{{comb.fecha}}</td>
-            <td data-label="Hora Inicio:">{{comb.hora}}</td>
-          
-            <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
-            <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
-            <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
-            
-            <button  class="button" (click)="generatePdfBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">PDF</button>
-            <button  class="button" (click)="generateCsvBrigadas(comb.estado,comb.id, comb.nombre_brigada, comb.n_brigada, comb.nMedia, comb.nAlta, comb.fecha, comb.hora,comb.fechafin,comb.horafin,i)">CSV</button>
-            
-          </tr>
-        </ng-container>
-
-        
-          
-        
-        </tbody>
-      </table>-->
-    
+                <ng-container *ngIf="eleccion2$ == 'Todos2'">
+                  <tr *ngFor="let comb of combtodos2$.data; let i = index">
+                    <td data-label="Nombre Brigada:">{{comb.nombre_brigada}}</td>
+                    <td data-label="N° Brigada:">{{comb.n_brigada}}</td>
+                    <td data-label="Combate:">{{comb.hito}}</td>            
+                    <td data-label="Fecha Inicio:">{{comb.ini_combate}}</td>
+                    <td data-label="Hora Inicio:">{{comb.ini_hora_combate}}</td>          
+                    <td data-label="Tiempo:">{{tiempodatos2[i]}} días, {{tiempo2datos2[i]}} horas y {{tiempo3datos2[i]}} minutos.</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 0">Finalizado</td>
+                    <td data-label="Estado:" *ngIf="comb.estado == 1">Activo</td>
+                    <td>
+                      <div class="button-group">         
+                        <button  class="button" (click)="generatePDFBrigada(comb.estado, comb.id, comb.idCombate, comb.nombre_brigada, comb.n_brigada, comb.ini_combate, comb.ini_hora_combate, comb.fin_combate, comb.fin_hora_combate, i)">
+                          PDF
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </body>
 
 
-</div>   
-</div> 
-
- 

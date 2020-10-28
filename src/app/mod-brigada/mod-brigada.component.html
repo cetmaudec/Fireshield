@@ -1,28 +1,55 @@
-<app-navbar></app-navbar>
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
 
+<body>
+  <app-navbar></app-navbar>
+  <div class="limiter">
+    <h1>&bull;Modificar Brigada &bull;</h1>
+    <form [formGroup]="modBrigadaForm">
+        <div *ngFor="let brig of brigada$.data">
+        <fieldset>
+            <legend>
+                <img src="./assets/images/icons/firefighter-helmet.svg"> Brigada
+            </legend>
+            <div class="form-input" >
+                <div class="row" *ngIf="!edit_brigada">
+                    <div class="col-6" >
+                        <label for="cargo"></label>
+                        <br>
+                        <h2>{{brig.nombre}} {{brig.apellidoP}} {{brig.apellidoM}}</h2>
+                        <br>
+                    </div>
+                    <div class="col-2">
+                        <button class="button_img" (click)="EditInfo('brigada')">
+                            <img src="./assets/images/icons/edit.svg">
+                        </button>
+                    </div>
+                </div>
 
-    
-      <div id="container">
-            <h1>&bull;Modificar Brigada {{brig2}} - {{brig}} &bull;</h1>
-            <div class="underline">
+                <div class="row" *ngIf="edit_brigada">
+                    <div class="col-6" >
+                        <label for="cargo"></label>
+                        <select  placeholder="Rut" name="subject" id="subject_input" formControlName="rut" required>
+                            <option  value=""class="option" disabled hidden selected>Seleccione Jefe Brigada</option>
+                            <option *ngFor="let jefe of jefes$.data" [value]="jefe.rut" class="option" >{{jefe.nombre}} {{jefe.apellidoP}} {{jefe.apellidoM}}</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <button class="button" (click)="EditBrigada()">
+                            Modificar
+                        </button>
+                    </div>
+                </div>
             </div>
-            <form [formGroup]="modBrigadaForm" (ngSubmit)="onSubmit()">
-                <fieldset>
-                    <legend>Brigada</legend>
-                    
-                              
-                                <select  placeholder="Rut" name="subject" id="subject_input" formControlName="rut" required>
-                                  
-                                    <option *ngFor="let jefe of jefes$.data" [value]="jefe.rut" class="option" >{{jefe.rut}}</option>
-                                </select>
-                            
-                        
-                            <div *ngIf="modBrigadaForm.get('rut').hasError('required')"><span>Rut requerido</span></div>
-                          
-                </fieldset>  
-                <div class="submit">
-                        <input [disabled]="!modBrigadaForm.valid" type="submit" value="Modificar" id="form_button" />
-                      </div>
-            </form><!-- // End form -->
-          </div><!-- // End #container -->
+        </fieldset>
+      </div>
+    </form>
+  </div>
+</body>
 

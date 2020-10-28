@@ -1,61 +1,91 @@
-<app-navbar></app-navbar>
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
 
+<body>
+  <app-navbar></app-navbar>
+  <div class="limiter">
+        <h1>&bull;Añadir Brigada &bull;</h1>
+        <div class="underline">
+        </div>
+        <form [formGroup]="BrigadaForm">
+            <fieldset>
+                <legend>
+                  <img src="./assets/images/icons/firefighter-helmet.svg"> Brigada
+                </legend>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="form-input">
+                            <div class="row">
+                                <div class="col-7" >
+                                    <label>Nombre Brigada
+                                        <span *ngIf="BrigadaForm.get('nombre').hasError('required')">(*)requerido</span>
+                                    </label>
+                                    <input type="text" formControlName="nombre" (change)="onChange($event.target.value);" required placeholder="Nombre de brigada"><br>
+                                </div>
+                                <div class="col-5" >
+                                    <label>Número Brigada
+                                        <span *ngIf="BrigadaForm.get('n_brigada').hasError('required')">(*)requerido</span>
+                                    </label>
+                                    <input type="number" id="number" step="1" min={{num_brig}} max=100 formControlName="n_brigada"   required><br>
+                                </div>
+                            </div>
 
-    
-      <div id="container">
-            <h1>&bull;Añadir Brigada &bull;</h1>
-            <div class="underline">
+                            <div class="row">
+                                <div class="col-7" >
+                                    <label>Región
+                                        <span *ngIf="BrigadaForm.get('region').hasError('required')">(*)requerido</span>
+                                    </label>
+                                    <select formControlName="region">
+                                        <option value="" class="option" disabled="">Seleccione región</option>
+                                        <option *ngFor="let reg of region$.data" value="{{reg.nombre}}" class="option">  {{reg.nombre}}</option>
+                                        <option value="" class="option">Otro</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-7">
+                                    <label>Jefe de Brigada
+                                        <span *ngIf="BrigadaForm.get('rut').hasError('required')">(*)requerido</span>
+                                    </label>
+                                    <select  formControlName="rut" >
+                                        <option value=""class="option">Elija el jefe de brigada</option>
+                                        <option *ngFor="let jefe of jefes$.data" class="option" value="{{jefe.rut}}">{{jefe.nombre}} {{jefe.apellidoP}} {{jefe.apellidoM}}</option>         
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <table class="table-hover">
+                          <thead>
+                            <tr>
+                              <th scope="col-1">#</th>
+                              <th scope="col-3">Brigadas</th>
+                              <th scope="col-3">Región</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let brig of nombresbrigadas$.data;  let i = index">
+                              <th scope="row">{{i+1}}</th>
+                              <td>{{brig.nombre}}</td>
+                              <td>{{brig.region}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="btn-submit">
+                <button [disabled]="!BrigadaForm.valid" class="button" (click)="onSubmit()"> Registrar</button>
             </div>
-            <form [formGroup]="BrigadaForm" (ngSubmit)="onSubmit()">
-                <fieldset>
-                    <legend>Brigada</legend>
-                    <div class="row">
-                            <div class="column2" >
-                                
-                                    <label for="n_brigada">Nombre de Brigada</label>
-                                    
-                                    <div class="row">
-                                            <div class="column" >
-                                                
-                                                    <select formControlName="nombre" (change)="onChange($event.target.value);">
-                                                            <option value="" class="option">Nombre Brigada</option>
-                                                            <option *ngFor="let nombre of nombresbrigadas$.data" value="{{nombre.nombre}}" class="option">{{nombre.nombre}} - {{nombre.region}}</option>           
-                                                    </select>
-                                                    <div *ngIf="BrigadaForm.get('nombre').hasError('required')"><span>Nombre de brigada requerido</span></div>
-                                                
-                                                           
-                                            </div>
-                                            <div class="column" >
-                                                    <input type="number" id="number" step="1" min={{brigadas$.data[0].max+1}} max=100 formControlName="n_brigada"  required><br>
-                                                    <div *ngIf="BrigadaForm.get('n_brigada').hasError('required')"><span>N° de brigada requerido</span></div>
-                                                
-                                                
-                                            </div>
-                                          </div>
-                                
-                                    
-                                    
-                                           
-                            </div>
-                            <div class="column2" >
-                                <select  formControlName="rut" >
-                                    <option value=""class="option">Elija el jefe de brigada</option>
-                                    <option *ngFor="let jefe of jefes$.data" class="option">{{jefe.rut}}</option>         
-                                </select>
-                                        
-                                <div *ngIf="BrigadaForm.get('rut').hasError('required')"><span>Rut Jefe Brigada requerido</span></div>
-                            </div>
-                          </div>
-              
-                        
-                       
-                      
-                            
-                            
-                            
-                </fieldset>  
-                <div class="submit">
-                        <input [disabled]="!BrigadaForm.valid" type="submit" value="Registrar" id="form_button" />
-                      </div>
-            </form><!-- // End form -->
-          </div><!-- // End #container -->
+        </form>
+    </div>
+</body>

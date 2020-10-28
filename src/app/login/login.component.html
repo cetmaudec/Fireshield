@@ -1,43 +1,88 @@
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
-    
-        <div class="form">
-          <a>
-            <img width="80px" src="assets/images/isotipopng.png">
-          </a>
-          <form class="login-form" [formGroup]="LoginForm" (ngSubmit)="onSubmit()">
-            <input type="text" placeholder="Rut" formControlName="username"/>
-            <input type="password" placeholder="Contraseña" formControlName="password"/>
-            
-              
-            <button [disabled]="!LoginForm.valid">Iniciar sesión</button>
-            <p class="message">¿No estás registrado?</p> <a routerLink="/registro">Registrate aquí</a>
-          </form>
+</head>
+<body>
+  <div class="limiter">
+    <div class="contenedor">
+      <div class="row">
+        <div class="left"></div>
+        <div class="main">
+          <div class="wrap-login100">
+            <div class="login-pass">
+              <div class="login-logo">
+                <img src="../assets/images/Safeteamlogopng.png">
+              </div>
+              <div class="login-title">
+                <h1>Bienvenido a Safe Team</h1>
+              </div>
+              <div class="login-form">
+                <form class="login-form" [formGroup]="LoginForm" >
+                  <div class="wrap-input100 validate-input" data-validate = "Enter username">
+                    <input class="input100" type="text"  formControlName="username" placeholder="Nombre de usuario">
+                  </div>
+                  <div class="wrap-input100 validate-input" data-validate="Enter password">
+                    <input class="input100" type="password" formControlName="password" placeholder="Contraseña">
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="login-btn">
+              <div class="light">
+                <div class="dark">
+                  <button class="login100-form-btn" (click)="loginUser()"> Iniciar Sesión</button>
+                </div>
+              </div>              
+            </div>
+          </div>
+          <div class="wrap-register">
+            <h2>No tienes una cuenta?</h2>
+            <div class="register-btn">
+              <div class="light">
+                <div class="dark">
+                  <button class="register-form-btn" (click)="register()"> Regístrate</button>
+                </div>
+              </div>
+            </div>          
+          </div>  
         </div>
-      
-      
-      <footer>
+        <div class="right"></div>
+      </div>      
+    </div>
 
-     
-        <a href="http://www.tallerfor.cl/">
-          <img class="logos" src="./assets/images/logito.png " >
-       </a>
-     
-       
-       <a href="http://www.conaf.cl/">
-        <img class="logos" src="./assets/images/logo-conaf.jpg" >
-      
-      </a>
-      <a href = "https://www.cetma.cl/">
-        <img class="logos" src="./assets/images/cetma.png" >
-      </a>
-
-      <a href = "http://www.udec.cl/pexterno/">
-        <img class="logos" src="./assets/images/udec.gif">
-        </a>
-
-        <a href = "https://www.corfo.cl/sites/cpp/home">
-          <img class="logos" src="./assets/images/corfo.png">
+    <div class="footer">
+      <div class="row">
+        <div class="column taller_for">
+          <a href="http://www.tallerfor.cl/">
+            <img src="./assets/images/logos/Taller_For_Marca_final-15.png">
           </a>
-      </footer>
-
-  
+        </div>
+        <div class="column conaf">
+          <a href="http://www.conaf.cl/">
+            <img src="./assets/images/logos/conaf_.png" >
+          </a>
+        </div>
+        <div class="column cetma">
+          <a href = "https://www.cetma.cl/">
+            <img src="./assets/images/logos/cetma.png" >
+          </a>
+        </div>
+        <div class="column udec">
+          <a href = "http://www.udec.cl/pexterno/">
+            <img src="./assets/images/logos/udec.gif">
+          </a>
+        </div>
+        <div class="column corfo">
+          <a href = "https://www.corfo.cl/sites/cpp/home">
+            <img src="./assets/images/logos/corfo.png">
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

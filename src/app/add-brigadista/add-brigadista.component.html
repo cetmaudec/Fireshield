@@ -1,120 +1,113 @@
-<app-navbar></app-navbar>
+<head>
+  <title>Login V3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/images/icons/favicon.ico"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
 
+<body>
+  <app-navbar></app-navbar>
+  <div class="limiter">
+    <form [formGroup]="BrigadistaForm">
+      <fieldset>
+        <legend> 
+          <img src="./assets/images/icons/id.svg"> Datos Personales
+        </legend>
+        <div class="form-input">
+          <div class="row">
+            <div class="col-4">
+              <label for="nombre" >Nombre</label>
+              <input type="text" formControlName="nombre" placeholder="Nombre" requiered><br>
+            </div>
+            <div class="col-4">
+              <label for="apellidoP">Apellido Paterno</label>
+              <input type="text" formControlName="apellidoP" placeholder="Apellido Paterno"required><br>
+            </div>
+            <div class="col-4">
+              <label for="apellidoM">Apellido Materno</label>
+              <input type="text" formControlName="apellidoM" placeholder="Apellido Materno" required><br>
+            </div>
+          </div>
 
-<div id="container">
-    <h1>&bull;Añadir Brigadista &bull;</h1>
-    <div class="underline">
-    </div>
-    <form [formGroup]="BrigadistaForm" (ngSubmit)="onSubmit()">
-        <fieldset>
-            <legend>Datos Personales</legend>
-
-            <div class="row">
-              <div class="column" >
-                <label for="nombre" ></label>
-                <input type="text" formControlName="nombre" placeholder="Nombre" requiered><br>
-                <div *ngIf="BrigadistaForm.get('nombre').hasError('required')"><span>Nombre requerido</span></div>
-              </div>
-              <div class="column" >
-                <label for="apellidoP"></label>
-                <input type="text" formControlName="apellidoP" placeholder="Apellido Paterno"required><br>
-               <div *ngIf="BrigadistaForm.get('apellidoP').hasError('required')"><span>Apellido Paterno requerido</span></div>
+          <div class="row">
+            <div class="col-4">
+              <label for="rut">Rut</label>
+              <input type="text" formControlName="rut" placeholder="xx.xxx.xxx-x"required><br>
+              <div *ngIf="BrigadistaForm.get('rut').hasError('pattern')">
+                <span>Formato de rut Incorrecto</span>
               </div>
             </div>
+          </div>
 
-            <div class="row">
-              <div class="column" >
-                <label for="apellidoM"></label>
-            <input type="text" formControlName="apellidoM" placeholder="Apellido Materno" required><br>
-            <div *ngIf="BrigadistaForm.get('apellidoM').hasError('required')"><span>Apellido Materno requerido</span></div>
-              </div>
-              <div class="column" >
-                <label for="rut"></label>
-            <input type="text" formControlName="rut" placeholder="Rut"required><br>
-            <div *ngIf="BrigadistaForm.get('rut').hasError('required')"><span>Rut requerido</span></div>
-            <div *ngIf="BrigadistaForm.get('rut').hasError('pattern')"><span>Formato de rut Incorrecto</span></div>
+          <div class="row">
+            <div class="col-4" >
+              <label for="f_nacimiento">Fecha de nacimiento</label>
+              <input type="date" formControlName="f_nacimiento" placeholder="Fecha de nacimiento" required ><br>
+            </div>
+          </div>
+           
+          <div class="row">
+            <div class="col-6" >
+              <label for="correo">Correo</label>
+              <input type="text" formControlName="correo" placeholder="ejemplo@gmail.com" required><br>
+              <div *ngIf="BrigadistaForm.get('correo').hasError('email')">
+                <span>Formato de correo Incorrecto</span>
               </div>
             </div>
-
-            <div class="row">
-              <div class="column2" >
-                <label for="f_nacimiento">Fecha de nacimiento</label>
-                <input type="date" formControlName="f_nacimiento" placeholder="Fecha de nacimiento" required ><br>
-                <div *ngIf="BrigadistaForm.get('f_nacimiento').hasError('required')"><span>Fecha de nacimiento requerida</span></div>
-              </div>
-              
-            </div>
-            <div class="row">
-              <div class="column2" >
-                <label for="correo"></label>
-                <input type="text" formControlName="correo" placeholder="Correo" required><br>
-                <div *ngIf="BrigadistaForm.get('correo').hasError('required')"><span>Correo requerido</span></div>
-                <div *ngIf="BrigadistaForm.get('correo').hasError('email')"><span>Formato de correo Incorrecto</span></div>
-              </div>
-              
-            </div> 
-              
-             
-                
-             
-         
-          
-        </fieldset>
-       
-       
-
-        <fieldset>
-            <legend>Brigada</legend>
-
-            
-           
-        <div class="row">
-            <div class="column" >
-                <label for="pulsera"></label>
-           
-                <select formControlName="pulsera" required>
-                  <option value="" class="option" disabled hidden selected>ID de Pulsera</option>
-                  <option *ngFor="let pulseras of pulserasNoUsadas$.data" class="option">{{pulseras.id}}</option>
-                </select>
-                <div *ngIf="BrigadistaForm.get('pulsera').hasError('required')"><span>ID de pulsera requerida</span></div>
-              </div>
-            <div class="column" >
-           <label for="cargo"></label>
-           
-            <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
-              <option value="" class="option" disabled hidden selected>Cargo</option>
-              <option class="option">Capitán</option>
-              <option class="option">Motosierrista</option>
-              <option class="option">Rozón</option>
-              <option class="option">McLeod</option>
-            </select>
-            <div *ngIf="BrigadistaForm.get('cargo').hasError('required')"><span>Cargo requerido</span></div>
           </div>
         </div>
-        </fieldset>
-        <fieldset>
-            <legend>Condición Física</legend>
+      </fieldset>
 
-            <div class="row">
-                <div class="column" >
-                    <label for="peso">Peso</label>
-                    <input type="number" step="0.01" min="0" max="999.99" formControlName="peso" required><br>
-                    <div *ngIf="BrigadistaForm.get('peso').hasError('required')"><span>Peso requerido</span></div>
-                </div>
-                <div class="column" >
-                    <label for="altura">Altura</label>
-                    <input type="number" step="0.1" min="0"  max="9.9" formControlName="altura" required><br>
-                    <div *ngIf="BrigadistaForm.get('altura').hasError('required')"><span>Altura requerida</span></div>
-                </div>
-              </div>
-              
-              
-            </fieldset>
-            
-            <div class="submit">
-                <input  type="submit" value="Registrar" id="form_button" />
-              </div>
-             
-           
-    </form><!-- // End form -->
-  </div><!-- // End #container -->
+      <fieldset>
+        <legend>
+          <img src="./assets/images/icons/firefighter-helmet.svg"> Brigada
+        </legend>
+        <div class="form-input">
+          <div class="row">
+            <div class="col-4" >
+              <label for="pulsera"></label>
+              <select formControlName="pulsera" required>
+                <option value="" class="option" disabled hidden selected>ID de Pulsera</option>
+                <option *ngFor="let pulseras of pulserasNoUsadas$.data" class="option">{{pulseras.id}}</option>
+              </select>
+            </div>
+            <div class="col-4" >
+              <label for="cargo"></label>
+              <select placeholder="Subject line" name="subject" id="subject_input" formControlName="cargo" required>
+                <option value="" class="option" disabled hidden selected>Cargo</option>
+                <option class="option">Capitán</option>
+                <option class="option">Motosierrista</option>
+                <option class="option">Rozón</option>
+                <option class="option">McLeod</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>
+          <img src="./assets/images/icons/health-insurance.svg">Condición Física
+        </legend>
+        <div class="form-input">
+          <div class="row">
+            <div class="col-4">
+              <label for="peso">Peso</label>
+              <input type="number" step="0.1" min="50" max="999.99" formControlName="peso" required><br>
+            </div>
+            <div class="col-4">
+              <label for="altura">Altura</label>
+              <input type="number" step="0.01" min="1.50"  max="9.9" formControlName="altura" required><br>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="btn-submit">
+        <button class="button" (click)="onSubmit()"> Registrar</button>
+      </div>
+    </form>
+  </div>
+</body>
