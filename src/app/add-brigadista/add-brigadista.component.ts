@@ -45,7 +45,7 @@ export class AddBrigadistaComponent implements OnInit {
     tengan un correcto formato.
   */
 
-  constructor(private rutaActiva: ActivatedRoute, private formBuilder: FormBuilder,private http: HttpClient,private router: Router) { 
+  constructor(private rutaActiva: ActivatedRoute, private formBuilder: FormBuilder,private http: HttpClient, private router: Router) { 
 
     this.n_brigada=this.rutaActiva.snapshot.paramMap.get('id');
 

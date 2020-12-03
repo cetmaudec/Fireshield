@@ -2,14 +2,8 @@ const express = require('express');
 const app = express();
 const msql = require("mysql");
 const cors = require('cors');
-const AES = require('mysql-aes')
 const bodyParser = require('body-parser')
-const nodemailer = require('nodemailer');
-
-const _ = require('lodash');
 const jwt = require('jsonwebtoken');
-const expressJwt = require('express-jwt');
-
 
 // config for your database
 const con = msql.createConnection({
@@ -17,16 +11,6 @@ const con = msql.createConnection({
     user: "root",
   password: "cetma2019",
   database: 'cet_fire'
-});
-
-var transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: 'joaquin.bahamonde.b@gmail.com',
-      pass: 'cako310979'
-    }
 });
 
 

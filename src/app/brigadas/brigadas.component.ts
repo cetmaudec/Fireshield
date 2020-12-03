@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient ,HttpParams ,HttpHeaders} from '@angular/common/http';
 import Swal from'sweetalert2';
+import {Router} from '@angular/router';
 import { environment } from '../environment';
 
 
@@ -43,7 +44,7 @@ export class BrigadasComponent implements OnInit {
     para realizar consultas a la base de datos a través del server (HttpClient).
   */
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, private router: Router) { 
     this.cargo=localStorage.getItem('cargo');
     this.rut_jefe=localStorage.getItem('user');
     console.log(this.cargo);
@@ -97,7 +98,7 @@ export class BrigadasComponent implements OnInit {
                 title: 'Brigada borrada exitosamente!',
                 confirmButtonText: 'Ok!'
                 }).then((result) => {
-                   location.reload();
+                  this.router.navigate(['/brigadas']);
                 }) ,
           err => Swal.fire({
                 icon: 'error',

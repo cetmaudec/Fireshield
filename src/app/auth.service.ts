@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from './environment';
+
 
 @Injectable()
 export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string): Observable<string> {
-    return this.http.post<{token: string, cargo: string, estado:string}>('http://localhost:8000/auth', {username: username, password: password})
+    return this.http.post<{token: string, estado: string, cargo:string}>(environment.urlAddress+'auth', {username: username, password: password})
       .pipe(
         map(result => {
           localStorage.setItem('user', username);

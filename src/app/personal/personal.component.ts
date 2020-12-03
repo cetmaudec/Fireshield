@@ -186,7 +186,7 @@ export class PersonalComponent implements OnInit {
                 title: 'Solicitud aceptada exitosamente!',
                 confirmButtonText: 'Ok!'
                 }).then((result) => {
-                  location.reload();
+                   this.router.navigate(['/personal']);
                 }) ,
           err => Swal.fire({
                 icon: 'error',
@@ -220,7 +220,7 @@ export class PersonalComponent implements OnInit {
                 title: 'Solicitud rechazada con éxito',
                 confirmButtonText: 'Ok!'
                 }).then((result) => {
-                   location.reload();
+                  this.router.navigate(['/personal']);
                 }) ,
           err => Swal.fire({
                 icon: 'error',

@@ -75,7 +75,6 @@ export class RegistroComponent implements OnInit {
         confirmButtonText: 'Ok!'
         });
     }else if(this.RegistroForm.value!=null){
-      console.log(this.RegistroForm.value);
       this.http.post(environment.urlAddress+'insert/usuario', this.RegistroForm.value, { 
         headers: new HttpHeaders({ 'Content-Type': 'application/json'})}).subscribe(
           response =>  Swal.fire({
@@ -109,12 +108,10 @@ export class RegistroComponent implements OnInit {
 
   getPassword(event: Event){
     this.password = (event.target as HTMLInputElement).value;
-    console.log(this.password);
   }
 
   getconfirmPassword(event: Event){
     this.confirmPassword = (event.target as HTMLInputElement).value;
-    console.log(this.password +" = "+this.confirmPassword);
     if(this.confirmPassword==this.password){
       this.confirm=true;
     }else{
